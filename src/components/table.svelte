@@ -1,35 +1,74 @@
 <script>
+  import { data } from "../data/data";
+  import Button from "../shared/Button.svelte";
+  import { db } from "../data/db";
+  import { liveQuery } from "dexie";
+
+  async function addData() {
+    console.log("Adding data");
+    try {
+      const id = await db.orders.add(data[5]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  let ordersArray = liveQuery(() => db.orders.toArray());
 </script>
 
+<nav>
+  <Button idButton="test">Test</Button>
+  <Button onClick={addData} idButton="adddata">Add data</Button>
+</nav>
+
 <table class="responsive-table">
-    <thead>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Plačnik</th>
+      <th>Skupina</th>
+      <th>Znesek</th>
+      <th>Koda namena</th>
+      <th>Namen plačila</th>
+      <th>TRR</th>
+      <th>Referenca</th>
+      <th>Prejemnik</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#if $ordersArray}
+      {#each $ordersArray as row (row.id)}
         <tr>
-            <th>Header 1</th>
-            <th>Header 2</th>
-            <th>Header 3</th>
+          <td data-label="Id">{row.id}</td>
+          <td data-label="Plačnik">{row.placnik}</td>
+          <td data-label="Skupina">{row.skupina}</td>
+          <td data-label="Znesek">{row.znesek}</td>
+          <td data-label="Koda namena">{row.koda_namena}</td>
+          <td data-label="Namen plačila">{row.namen_placila}</td>
+          <td data-label="TRR">{row.trr}</td>
+          <td data-label="Referenca">{row.referenca}</td>
+          <td data-label="Prejemnik">{row.prejemnik}</td>
         </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Data 1.1</td>
-            <td>Data 1.2</td>
-            <td>Data 1.3</td>
-        </tr>
-        <tr>
-            <td>Data 2.1</td>
-            <td>Data 2.2</td>
-            <td>Data 2.3</td>
-        </tr>
-        <tr>
-            <td>Data 3.1</td>
-            <td>Data 3.2</td>
-            <td>Data 3.3</td>
-        </tr>
-    </tbody>
+      {/each}
+    {/if}
+  </tbody>
 </table>
 
-
 <style>
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% - 80px);
+    padding: 10px;
+    text-align: left;
+    justify-content: space-around;
+    gap: 1em;
+    align-items: center;
+    background-size: contain;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
   /* Default table styles */
   .responsive-table {
     width: 100%;
@@ -46,13 +85,13 @@
   /* CSS to prevent selection of the first column 
   Do I need style for the first row? 
   */
-  .responsive-table th:first-child, 
+  .responsive-table th:first-child,
   .responsive-table :first-child {
     user-select: none;
-    -webkit-user-select: none;  /* Safari */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE/Edge */
-}
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+  }
 
   /* Responsive table styles */
   @media (max-width: 600px) {

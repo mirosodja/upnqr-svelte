@@ -17,10 +17,10 @@
 		</svg> -->
     <ul>
       <li aria-current={$page.url.pathname === "/" ? "page" : undefined}>
-        <a href="/">Home</a>
+        <a href="/">Tabela nalogov</a>
       </li>
       <li aria-current={$page.url.pathname === "/upnqr" ? "page" : undefined}>
-        <a href="/upnqr">Upnqr</a>
+        <a href="/upnqr">Upnqr v PDF</a>
       </li>
       <li
         aria-current={$page.url.pathname.startsWith("/help")
