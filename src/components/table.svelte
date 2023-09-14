@@ -3,23 +3,31 @@
   import Button from "../shared/Button.svelte";
   import { db } from "../data/db";
   import { liveQuery } from "dexie";
+  
 
   async function addData() {
     console.log("Adding data");
     try {
+      // @ts-ignore
       const id = await db.orders.add(data[5]);
     } catch (error) {
       console.log(error);
     }
   }
 
+  // @ts-ignore
   let ordersArray = liveQuery(() => db.orders.toArray());
 </script>
 
-<nav>
-  <Button idButton="test">Test</Button>
-  <Button onClick={addData} idButton="adddata">Add data</Button>
-</nav>
+<div class="navButton">
+  <Button idButton="reinit" title="Re-init tabele">Re-init</Button>
+  <Button idButton="add" title="Dodaj zapis">Dodaj</Button>
+  <Button idButton="delete" title="Izbriši zapis">Izbriši</Button>
+  <Button idButton="izbor" title="Dodaj filtrirane vrstice v izbor">Izbor</Button>
+  <Button idButton="preobrni" title="Preobrni izbor">Preobrni</Button>
+  <Button onClick={addData} idButton="copydata" title="Kopiraj podatke v odložišče">Kopiraj podatke</Button>
+<Button idButton="pasteData" title="Prilepi podatke iz odložišča">Prilepi podatke</Button>
+</div>
 
 <table class="responsive-table">
   <thead>
@@ -55,24 +63,28 @@
 </table>
 
 <style>
-  nav {
+  .navButton {
     display: flex;
     flex-wrap: wrap;
-    width: calc(100% - 80px);
-    padding: 10px;
-    text-align: left;
+    /* text-align: left; */
+    width: calc(100% - 2em);
+    padding-top: 10px;
+    padding-bottom: 10px;
+
     justify-content: space-around;
-    gap: 1em;
+    /* gap: 1em; */
     align-items: center;
     background-size: contain;
-    background: rgba(255, 255, 255, 0.7);
+    /* background: rgba(255, 255, 255, 0.7); */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
+    /* transform: translateY(-2px); */
+    margin-bottom: 20px;
   }
   /* Default table styles */
   .responsive-table {
-    width: 100%;
-    border-collapse: collapse;
+    width: calc(100% - 80px);
+    margin-left: 0px;
+    border: #db2727 2px solid;
   }
 
   .responsive-table th,
@@ -82,7 +94,7 @@
     text-align: left;
   }
 
-  /* CSS to prevent selection of the first column 
+  /* TODO CSS to prevent selection of the first column 
   Do I need style for the first row? 
   */
   .responsive-table th:first-child,

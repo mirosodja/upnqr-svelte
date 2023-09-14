@@ -1,14 +1,15 @@
 <script>
   export let idButton = "button";
   export let onClick = () => {};
+  export let title = "Button";
 </script>
 
-<button class="button" id={idButton} on:click={onClick}>
+<button type="button" {title} class="button" id={idButton} on:click={onClick}>
   <slot>Button</slot>
 </button>
 
 <style>
-  button {
+  .button {
     box-shadow: 3px 4px 0px 0px #1564ad;
     background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
     background-color: #79bbff;
@@ -22,12 +23,12 @@
     text-shadow: 0px 1px 0px #528ecc;
   }
 
-  button:hover {
+  .button:hover {
     background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
     background-color: #378de5;
   }
 
-  button:active {
+  .button:active {
     position: relative;
     top: 1px;
     animation: blink 1s alternate;
