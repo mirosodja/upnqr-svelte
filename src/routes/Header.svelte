@@ -64,7 +64,6 @@
   nav {
     display: flex;
     flex-wrap: wrap;
-    width: calc(100% - 80px);
     margin: 0 30px;
     height: 3em;
     text-align: left;
