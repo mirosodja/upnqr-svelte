@@ -1,6 +1,5 @@
 <script>
-  import Table from "../components/Table.svelte";
-  import Button from "../shared/Button.svelte";
+  import OrdersTable from "../components/OrdersTable.svelte";
 </script>
 
 <svelte:head>
@@ -9,7 +8,7 @@
 </svelte:head>
 
 <section>
-  <Table />
+  <OrdersTable />
 </section>
 
 <style>
