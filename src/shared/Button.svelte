@@ -1,10 +1,10 @@
 <script>
   export let idButton = "button";
-  export let onClick = () => {};
+  export let clickedFunction = () => {};
   export let title = "Button";
 </script>
 
-<button type="button" {title} class="button" id={idButton} on:click={onClick}>
+<button type="button" {title} class="button" id={idButton} on:click={clickedFunction}>
   <slot>Button</slot>
 </button>
 

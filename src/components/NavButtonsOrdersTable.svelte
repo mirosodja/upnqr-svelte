@@ -59,34 +59,31 @@
 
   const pasteData = async () => {
     const text = await pasteTextFromClipboard();
-    // if (text) {
-    console.log("Pasted content: ", text);
-    // @ts-ignore
-    // const id = await db.orders.put(text);
-    // }
   };
 </script>
 
 <div class="navButton">
   <Button idButton="reinit" title="Re-init tabele">Re-init</Button>
-  <Button idButton="add" title="Dodaj zapis" onClick={addData}>Dodaj</Button>
+  <Button idButton="add" title="Dodaj zapis" clickedFunction={addData}
+    >Dodaj</Button
+  >
   <Button idButton="delete" title="Izbriši zapis">Izbriši</Button>
   <Button idButton="izbor" title="Dodaj filtrirane vrstice v izbor"
     >Izbor</Button
   >
   <Button idButton="preobrni" title="Preobrni izbor">Preobrni</Button>
   <Button
-    onClick={copyHello}
+    clickedFunction={copyHello}
     idButton="copydata"
     title="Kopiraj podatke v odložišče">Kopiraj podatke</Button
   >
   <Button
     idButton="pasteData"
     title="Klik: Prilepi podatke iz odložišča, Dvoklik: Opis strukture podatkov"
-    onClick={pasteData}>Prilepi podatke</Button
+    clickedFunction={pasteData}>Prilepi podatke</Button
   >
 </div>
-<input type="text" class="show" id="clipboardInput"/>
+<input type="text" class="show" id="clipboardInput" />
 
 <style>
   .navButton {
