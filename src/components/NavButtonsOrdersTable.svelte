@@ -1,26 +1,25 @@
 <script>
-  import { data } from "../data/data";
   import { db } from "../data/db";
-
   import Button from "../shared/Button.svelte";
 
-  async function addData() {
-    console.log("Adding data");
-    try {
-      // @ts-ignore
-      // @ts-ignore
-      const id = await db.orders.put(data[1]);
-    } catch (error) {
-      console.log(error);
-    }
+  /**
+   * @param {unknown} value
+   */
+  function isPositiveInteger(value) {
+    return typeof value === "number" && value > 0 && Number.isInteger(value);
   }
+
+  // see: https://itnext.io/javascript-work-with-clipboard-ctrl-c-ctrl-v-42bb287f1c66
+  //  document.addEventListener('paste', evt => {
+  //   const txt = evt.clipboardData.getData('text/plain');
+  //  });
 
   /**
    * @param {string} text
    * @returns {Promise<void>}
-   * @see https://stackoverflow.com/a/65957232/1148001
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
-   * copy text to clipboard
+   * @see {https} ://stackoverflow.com/a/65957232/1148001
+   * @see {https} ://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
+  copy text to clipboard
    */
   async function copyTextToClipboard(text) {
     try {
@@ -43,30 +42,71 @@
    */
   async function pasteTextFromClipboard() {
     // TODO: add check if data is compatible with structure of db
-
     try {
       const text = await navigator.clipboard.readText();
-      if (text === "") {
-        alert("Clipboard is empty");
+      const rows = text.split("\n").map((row) => row.split("\t"));
+      const kodaNamenaData = await fetch("data/koda_namena.json").then((res) =>
+        res.json()
+      );
+      if (rows[0].length !== 9) {
+        alert("Error: Incorrect number of elements in a row.");
         return;
       }
-      console.log("Pasted content: ", text);
-      return text;
+      rows.shift();
+      let numberOfImportedRows = 0;
+      for (const row of rows) {
+        // 7. Create array of objects with validations
+        const obj = {
+          id: +row[0],
+          placnik: row[1],
+          skupina: row[2],
+          znesek: row[3],
+          koda_namena: row[4],
+          namen_placila: row[5],
+          trr: row[6],
+          referenca: row[7],
+          prejemnik: row[8],
+        };
+        if (row.length === 9) {
+          if (
+            !isPositiveInteger(obj.id) ||
+            !obj.placnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/) ||
+            obj.skupina.length > 20 ||
+            !obj.znesek.match(/^(\d{0,3}\.)?\d{1,3},\d{2}$/) ||
+            obj.namen_placila.length > 42 ||
+            !obj.trr.match(/^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/) ||
+            !obj.referenca.match(
+              /(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/
+            ) ||
+            !obj.prejemnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)
+          ) {
+            alert(`Error: Data validation failed at id=${obj.id}.`);
+            return;
+          }
+          // @ts-ignore
+          const existingKey = await db.orders.get({ id: obj.id });
+          if (!existingKey) {
+            // @ts-ignore
+            const id = await db.orders.put(obj);
+            numberOfImportedRows++;
+          }
+        }
+      }
+      alert(`Imported ${numberOfImportedRows} rows.`);
     } catch (err) {
       console.error("Failed to read clipboard contents: ", err);
     }
   }
 
   const pasteData = async () => {
+    // @ts-ignore
     const text = await pasteTextFromClipboard();
   };
 </script>
 
 <div class="navButton">
   <Button idButton="reinit" title="Re-init tabele">Re-init</Button>
-  <Button idButton="add" title="Dodaj zapis" clickedFunction={addData}
-    >Dodaj</Button
-  >
+  <Button idButton="add" title="Dodaj zapis">Dodaj</Button>
   <Button idButton="delete" title="Izbriši zapis">Izbriši</Button>
   <Button idButton="izbor" title="Dodaj filtrirane vrstice v izbor"
     >Izbor</Button
@@ -83,7 +123,6 @@
     clickedFunction={pasteData}>Prilepi podatke</Button
   >
 </div>
-<input type="text" class="show" id="clipboardInput" />
 
 <style>
   .navButton {
@@ -96,9 +135,5 @@
     background-size: contain;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
-  }
-
-  .show {
-    display: none;
   }
 </style>
