@@ -18,9 +18,6 @@ import { db } from "../data/db";
     try {
       const text = await navigator.clipboard.readText();
       const rows = text.split("\n").map((row) => row.split("\t"));
-      const kodaNamenaData = await fetch("data/koda_namena.json").then((res) =>
-        res.json()
-      );
       if (rows[0].length !== 9) {
         alert("Error: Incorrect number of elements in a row.");
         return;

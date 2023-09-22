@@ -1,34 +1,53 @@
 <script>
   import Button from "../shared/Button.svelte";
-  import pasteTextFromClipboard  from "$lib/pasteTextFromClipboard";
- 
+  import CopyClipBoard from "../components/CopyClipBoard.svelte";
+  import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
+  import { db } from "../data/db";
+
+  let clipboardText = "Clipboard text";
 
   // see: https://itnext.io/javascript-work-with-clipboard-ctrl-c-ctrl-v-42bb287f1c66
   //  document.addEventListener('paste', evt => {
   //   const txt = evt.clipboardData.getData('text/plain');
   //  });
 
-  /**
-   * @param {string} text
-   * @returns {Promise<void>}
-   * @see {https} ://stackoverflow.com/a/65957232/1148001
-   * @see {https} ://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
-  copy text to clipboard
-   */
-  async function copyTextToClipboard(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-      console.log("Text copied to clipboard");
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
-  }
-
-  const copyHello = () => {
-    copyTextToClipboard("Hello, World!");
+  const copy = (/** @type {any} */ text) => {
+    clipboardText = text;
+    const app = new CopyClipBoard({
+      // @ts-ignore
+      target: document.getElementById("clipboard"),
+      props: { clipboardText },
+    });
+    app.$destroy();
+    clipboardText = "Clipboard text";
   };
 
- 
+  const readDb = async () => {
+    // @ts-ignore
+    const data = await db.orders.toArray();
+    let arrNaslovna = [
+      "ID",
+      "PLAČNIK",
+      "SKUPINA",
+      "ZNESEK",
+      "KODA NAMENA",
+      "NAMEN PLAČILA",
+      "TRR",
+      "REFERENCA",
+      "PREJEMNIK",
+    ];
+    const headers = arrNaslovna.join("\t");
+
+    // Extract values from each object
+    const rows = data.map((/** @type {any} */ obj) =>
+      Object.values(obj).join("\t")
+    );
+
+    // Join headers and rows with newline delimiter
+    const result = [headers, ...rows].join("\n");
+    return copy(result);
+  };
+
   const pasteData = async () => {
     // @ts-ignore
     const text = await pasteTextFromClipboard();
@@ -36,7 +55,9 @@
 </script>
 
 <div class="navButton">
-  <Button idButton="reinit" title="Re-init tabele">Re-init</Button>
+  <Button idButton="reinit" title="Re-init tabele" onClickFunction={readDb}
+    >Re-init</Button
+  >
   <Button idButton="add" title="Dodaj zapis">Dodaj</Button>
   <Button idButton="delete" title="Izbriši zapis">Izbriši</Button>
   <Button idButton="izbor" title="Dodaj filtrirane vrstice v izbor"
@@ -44,16 +65,17 @@
   >
   <Button idButton="preobrni" title="Preobrni izbor">Preobrni</Button>
   <Button
-    clickedFunction={copyHello}
+    onClickFunction={copy}
     idButton="copydata"
     title="Kopiraj podatke v odložišče">Kopiraj podatke</Button
   >
   <Button
     idButton="pasteData"
     title="Klik: Prilepi podatke iz odložišča, Dvoklik: Opis strukture podatkov"
-    clickedFunction={pasteData}>Prilepi podatke</Button
+    onClickFunction={pasteData}>Prilepi podatke</Button
   >
 </div>
+<div id="clipboard" />
 
 <style>
   .navButton {

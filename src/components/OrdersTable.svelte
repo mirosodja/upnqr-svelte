@@ -8,23 +8,20 @@
     TableBodyRow,
     TableHead,
     TableHeadCell,
-    Checkbox
+    Checkbox,
   } from "flowbite-svelte";
 
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
 
   // @ts-ignore
-  let items = liveQuery(
-    async () => {
-      // @ts-ignore
-      return await db.orders
-        .toArray().
-        catch((/** @type {any} */ error) => {
-          console.log(error);
-        });
-      });
+  let items = liveQuery(async () => {
+    // @ts-ignore
+    return await db.orders.toArray().catch((/** @type {any} */ error) => {
+      console.log(error);
+    });
+  });
 
-  // $: items = ordersArray;
+  $: items = items;
 </script>
 
 <NavButtonOrdersTable />
@@ -47,7 +44,8 @@
         <TableHeadCell>Koda namena</TableHeadCell>
         <TableHeadCell>Namen plačila</TableHeadCell>
         <TableHeadCell>TRR</TableHeadCell>
-        <TableHeadCell>Referenca
+        <TableHeadCell
+          >Referenca
           <!-- TODO: add cotrol sum calculation for SI12 -->
         </TableHeadCell>
         <TableHeadCell>Prejemnik</TableHeadCell>

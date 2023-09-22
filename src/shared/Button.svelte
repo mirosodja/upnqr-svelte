@@ -1,10 +1,11 @@
 <script>
   export let idButton = "button";
-  export let clickedFunction = () => {};
+  export let onClickFunction = () => {};
+  export let onPasteFunction = () => {};
   export let title = "Button";
 </script>
 
-<button type="button" {title} class="button" id={idButton} on:click={clickedFunction}>
+<button type="button" {title} class="button" id={idButton} on:click={onClickFunction} on:paste={onPasteFunction}>
   <slot>Button</slot>
 </button>
 
