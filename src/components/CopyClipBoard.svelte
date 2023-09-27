@@ -1,11 +1,19 @@
 <script>
 	import { onMount } from 'svelte';
 	
-	export let clipboardText;
+	/**
+   * @type {any}
+   */
+	 export let clipboardText;
 
+	/**
+   * @type {HTMLTextAreaElement}
+   */
 	let textarea;
 	
 	onMount(() => {
+		console.log('onMount');
+		console.log(clipboardText);
 		textarea.select();
 		document.execCommand('copy');
 	});

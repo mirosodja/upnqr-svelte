@@ -13,10 +13,12 @@ import { db } from "../data/db";
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText
    * paste text from clipboard
    */
- async function pasteTextFromClipboard() {
+ // @ts-ignore
+ async function pasteTextFromClipboard(pastedText) {
     // TODO: add check if data is compatible with structure of db
     try {
-      const text = await navigator.clipboard.readText();
+      const text = pastedText;
+      // @ts-ignore
       const rows = text.split("\n").map((row) => row.split("\t"));
       if (rows[0].length !== 9) {
         alert("Error: Incorrect number of elements in a row.");
@@ -56,6 +58,7 @@ import { db } from "../data/db";
           // @ts-ignore
           const existingKey = await db.orders.get({ id: obj.id });
           if (!existingKey) {
+            // @ts-ignore
             // @ts-ignore
             const id = await db.orders.put(obj);
             numberOfImportedRows++;
