@@ -1,33 +1,16 @@
 <script>
+  import { copy } from "svelte-copy";
   import Button from "../shared/Button.svelte";
-  import CopyClipBoard from "../components/CopyClipBoard.svelte";
-  import PasteClipBoard from "../components/PasteClipBoard.svelte";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import { db } from "../data/db";
 
-  let clipboardText = "No data in clipboard";
-  /** @type {HTMLDivElement} */
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
-
-  // see: https://itnext.io/javascript-work-with-clipboard-ctrl-c-ctrl-v-42bb287f1c66
-  //  document.addEventListener('paste', evt => {
-  //   const txt = evt.clipboardData.getData('text/plain');
-  //  });
-
-  const copy = (/** @type {any} */ text) => {
-    clipboardText = text;
-    const app = new CopyClipBoard({
-      // @ts-ignore
-      target: document.getElementById("clipboard"),
-      props: { clipboardText },
-    });
-    app.$destroy();
-  };
+  let toCopyText = "";
 
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
     const data = await db.orders.toArray();
-    let arrNaslovna = [
+    let arrFirstLine = [
       "ID",
       "PLAČNIK",
       "SKUPINA",
@@ -38,7 +21,7 @@
       "REFERENCA",
       "PREJEMNIK",
     ];
-    const headers = arrNaslovna.join("\t");
+    const headers = arrFirstLine.join("\t");
 
     // Extract values from each object
     const rows = data.map((/** @type {any} */ obj) =>
@@ -47,10 +30,10 @@
 
     // Join headers and rows with newline delimiter
     const result = [headers, ...rows].join("\n");
-    console.log("readDbAndPutIntoClipboard");
-    return copy(result);
+    toCopyText = result;
   };
 
+  // write text to clipboard
   // @ts-ignore
   const pasteDataHandler = async (event) => {
     event.preventDefault();
@@ -90,7 +73,9 @@
     idButton="copydata"
     title="Kopiraj podatke v odložišče">Kopiraj podatke</Button
   >
-  <PasteClipBoard />
+  <button use:copy={toCopyText} on:click={readDbAndPutIntoClipboard}>
+    Click to cause alert on copy
+  </button>
   <div
     id="pastediv"
     class="pastediv"
