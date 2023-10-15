@@ -6,7 +6,7 @@
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
-
+  
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
     const data = await db.orders.toArray();
@@ -89,7 +89,8 @@
     Klikni in prilepi
   </div>
 </div>
-<div id="clipboard" class="show" />
+<!-- TO DO check if this is needed -->
+<div id="clipboard" class="hideElement" />
 
 <style>
   .navButton {
@@ -103,7 +104,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
   }
-  .show {
+  .hideElement {
     display: none;
   }
 
