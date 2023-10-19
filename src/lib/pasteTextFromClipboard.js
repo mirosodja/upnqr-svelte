@@ -52,7 +52,7 @@ import { db } from "../data/db";
             ) ||
             !obj.prejemnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)
           ) {
-            alert(`Error: Data validation failed at id=${obj.id}.`);
+            alert(`Napaka: Format podatka v vrstici z id=${obj.id} ne ustreza!`);
             return;
           }
           // @ts-ignore
@@ -65,9 +65,9 @@ import { db } from "../data/db";
           }
         }
       }
-      alert(`Imported ${numberOfImportedRows} rows.`);
+      alert(`Uvoženo ${numberOfImportedRows} vrstic.`);
     } catch (err) {
-      console.error("Failed to read clipboard contents: ", err);
+      console.error("Napaka pri branju iz odložišča: ", err);
     }
   }
 

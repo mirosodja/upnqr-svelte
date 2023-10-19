@@ -1,12 +1,12 @@
 <script>
   import { copy } from "svelte-copy";
-  import Button from "../shared/Button.svelte";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import { db } from "../data/db";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
-  
+  let txtPasteBtn = "Prilepi podatke";
+
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
     const data = await db.orders.toArray();
@@ -31,6 +31,8 @@
     // Join headers and rows with newline delimiter
     const result = [headers, ...rows].join("\n");
     toCopyText = result;
+    const numberOfRecords = result.split("\n").length - 1;
+    alert(`Število zapisov kopirano v odložišče: ${numberOfRecords}`);
   };
 
   // write text to clipboard
@@ -44,12 +46,13 @@
     if (pastedText) {
       pasteTextFromClipboard(pastedText);
     } else {
-      alert("Nothing to paste");
+      alert("Odložišče je prazno!");
     }
     pastediv.blur();
   };
 
   const focusHandler = () => {
+    txtPasteBtn = "Ctrl+V za vstavljanje";
     pastediv.focus();
   };
 
@@ -58,23 +61,24 @@
       pastediv.blur();
     }
   };
+
+  const removeFocusPasteBtn = () => {
+    txtPasteBtn = "Prilepi podatke";
+  };
 </script>
 
 <div class="navButton">
-  <Button idButton="reinit" title="Re-init tabele">Re-init</Button>
-  <Button idButton="add" title="Dodaj zapis">Dodaj</Button>
-  <Button idButton="delete" title="Izbriši zapis">Izbriši</Button>
-  <Button idButton="izbor" title="Dodaj filtrirane vrstice v izbor"
-    >Izbor</Button
+  <button id="reinit" title="Re-init tabele">Re-init</button>
+  <button id="add" title="Dodaj zapis">Dodaj</button>
+  <button id="delete" title="Izbriši zapis">Izbriši</button>
+  <button id="izbor" title="Dodaj filtrirane vrstice v izbor">Izbor</button>
+  <button id="preobrni" title="Preobrni izbor">Preobrni</button>
+  <button
+    use:copy={toCopyText}
+    on:click={readDbAndPutIntoClipboard}
+    title="Kopira podatke v odložišče"
   >
-  <Button idButton="preobrni" title="Preobrni izbor">Preobrni</Button>
-  <Button
-    onClickFunction={readDbAndPutIntoClipboard}
-    idButton="copydata"
-    title="Kopiraj podatke v odložišče">Kopiraj podatke</Button
-  >
-  <button use:copy={toCopyText} on:click={readDbAndPutIntoClipboard}>
-    Click to cause alert on copy
+    Kopiraj podatke
   </button>
   <div
     id="pastediv"
@@ -83,14 +87,14 @@
     tabindex="0"
     on:click={focusHandler}
     on:keydown={removeFocusHandler}
+    on:blur={removeFocusPasteBtn}
     bind:this={pastediv}
     on:paste={pasteDataHandler}
+    title="Prilepi podatke iz odložišča"
   >
-    Klikni in prilepi
+    {txtPasteBtn}
   </div>
 </div>
-<!-- TO DO check if this is needed -->
-<div id="clipboard" class="hideElement" />
 
 <style>
   .navButton {
@@ -104,15 +108,70 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
   }
-  .hideElement {
-    display: none;
-  }
-
   .pastediv {
-    outline: 1px solid hsl(320, 80%, 80%);
+    box-shadow: 3px 4px 0px 0px #1564ad;
+    background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+    background-color: #79bbff;
+    border-radius: 5px;
+    border: 1px solid #337bc4;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding: 6px 24px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #528ecc;
+  }
+.pastediv:hover {
+    background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+    background-color: #378de5;
+  }
+  .pastediv:active {
+    position: relative;
+    top: 1px;
+    animation: blink 1s alternate;
+  }
+  .pastediv:focus {
+    position: relative;
+    top: 1px;
+    animation: blink 2s alternate;
   }
 
-  .pastediv:focus {
-    outline: 4px solid hsl(120, 60%, 40%);
+  button {
+    box-shadow: 3px 4px 0px 0px #1564ad;
+    background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+    background-color: #79bbff;
+    border-radius: 5px;
+    border: 1px solid #337bc4;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding: 6px 24px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #528ecc;
+  }
+
+  button:hover {
+    background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+    background-color: #378de5;
+  }
+
+  button:active {
+    position: relative;
+    top: 1px;
+    animation: blink 1s alternate;
+  }
+
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+
+    50% {
+      opacity: 0.6;
+    }
+
+    100% {
+      opacity: 1;
+    }
   }
 </style>

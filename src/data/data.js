@@ -1,3 +1,4 @@
+// TODO delete this file
 export const data = [{
     'id': 1,
     'placnik': 'Agušević Alex, Jelovška cesta 10, 4264 Bohinjska Bistrica',
