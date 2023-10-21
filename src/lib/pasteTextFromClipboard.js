@@ -15,13 +15,12 @@ import { db } from "../data/db";
    */
  // @ts-ignore
  async function pasteTextFromClipboard(pastedText) {
-    // TODO: add check if data is compatible with structure of db
     try {
       const text = pastedText;
       // @ts-ignore
       const rows = text.split("\n").map((row) => row.split("\t"));
       if (rows[0].length !== 9) {
-        alert("Error: Incorrect number of elements in a row.");
+        alert("Napaka: Nepravilno število polj v vrstici!");
         return;
       }
       rows.shift();
@@ -40,21 +39,46 @@ import { db } from "../data/db";
           prejemnik: row[8],
         };
         if (row.length === 9) {
-          if (
-            !isPositiveInteger(obj.id) ||
-            !obj.placnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/) ||
-            obj.skupina.length > 20 ||
-            !obj.znesek.match(/^(\d{0,3}\.)?\d{1,3},\d{2}$/) ||
-            obj.namen_placila.length > 42 ||
-            !obj.trr.match(/^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/) ||
-            !obj.referenca.match(
-              /(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/
-            ) ||
-            !obj.prejemnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)
-          ) {
-            alert(`Napaka: Format podatka v vrstici z id=${obj.id} ne ustreza!`);
+          if (!isPositiveInteger(obj.id)) {
+            alert(`Napaka: Id=${obj.id} ni pozitivno celo število!`);
             return;
           }
+          
+          if (!obj.placnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)) {
+            alert(`Napaka: Polje 'Placnik=${obj.placnik}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+            return;
+          }
+          
+          if (obj.skupina.length > 20) {
+            alert(`Napaka: Dolžina polja 'Skupina=${obj.skupina}' v vrstici z id=${obj.id} je prevelika!`);
+            return;
+          }
+          
+          if (!obj.znesek.match(/^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/)) {
+            alert(`Napaka: Polje 'Znesek=${obj.znesek}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+            return;
+          }
+          
+          if (obj.namen_placila.length > 42) {
+            alert(`Napaka: Dolžina polja 'Namen plačila=${obj.namen_placila}' v vrstici z id=${obj.id} je prevelika!`);
+            return;
+          }
+          
+          if (!obj.trr.match(/^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/)) {
+            alert(`Napaka: Polje 'TRR=${obj.trr}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+            return;
+          }
+          
+          if (!obj.referenca.match(/(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/)) {
+            alert(`Napaka: Polje 'Referenca=${obj.referenca}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+            return;
+          }
+          
+          if (!obj.prejemnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)) {
+            alert(`Napaka: Polje 'Prejemnik=${obj.prejemnik}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+            return;
+          }
+          
           // @ts-ignore
           const existingKey = await db.orders.get({ id: obj.id });
           if (!existingKey) {

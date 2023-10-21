@@ -13,6 +13,10 @@
 
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
 
+  /**
+   * @type {(number)[]}
+   */
+  let group = [];
   // @ts-ignore
   let items = liveQuery(async () => {
     // @ts-ignore
@@ -24,6 +28,7 @@
   $: items = items;
 </script>
 
+Selected: {group.length}
 <NavButtonOrdersTable />
 <div class="py-5">
   <div class="shadow-md sm:rounded-lg">
@@ -55,7 +60,7 @@
           {#each $items as item}
             <TableBodyRow>
               <TableBodyCell>
-                <Checkbox id={item.id} />
+                <Checkbox id={item.id} bind:group value={item.id} />
               </TableBodyCell>
               <TableBodyCell>{item.id}</TableBodyCell>
               <TableBodyCell class="whitespace-normal"

@@ -1,11 +1,12 @@
 <script>
   import { copy } from "svelte-copy";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
+  import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import { db } from "../data/db";
-
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
   let txtPasteBtn = "Prilepi podatke";
+  let showInfoAboutDataFormat = false;
 
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
@@ -56,7 +57,7 @@
     pastediv.focus();
   };
 
-  const removeFocusHandler = (/** @type {{ key: string; }} */ event) => {
+  const keyRemoveFocusHandler = (/** @type {{ key: string; }} */ event) => {
     if (event.key === "Escape") {
       pastediv.blur();
     }
@@ -65,13 +66,15 @@
   const removeFocusPasteBtn = () => {
     txtPasteBtn = "Prilepi podatke";
   };
+
+  const showInfoAboutDataFormatHandler = () => {
+    showInfoAboutDataFormat = true;
+  };
 </script>
 
 <div class="navButton">
-  <button id="reinit" title="Re-init tabele">Re-init</button>
   <button id="add" title="Dodaj zapis">Dodaj</button>
   <button id="delete" title="Izbriši zapis">Izbriši</button>
-  <button id="izbor" title="Dodaj filtrirane vrstice v izbor">Izbor</button>
   <button id="preobrni" title="Preobrni izbor">Preobrni</button>
   <button
     use:copy={toCopyText}
@@ -86,7 +89,7 @@
     role="button"
     tabindex="0"
     on:click={focusHandler}
-    on:keydown={removeFocusHandler}
+    on:keydown={keyRemoveFocusHandler}
     on:blur={removeFocusPasteBtn}
     bind:this={pastediv}
     on:paste={pasteDataHandler}
@@ -94,6 +97,8 @@
   >
     {txtPasteBtn}
   </div>
+  <button id="infoAboutDataFormat" title="Prikaže informacije o formatu podatkov za uvoz" on:click={showInfoAboutDataFormatHandler}>Format podatkov</button>
+  <ExplainDataFormat bind:clickOutsideModal={showInfoAboutDataFormat}/>
 </div>
 
 <style>
@@ -121,7 +126,7 @@
     text-decoration: none;
     text-shadow: 0px 1px 0px #528ecc;
   }
-.pastediv:hover {
+  .pastediv:hover {
     background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
     background-color: #378de5;
   }
@@ -131,6 +136,7 @@
     animation: blink 1s alternate;
   }
   .pastediv:focus {
+    background: linear-gradient(to bottom, #1a7718 5%, #175d16 100%);
     position: relative;
     top: 1px;
     animation: blink 2s alternate;
