@@ -1,5 +1,5 @@
 <script>
-  import { db } from "../data/db";
+  import { db } from "$lib/db";
   import { liveQuery } from "dexie";
   import {
     Table,
@@ -16,20 +16,61 @@
   /**
    * @type {(number)[]}
    */
-  let group = [];
-  // @ts-ignore
-  let items = liveQuery(async () => {
-    // @ts-ignore
-    return await db.orders.toArray().catch((/** @type {any} */ error) => {
-      console.log(error);
-    });
+  let groupOrders = [];
+  // Query parameters:
+  let namePattern = "";
+  let orderBy = "id";
+  let orderDirection = true;
+  let numberOfFiltered = 0;
+  let numberOfRecords = 0;
+
+  // List every query parameter:
+  $: {
+    namePattern;
+    orderBy;
+  }
+
+  $: ordersList = liveQuery(async () => {
+    /**
+     * @type {any}
+     */
+    const collection =
+      // @ts-ignore
+      db.orders.orderBy(orderBy);
+
+    // Return result:
+    numberOfRecords = await collection.count();
+    if (orderDirection) {
+      return await collection.toArray();
+    } else {
+      return await collection.reverse().toArray();
+    }
   });
 
-  $: items = items;
+  const orderByHandler = (/** @type {string} */ value) => {
+    orderDirection = !orderDirection;
+    orderBy = value;
+  };
+
+  const selectAllHandlers = (/** @type {any} */ event) => {
+    if (event.target.checked) {
+      groupOrders = $ordersList.map(
+        (/** @type {{ id: any; }} */ order) => order.id
+      );
+    } else {
+      groupOrders = [];
+    }
+  };
 </script>
 
-Selected: {group.length}
 <NavButtonOrdersTable />
+<div>
+  <b>Izbranih zapisov:</b>
+  {groupOrders.length} <b>Filtriranih zapisov:</b>
+  {numberOfFiltered} <b>Skupaj zapisov:</b>
+  {numberOfRecords}
+</div>
+
 <div class="py-5">
   <div class="shadow-md sm:rounded-lg">
     <Table
@@ -40,50 +81,92 @@ Selected: {group.length}
       <TableHead>
         <TableHeadCell>
           <!-- TODO: add button for invert selection -->
-          <Checkbox id="selectall" />
+          <Checkbox id="selectall" on:click={selectAllHandlers} />
         </TableHeadCell>
-        <TableHeadCell>Id</TableHeadCell>
-        <TableHeadCell>Plačnik</TableHeadCell>
-        <TableHeadCell>Skupina</TableHeadCell>
-        <TableHeadCell>Znesek</TableHeadCell>
-        <TableHeadCell>Koda namena</TableHeadCell>
-        <TableHeadCell>Namen plačila</TableHeadCell>
-        <TableHeadCell>TRR</TableHeadCell>
         <TableHeadCell
+          on:click={() => orderByHandler("id")}
+          class="cursor-pointer">Id</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("placnik")}
+          class="cursor-pointer">Plačnik</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("skupina")}
+          class="cursor-pointer">Skupina</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("znesek")}
+          class="cursor-pointer">Znesek</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("koda_namena")}
+          class="cursor-pointer">Koda namena</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("namen_placila")}
+          class="cursor-pointer">Namen plačila</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("trr")}
+          class="cursor-pointer">TRR</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => orderByHandler("referenca")}
+          class="cursor-pointer"
           >Referenca
           <!-- TODO: add cotrol sum calculation for SI12 -->
         </TableHeadCell>
-        <TableHeadCell>Prejemnik</TableHeadCell>
+        <TableHeadCell
+          on:click={() => orderByHandler("prejemnik")}
+          class="cursor-pointer">Prejemnik</TableHeadCell
+        >
       </TableHead>
       <TableBody>
-        {#if $items}
-          {#each $items as item}
+        {#if $ordersList}
+          {#each $ordersList as order (order.id)}
             <TableBodyRow>
               <TableBodyCell>
-                <Checkbox id={item.id} bind:group value={item.id} />
+                <Checkbox
+                  id={order.id}
+                  bind:group={groupOrders}
+                  value={order.id}
+                />
               </TableBodyCell>
-              <TableBodyCell>{item.id}</TableBodyCell>
-              <TableBodyCell class="whitespace-normal"
-                >{item.placnik}</TableBodyCell
-              >
-              <TableBodyCell>{item.skupina}</TableBodyCell>
-              <TableBodyCell>{item.znesek}</TableBodyCell>
-              <TableBodyCell>{item.koda_namena}</TableBodyCell>
-              <TableBodyCell class="whitespace-normal"
-                >{item.namen_placila}</TableBodyCell
-              >
-              <TableBodyCell class="whitespace-normal">{item.trr}</TableBodyCell
+              <TableBodyCell
+                class="cursor-pointer"
+                title="Dvoklik za urejanje zapisa z ID={order.id}"
+                >{order.id}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
-                >{item.referenca}</TableBodyCell
+                >{order.placnik}</TableBodyCell
+              >
+              <TableBodyCell>{order.skupina}</TableBodyCell>
+              <TableBodyCell>{order.znesek}</TableBodyCell>
+              <TableBodyCell>{order.koda_namena}</TableBodyCell>
+              <TableBodyCell class="whitespace-normal"
+                >{order.namen_placila}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
-                >{item.prejemnik}</TableBodyCell
+                >{order.trr}</TableBodyCell
+              >
+              <TableBodyCell class="whitespace-normal"
+                >{order.referenca}</TableBodyCell
+              >
+              <TableBodyCell class="whitespace-normal"
+                >{order.prejemnik}</TableBodyCell
               >
             </TableBodyRow>
           {/each}
+        {:else}
+          <TableBodyRow>
+            <TableBodyCell colspan="10">Ni podatkov</TableBodyCell>
+          </TableBodyRow>
         {/if}
       </TableBody>
     </Table>
   </div>
 </div>
+
+<style>
+</style>

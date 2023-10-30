@@ -2,7 +2,7 @@
   import { copy } from "svelte-copy";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
-  import { db } from "../data/db";
+  import { db } from "$lib/db";
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
   let txtPasteBtn = "Prilepi podatke";
@@ -97,7 +97,7 @@
   >
     {txtPasteBtn}
   </div>
-  <button id="infoAboutDataFormat" title="Prikaže informacije o formatu podatkov za uvoz" on:click={showInfoAboutDataFormatHandler}>Format podatkov</button>
+  <button id="infoAboutDataFormat" title="Prikaže informacije o formatu podatkov za uvoz" on:click={showInfoAboutDataFormatHandler}>Info format podat.</button>
   <ExplainDataFormat bind:clickOutsideModal={showInfoAboutDataFormat}/>
 </div>
 
