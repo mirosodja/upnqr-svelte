@@ -4,7 +4,6 @@
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import { db } from "$lib/db";
   import { groupOrders } from "$lib/stores.js";
-  import { liveQuery } from "dexie";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";

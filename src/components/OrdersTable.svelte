@@ -18,26 +18,24 @@
   import { groupOrders } from "$lib/stores.js";
 
   // Query parameters:
-  let namePattern = "";
+  let namePattern = "email";
   let orderBy = "id";
   let orderDirection = true;
   let numberOfFiltered = 0;
   let numberOfRecords = 0;
   let checkedSelectAll = false;
   // List every query parameter:
-  $: {
+ // @ts-ignore
+   $: {
     namePattern;
     orderBy;
   }
 
   $: ordersList = liveQuery(async () => {
-    /**
-     * @type {any}
-     */
+    const lowerNamePattern = namePattern.toLowerCase();
     const collection =
-      // @ts-ignore
-      db.orders.orderBy(orderBy);
-
+    // @ts-ignore
+    db.orders.orderBy(orderBy);
     // Return result:
     numberOfRecords = await collection.count();
     if (orderDirection) {
@@ -62,7 +60,9 @@
     }
   };
 
-  $: checkedSelectAll = $groupOrders.length === numberOfRecords;
+ // @ts-ignore
+   $: if (numberOfRecords)
+    checkedSelectAll = $groupOrders.length === numberOfRecords;
 </script>
 
 <NavButtonOrdersTable />
@@ -75,7 +75,7 @@
   </div>
   <div class="col-span-2">
     <Label for="filter"><b>Filter:</b></Label>
-    <Input type="text" id="filter" placeholder="Filter za ime ali ekipo" />
+    <Input type="text" id="filter" placeholder="Filter plačnik ali skupina" />
   </div>
 </div>
 
@@ -88,7 +88,7 @@
     >
       <TableHead>
         <TableHeadCell>
-          <!-- TODO: add button for invert selection -->
+          Izberi vse
           <Checkbox
             id="selectall"
             on:click={selectAllHandlers}
@@ -172,7 +172,7 @@
           {/each}
         {:else}
           <TableBodyRow>
-            <TableBodyCell colspan="10">Ni podatkov</TableBodyCell>
+            <TableBodyCell colspan="10">Nalagam podatke</TableBodyCell>
           </TableBodyRow>
         {/if}
       </TableBody>
