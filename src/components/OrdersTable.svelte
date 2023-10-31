@@ -9,21 +9,21 @@
     TableHead,
     TableHeadCell,
     Checkbox,
+    Input,
+    Label,
   } from "flowbite-svelte";
 
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
 
-  /**
-   * @type {(number)[]}
-   */
-  let groupOrders = [];
+  import { groupOrders } from "$lib/stores.js";
+
   // Query parameters:
   let namePattern = "";
   let orderBy = "id";
   let orderDirection = true;
   let numberOfFiltered = 0;
   let numberOfRecords = 0;
-
+  let checkedSelectAll = false;
   // List every query parameter:
   $: {
     namePattern;
@@ -54,21 +54,29 @@
 
   const selectAllHandlers = (/** @type {any} */ event) => {
     if (event.target.checked) {
-      groupOrders = $ordersList.map(
+      $groupOrders = $ordersList.map(
         (/** @type {{ id: any; }} */ order) => order.id
       );
     } else {
-      groupOrders = [];
+      $groupOrders = [];
     }
   };
+
+  $: checkedSelectAll = $groupOrders.length === numberOfRecords;
 </script>
 
 <NavButtonOrdersTable />
-<div>
-  <b>Izbranih zapisov:</b>
-  {groupOrders.length} <b>Filtriranih zapisov:</b>
-  {numberOfFiltered} <b>Skupaj zapisov:</b>
-  {numberOfRecords}
+<div class="grid grid-cols-5">
+  <div class="col-span-3">
+    <b>Izbranih zapisov:</b>
+    {$groupOrders.length} <b>Filtriranih zapisov:</b>
+    {numberOfFiltered} <b>Skupaj zapisov:</b>
+    {numberOfRecords}
+  </div>
+  <div class="col-span-2">
+    <Label for="filter"><b>Filter:</b></Label>
+    <Input type="text" id="filter" placeholder="Filter za ime ali ekipo" />
+  </div>
 </div>
 
 <div class="py-5">
@@ -81,7 +89,11 @@
       <TableHead>
         <TableHeadCell>
           <!-- TODO: add button for invert selection -->
-          <Checkbox id="selectall" on:click={selectAllHandlers} />
+          <Checkbox
+            id="selectall"
+            on:click={selectAllHandlers}
+            bind:checked={checkedSelectAll}
+          />
         </TableHeadCell>
         <TableHeadCell
           on:click={() => orderByHandler("id")}
@@ -129,7 +141,7 @@
               <TableBodyCell>
                 <Checkbox
                   id={order.id}
-                  bind:group={groupOrders}
+                  bind:group={$groupOrders}
                   value={order.id}
                 />
               </TableBodyCell>

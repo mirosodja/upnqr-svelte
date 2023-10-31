@@ -1,8 +1,10 @@
 <script>
-
   import { page } from "$app/stores";
+  import {groupOrders} from "$lib/stores.js";
+  
   // import logo from '$lib/images/svelte-logo.svg';
   // import github from '$lib/images/github.svg';
+  $: disabled = !$groupOrders.length;
 </script>
 
 <header>
@@ -11,17 +13,13 @@
       <h1>Univerzalni plačilni nalogi - UPN QR program</h1>
     </a>
   </div>
-
   <nav>
-    <!-- <svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg> -->
     <ul>
       <li aria-current={$page.url.pathname === "/" ? "page" : undefined}>
         <a href="/">Tabela nalogov</a>
       </li>
       <li aria-current={$page.url.pathname === "/upnqr" ? "page" : undefined}>
-        <a href="/upnqr">Upnqr v PDF</a>
+          <a href="/upnqr" class:disabled>Upnqr v PDF</a>
       </li>
       <li
         aria-current={$page.url.pathname.startsWith("/help")
@@ -31,9 +29,6 @@
         <a href="/help">Help</a>
       </li>
     </ul>
-    <!-- <svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg> -->
   </nav>
 </header>
 
@@ -74,16 +69,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
-
-  /* svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	} */
-
-  /* path {
-		fill: var(--background);
-	} */
 
   ul {
     position: relative;
@@ -132,5 +117,12 @@
 
   a:hover {
     color: var(--color-theme-1);
+  }
+
+  .disabled {
+    background: linear-gradient(to bottom, #d1d1d1 5%, #f9f9f9 100%);
+    background-color: #d1d1d1;
+    color: #a0a0a0;
+    pointer-events: none;
   }
 </style>

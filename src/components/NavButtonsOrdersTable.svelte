@@ -3,6 +3,8 @@
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import { db } from "$lib/db";
+  import { groupOrders } from "$lib/stores.js";
+
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
   let txtPasteBtn = "Prilepi podatke";
@@ -70,11 +72,21 @@
   const showInfoAboutDataFormatHandler = () => {
     showInfoAboutDataFormat = true;
   };
+
+  const deleteHandler = () => {
+    if (confirm("Ali res želite izbrisati izbrane zapise?")) {
+      // @ts-ignore
+      db.orders.bulkDelete($groupOrders);
+    }
+  };
+  
 </script>
 
 <div class="navButton">
-  <button id="add" title="Dodaj zapis">Dodaj</button>
-  <button id="delete" title="Izbriši zapis">Izbriši</button>
+  <button id="add" title="Doda zapis">Dodaj</button>
+  <button id="delete" title="Izbriše zapis" disabled="{!$groupOrders.length}" on:click={deleteHandler}
+    >Izbriši</button
+  >
   <button id="preobrni" title="Preobrni izbor">Preobrni</button>
   <button
     use:copy={toCopyText}
@@ -97,8 +109,12 @@
   >
     {txtPasteBtn}
   </div>
-  <button id="infoAboutDataFormat" title="Prikaže informacije o formatu podatkov za uvoz" on:click={showInfoAboutDataFormatHandler}>Info format podat.</button>
-  <ExplainDataFormat bind:clickOutsideModal={showInfoAboutDataFormat}/>
+  <button
+    id="infoAboutDataFormat"
+    title="Prikaže informacije o formatu podatkov za uvoz"
+    on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
+  >
+  <ExplainDataFormat bind:clickOutsideModal={showInfoAboutDataFormat} />
 </div>
 
 <style>
@@ -165,6 +181,14 @@
     position: relative;
     top: 1px;
     animation: blink 1s alternate;
+  }
+
+  button:disabled {
+    background: linear-gradient(to bottom, #d1d1d1 5%, #f9f9f9 100%);
+    background-color: #d1d1d1;
+    color: #a0a0a0;
+    cursor: not-allowed;
+    box-shadow: none;
   }
 
   @keyframes blink {
