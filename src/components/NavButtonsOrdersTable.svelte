@@ -4,6 +4,7 @@
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import { db } from "$lib/db";
   import { groupOrders } from "$lib/stores.js";
+  import { liveQuery } from "dexie";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
@@ -79,15 +80,30 @@
       db.orders.bulkDelete($groupOrders);
     }
   };
-  
+
+  const invertSelectionHandler = () => {
+    // select all ids from table db.orders using liveQuery
+    // @ts-ignore
+    db.orders.orderBy("id").keys(function (allIds) {
+      $groupOrders = allIds.filter((/** @type {any} */ id) => {
+        // @ts-ignore
+        return !$groupOrders.includes(id);
+      });
+    });
+  };
 </script>
 
 <div class="navButton">
   <button id="add" title="Doda zapis">Dodaj</button>
-  <button id="delete" title="Izbriše zapis" disabled="{!$groupOrders.length}" on:click={deleteHandler}
-    >Izbriši</button
+  <button
+    id="delete"
+    title="Izbriše izbrane zapise"
+    on:click={deleteHandler}
+    disabled={!$groupOrders.length}>Izbriši</button
   >
-  <button id="preobrni" title="Preobrni izbor">Preobrni</button>
+  <button id="preobrni" title="Preobrne izbrane zapise" on:click={invertSelectionHandler}
+    >Preobrni</button
+  >
   <button
     use:copy={toCopyText}
     on:click={readDbAndPutIntoClipboard}
