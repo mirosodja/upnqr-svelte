@@ -73,10 +73,12 @@
     showInfoAboutDataFormat = true;
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     if (confirm("Ali res želite izbrisati izbrane zapise?")) {
-      // @ts-ignore
-      db.orders.bulkDelete($groupOrders);
+      // @ts-expect-error
+      await db.orders.bulkDelete($groupOrders);
+      // remove ids from groupOrders
+      groupOrders.set([]);
     }
   };
 

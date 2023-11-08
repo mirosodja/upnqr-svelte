@@ -1,8 +1,7 @@
 <script>
-  import { db } from "$lib/db";
-  import { liveQuery } from "dexie";
+  import { ordersList, numberOfAllRecords } from "$lib/db";
   import {
-    Table,
+    TableSearch,
     TableBody,
     TableBodyCell,
     TableBodyRow,
@@ -14,36 +13,35 @@
   } from "flowbite-svelte";
 
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
-
   import { groupOrders } from "$lib/stores.js";
 
   // Query parameters:
-  let namePattern = "email";
+  let groupPattern = "";
   let orderBy = "id";
   let orderDirection = true;
   let numberOfFiltered = 0;
-  let numberOfRecords = 0;
   let checkedSelectAll = false;
-  // List every query parameter:
- // @ts-ignore
-   $: {
-    namePattern;
+
+  /**
+   * @type {any[]}
+   */
+  let items = [];
+
+  /**
+   * @type {any[]}
+   */
+  let filteredOrderList = [];
+
+  ordersList.subscribe((value) => {
+    items = value;
+  });
+
+  $: groupOrders;
+
+  $: {
+    groupPattern;
     orderBy;
   }
-
-  $: ordersList = liveQuery(async () => {
-    const lowerNamePattern = namePattern.toLowerCase();
-    const collection =
-    // @ts-ignore
-    db.orders.orderBy(orderBy);
-    // Return result:
-    numberOfRecords = await collection.count();
-    if (orderDirection) {
-      return await collection.toArray();
-    } else {
-      return await collection.reverse().toArray();
-    }
-  });
 
   const orderByHandler = (/** @type {string} */ value) => {
     orderDirection = !orderDirection;
@@ -52,17 +50,23 @@
 
   const selectAllHandlers = (/** @type {any} */ event) => {
     if (event.target.checked) {
-      $groupOrders = $ordersList.map(
-        (/** @type {{ id: any; }} */ order) => order.id
-      );
+      const /** @type {any}[] */ groupOrdersIds = filteredOrderList.map(
+          (/** @type {{ id: any; }} */ order) => order.id
+        );
+      groupOrders.set(groupOrdersIds);
     } else {
-      $groupOrders = [];
+      groupOrders.set([]);
     }
   };
 
- // @ts-ignore
-   $: if (numberOfRecords)
-    checkedSelectAll = $groupOrders.length === numberOfRecords;
+  $: filteredOrderList = items.filter(
+    (item) =>
+      item.skupina.toLowerCase().indexOf(groupPattern.toLowerCase()) !== -1
+  );
+  //! number of filtered records when filter is not used is equal to number of all records
+  $: numberOfFiltered = filteredOrderList.length;
+  $: if (numberOfFiltered > 0)
+    checkedSelectAll = $groupOrders.length === numberOfFiltered;
 </script>
 
 <NavButtonOrdersTable />
@@ -71,7 +75,7 @@
     <b>Izbranih zapisov:</b>
     {$groupOrders.length} <b>Filtriranih zapisov:</b>
     {numberOfFiltered} <b>Skupaj zapisov:</b>
-    {numberOfRecords}
+    {$numberOfAllRecords}
   </div>
   <div class="col-span-2">
     <Label for="filter"><b>Filter:</b></Label>
@@ -81,10 +85,12 @@
 
 <div class="py-5">
   <div class="shadow-md sm:rounded-lg">
-    <Table
+    <TableSearch
       striped={true}
       hoverable={true}
+      placeholder="Išči skupino"
       class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+      bind:inputValue={groupPattern}
     >
       <TableHead>
         <TableHeadCell>
@@ -135,8 +141,8 @@
         >
       </TableHead>
       <TableBody>
-        {#if $ordersList}
-          {#each $ordersList as order (order.id)}
+        {#if filteredOrderList}
+          {#each filteredOrderList as order (order.id)}
             <TableBodyRow>
               <TableBodyCell>
                 <Checkbox
@@ -176,7 +182,7 @@
           </TableBodyRow>
         {/if}
       </TableBody>
-    </Table>
+    </TableSearch>
   </div>
 </div>
 
