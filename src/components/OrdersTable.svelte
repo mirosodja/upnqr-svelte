@@ -1,17 +1,19 @@
 <script>
-  import { ordersList, numberOfAllRecords } from "$lib/db";
   import {
-    TableSearch,
+    Table,
     TableBody,
     TableBodyCell,
     TableBodyRow,
     TableHead,
     TableHeadCell,
     Checkbox,
-    Input,
     Label,
+    Select,
+    Input,
   } from "flowbite-svelte";
 
+  import { ordersList, numberOfAllRecords } from "$lib/db";
+  import { fieldsInTable } from "$lib/constants.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
   import { groupOrders } from "$lib/stores.js";
 
@@ -21,14 +23,28 @@
   let orderDirection = true;
   let numberOfFiltered = 0;
   let checkedSelectAll = false;
+  let filterByColumn = "skupina";
 
   /**
-   * @type {any[]}
+   * @typedef {Object} Orders
+   * @property {number} id - ID.
+   * @property {string} placnik - placnik.
+   * @property {string} skupina - skupina.
+   * @property {string|number} znesek - znesek (string or number).
+   * @property {string} koda_namena - koda namena.
+   * @property {string} namen_placila - namen placila.
+   * @property {string} trr - TRR.
+   * @property {string} referenca - referenca.
+   * @property {string} prejemnik - prejemnik.
+   */
+
+  /**
+   * @type {Orders[]}
    */
   let items = [];
 
   /**
-   * @type {any[]}
+   * @type {Orders[]}
    */
   let filteredOrderList = [];
 
@@ -61,7 +77,9 @@
 
   $: filteredOrderList = items.filter(
     (item) =>
-      item.skupina.toLowerCase().indexOf(groupPattern.toLowerCase()) !== -1
+      // @ts-expect-error
+      item[filterByColumn].toLowerCase().indexOf(groupPattern.toLowerCase()) !==
+      -1
   );
   //! number of filtered records when filter is not used is equal to number of all records
   $: numberOfFiltered = filteredOrderList.length;
@@ -77,68 +95,85 @@
     {numberOfFiltered} <b>Skupaj zapisov:</b>
     {$numberOfAllRecords}
   </div>
-  <div class="col-span-2">
-    <Label for="filter"><b>Filter:</b></Label>
-    <Input type="text" id="filter" placeholder="Filter plačnik ali skupina" />
-  </div>
 </div>
 
 <div class="py-5">
   <div class="shadow-md sm:rounded-lg">
-    <TableSearch
+    <Table
       striped={true}
       hoverable={true}
-      placeholder="Išči skupino"
       class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-      bind:inputValue={groupPattern}
     >
-      <TableHead>
-        <TableHeadCell>
-          Izberi vse
-          <Checkbox
-            id="selectall"
-            on:click={selectAllHandlers}
-            bind:checked={checkedSelectAll}
-          />
-        </TableHeadCell>
-        <TableHeadCell
-          on:click={() => orderByHandler("id")}
-          class="cursor-pointer">Id</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("placnik")}
-          class="cursor-pointer">Plačnik</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("skupina")}
-          class="cursor-pointer">Skupina</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("znesek")}
-          class="cursor-pointer">Znesek</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("koda_namena")}
-          class="cursor-pointer">Koda namena</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("namen_placila")}
-          class="cursor-pointer">Namen plačila</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("trr")}
-          class="cursor-pointer">TRR</TableHeadCell
-        >
-        <TableHeadCell
-          on:click={() => orderByHandler("referenca")}
-          class="cursor-pointer"
-          >Referenca
-          <!-- TODO: add cotrol sum calculation for SI12 -->
-        </TableHeadCell>
-        <TableHeadCell
-          on:click={() => orderByHandler("prejemnik")}
-          class="cursor-pointer">Prejemnik</TableHeadCell
-        >
+      <TableHead defaultRow={false} theadClass="noUppercase">
+        <tr>
+          <TableHeadCell colspan="10">
+            <div class="flex flex-row gap-2">
+              <Label for="filterByColumn" class="align-middle">Stolpec za filtriranje:</Label>
+              <Select
+                id="filterByColumn"
+                items={fieldsInTable}
+                bind:value={filterByColumn}
+                class="w-60"
+              />
+              <Label for="search">Filter:</Label>
+              <Input
+                type="text"
+                id="search"
+                placeholder="Išči: {filterByColumn}"
+                bind:value={groupPattern}
+                class="w-60"
+              />
+            </div>
+          </TableHeadCell>
+        </tr>
+        <tr>
+          <TableHeadCell>
+            Izberi vse
+            <Checkbox
+              id="selectall"
+              on:click={selectAllHandlers}
+              bind:checked={checkedSelectAll}
+            />
+          </TableHeadCell>
+          <TableHeadCell
+            on:click={() => orderByHandler("id")}
+            class="cursor-pointer">Id</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("placnik")}
+            class="cursor-pointer">Plačnik</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("skupina")}
+            class="cursor-pointer">Skupina</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("znesek")}
+            class="cursor-pointer">Znesek</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("koda_namena")}
+            class="cursor-pointer">Koda namena</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("namen_placila")}
+            class="cursor-pointer">Namen plačila</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("trr")}
+            class="cursor-pointer">TRR</TableHeadCell
+          >
+          <TableHeadCell
+            on:click={() => orderByHandler("referenca")}
+            class="cursor-pointer"
+            >Referenca
+            <!-- TODO: add cotrol sum calculation for SI12 -->
+          </TableHeadCell>
+          <TableHeadCell
+            on:click={() => orderByHandler("prejemnik")}
+            class="cursor-pointer">Prejemnik</TableHeadCell
+          >
+        </tr>
       </TableHead>
       <TableBody>
         {#if filteredOrderList}
@@ -182,9 +217,12 @@
           </TableBodyRow>
         {/if}
       </TableBody>
-    </TableSearch>
+    </Table>
   </div>
 </div>
 
 <style>
+  .noUppercase {
+    text-transform: none;
+  }
 </style>
