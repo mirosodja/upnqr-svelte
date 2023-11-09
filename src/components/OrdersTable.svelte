@@ -94,7 +94,7 @@
     {$groupOrders.length}
     <b>Skupaj zapisov:</b>
     {$numberOfAllRecords}
-    {#if $numberOfAllRecords - numberOfFiltered > 0}
+    {#if groupPattern !== ""}
       <b>Filtriranih zapisov:</b>
       {numberOfFiltered}
     {/if}
