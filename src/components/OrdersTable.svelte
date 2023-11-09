@@ -91,9 +91,13 @@
 <div class="grid grid-cols-5">
   <div class="col-span-3">
     <b>Izbranih zapisov:</b>
-    {$groupOrders.length} <b>Filtriranih zapisov:</b>
-    {numberOfFiltered} <b>Skupaj zapisov:</b>
+    {$groupOrders.length}
+    <b>Skupaj zapisov:</b>
     {$numberOfAllRecords}
+    {#if $numberOfAllRecords - numberOfFiltered > 0}
+      <b>Filtriranih zapisov:</b>
+      {numberOfFiltered}
+    {/if}
   </div>
 </div>
 
@@ -104,11 +108,13 @@
       hoverable={true}
       class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
     >
-      <TableHead defaultRow={false} theadClass="noUppercase">
+      <TableHead defaultRow={false} theadClass="normal-case">
         <tr>
           <TableHeadCell colspan="10">
             <div class="flex flex-row gap-2">
-              <Label for="filterByColumn" class="align-middle">Stolpec za filtriranje:</Label>
+              <Label for="filterByColumn" class="align-middle"
+                >Stolpec za filtriranje:</Label
+              >
               <Select
                 id="filterByColumn"
                 items={fieldsInTable}
@@ -220,9 +226,3 @@
     </Table>
   </div>
 </div>
-
-<style>
-  .noUppercase {
-    text-transform: none;
-  }
-</style>
