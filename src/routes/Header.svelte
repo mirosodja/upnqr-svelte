@@ -28,6 +28,13 @@
       >
         <a href="/help">Help</a>
       </li>
+      <li
+        aria-current={$page.url.pathname.startsWith("/pravnoobvestilo")
+          ? "page"
+          : undefined}
+      >
+        <a href="/pravnoobvestilo">Pravno obvestilo</a>
+      </li>
     </ul>
   </nav>
 </header>
