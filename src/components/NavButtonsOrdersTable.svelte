@@ -55,7 +55,7 @@
   };
 
   const focusHandler = () => {
-    txtPasteBtn = "Ctrl+V za vstavljanje";
+    txtPasteBtn = "Ctrl/Cmd+V za vstavljanje";
     pastediv.focus();
   };
 

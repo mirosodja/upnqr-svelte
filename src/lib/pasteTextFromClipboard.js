@@ -45,7 +45,7 @@ async function pasteTextFromClipboard(pastedText) {
           return;
         }
 
-        if (!obj.placnik.match(/^[^,;]{1,32},[^,;]{1,32},[^,;]{1,32}$/)) {
+        if (!obj.placnik.match(/^[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}$/)) {
           alert(`Napaka: Polje 'Placnik=${obj.placnik}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
