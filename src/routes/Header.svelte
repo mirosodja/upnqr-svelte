@@ -1,10 +1,12 @@
 <script>
   import { page } from "$app/stores";
-  import {groupOrders} from "$lib/stores.js";
-  
+  import { groupOrders } from "$lib/stores.js";
+  import { base } from "$app/paths";
+
   // import logo from '$lib/images/svelte-logo.svg';
   // import github from '$lib/images/github.svg';
   $: disabled = !$groupOrders.length;
+    
 </script>
 
 <header>
@@ -16,24 +18,28 @@
   <nav>
     <ul>
       <li aria-current={$page.url.pathname === "/" ? "page" : undefined}>
-        <a href="/">Tabela nalogov</a>
+        <a href="{base}/">Tabela nalogov</a>
       </li>
-      <li aria-current={$page.url.pathname === "/upnqr" ? "page" : undefined}>
-          <a href="/upnqr" class:disabled>Upnqr v PDF</a>
+      <li
+        aria-current={$page.url.pathname.startsWith("/upnqr")
+          ? "page"
+          : undefined}
+      >
+        <a href="{base}/upnqr" class:disabled>Upnqr v PDF</a>
       </li>
       <li
         aria-current={$page.url.pathname.startsWith("/help")
           ? "page"
           : undefined}
       >
-        <a href="/help">Help</a>
+        <a href="{base}/help">Help</a>
       </li>
       <li
         aria-current={$page.url.pathname.startsWith("/pravnoobvestilo")
           ? "page"
           : undefined}
       >
-        <a href="/pravnoobvestilo">Pravno obvestilo</a>
+        <a href="{base}/pravnoobvestilo">Pravno obvestilo</a>
       </li>
     </ul>
   </nav>

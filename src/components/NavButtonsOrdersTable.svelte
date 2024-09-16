@@ -55,7 +55,7 @@
   };
 
   const focusHandler = () => {
-    txtPasteBtn = "Ctrl/Cmd+V za vstavljanje";
+    txtPasteBtn = "Ctrl/Cmd+V za vstavljanje/ESC";
     pastediv.focus();
   };
 
@@ -122,7 +122,7 @@
     on:blur={removeFocusPasteBtn}
     bind:this={pastediv}
     on:paste={pasteDataHandler}
-    title="Prilepi podatke iz odložišča"
+    title="Prilepi podatke iz odložišča/Esc za preklic"
   >
     {txtPasteBtn}
   </div>
@@ -131,7 +131,7 @@
     title="Prikaže informacije o formatu podatkov za uvoz"
     on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
   >
-  <ExplainDataFormat bind:clickOutsideModal={showInfoAboutDataFormat} />
+  <ExplainDataFormat bind:clickToOpenModal={showInfoAboutDataFormat} />
 </div>
 
 <style>

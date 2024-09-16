@@ -12,10 +12,10 @@ const config = {
       // default options are shown.
       pages: 'build',
       assets: 'build',
-      fallback: undefined,
+      fallback: 'index.html',
       precompress: false,
       strict: true
-    }),
+    })
   },
 
   preprocess: [vitePreprocess({})],

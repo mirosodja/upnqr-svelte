@@ -27,7 +27,7 @@ async function pasteTextFromClipboard(pastedText) {
     rows.shift();
     let numberOfImportedRows = 0;
     for (const row of rows) {
-      // 7. Create array of objects with validations
+      // Create array of objects with validations
       const obj = {
         id: +row[0],
         placnik: row[1],
@@ -52,6 +52,11 @@ async function pasteTextFromClipboard(pastedText) {
 
         if (obj.skupina.length > 20) {
           alert(`Napaka: Dolžina polja 'Skupina=${obj.skupina}' v vrstici z id=${obj.id} je prevelika!`);
+          return;
+        }
+
+        if (!obj.koda_namena.match(/^[A-Z]{4}$/)) {
+          alert(`Napaka: Polje 'Koda namena=${obj.koda_namena}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
 

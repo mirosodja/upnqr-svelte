@@ -67,7 +67,7 @@
   const selectAllHandlers = (/** @type {any} */ event) => {
     if (event.target.checked) {
       const /** @type {any}[] */ groupOrdersIds = filteredOrderList.map(
-          (/** @type {{ id: any; }} */ order) => order.id
+          (/** @type {{ id: any; }} */ order) => order.id,
         );
       groupOrders.set(groupOrdersIds);
     } else {
@@ -79,7 +79,7 @@
     (item) =>
       // @ts-expect-error
       item[filterByColumn].toLowerCase().indexOf(groupPattern.toLowerCase()) !==
-      -1
+      -1,
   );
   //! number of filtered records when filter is not used is equal to number of all records
   $: numberOfFiltered = filteredOrderList.length;
@@ -102,7 +102,7 @@
 </div>
 
 <div class="py-5">
-  <div class="shadow-md sm:rounded-lg">
+  <div class="shadow-md sm:rounded-lg overflow-x-auto">
     <Table
       striped={true}
       hoverable={true}
@@ -132,7 +132,7 @@
             </div>
           </TableHeadCell>
         </tr>
-        <tr>
+        <tr class="line-between-head-rows">
           <TableHeadCell>
             Izberi vse
             <Checkbox
@@ -226,3 +226,9 @@
     </Table>
   </div>
 </div>
+
+<style>
+  .line-between-head-rows {
+    border-bottom: groove #aec7d1;;
+  }
+</style>
