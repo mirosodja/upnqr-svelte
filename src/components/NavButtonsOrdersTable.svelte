@@ -2,6 +2,7 @@
   import { copy } from "svelte-copy";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
+  import AddRecord from "./AddRecord.svelte";
   import { db } from "$lib/db";
   import { groupOrders } from "$lib/stores.js";
 
@@ -9,6 +10,7 @@
   let toCopyText = "";
   let txtPasteBtn = "Prilepi podatke";
   let showInfoAboutDataFormat = false;
+  let showAddRecord = false;
 
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
@@ -73,6 +75,10 @@
     showInfoAboutDataFormat = true;
   };
 
+  const addRecordHandler = () => {
+    showAddRecord = true;
+  };
+
   const deleteHandler = async () => {
     if (confirm("Ali res želite izbrisati izbrane zapise?")) {
       // @ts-expect-error
@@ -95,7 +101,8 @@
 </script>
 
 <div class="navButton">
-  <button id="add" title="Doda zapis">Dodaj</button>
+  <button id="add" title="Dodaj zapis" on:click={addRecordHandler}
+  >Dodaj</button>
   <button
     id="delete"
     title="Izbriše izbrane zapise"
@@ -131,7 +138,8 @@
     title="Prikaže informacije o formatu podatkov za uvoz"
     on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
   >
-  <ExplainDataFormat bind:clickToOpenModal={showInfoAboutDataFormat} />
+  <AddRecord bind:clickToOpenAddRecord={showAddRecord} />
+  <ExplainDataFormat bind:clickToOpenExplainDataFormat={showInfoAboutDataFormat} />
 </div>
 
 <style>
