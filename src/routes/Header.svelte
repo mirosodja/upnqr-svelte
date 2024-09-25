@@ -17,25 +17,25 @@
   </div>
   <nav>
     <ul>
-      <li aria-current={$page.url.pathname === "/" ? "page" : undefined}>
+      <li aria-current={$page.url.pathname === `${base}/` ? "page" : undefined}>
         <a href="{base}/">Tabela nalogov</a>
       </li>
       <li
-        aria-current={$page.url.pathname.startsWith("/upnqr")
+        aria-current={$page.url.pathname.startsWith(`${base}/upnqr`)
           ? "page"
           : undefined}
       >
         <a href="{base}/upnqr" class:disabled>Upnqr v PDF</a>
       </li>
       <li
-        aria-current={$page.url.pathname.startsWith("/help")
+        aria-current={$page.url.pathname.startsWith(`${base}/help`)
           ? "page"
           : undefined}
       >
         <a href="{base}/help">Help</a>
       </li>
       <li
-        aria-current={$page.url.pathname.startsWith("/pravnoobvestilo")
+        aria-current={$page.url.pathname.startsWith(`${base}/pravnoobvestilo`)
           ? "page"
           : undefined}
       >

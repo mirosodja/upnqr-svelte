@@ -15,6 +15,9 @@
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
     const data = await db.orders.toArray();
+    const selectedData = data.filter((/** @type {any} */ obj) =>
+      $groupOrders.includes(obj.id),
+    );
     let arrFirstLine = [
       "ID",
       "PLAČNIK",
@@ -29,8 +32,8 @@
     const headers = arrFirstLine.join("\t");
 
     // Extract values from each object
-    const rows = data.map((/** @type {any} */ obj) =>
-      Object.values(obj).join("\t")
+    const rows = selectedData.map((/** @type {any} */ obj) =>
+      Object.values(obj).join("\t"),
     );
 
     // Join headers and rows with newline delimiter
@@ -46,7 +49,7 @@
     event.preventDefault();
     // @ts-ignore
     let pastedText = (event.clipboardData || window.clipboardData).getData(
-      "text"
+      "text",
     );
     if (pastedText) {
       pasteTextFromClipboard(pastedText);
@@ -101,21 +104,24 @@
 </script>
 
 <div class="navButton">
-  <button id="add" title="Dodaj zapis" on:click={addRecordHandler}
-  >Dodaj</button>
+  <button id="add" title="Dodaj zapis" on:click={addRecordHandler}>Dodaj</button
+  >
   <button
     id="delete"
     title="Izbriše izbrane zapise"
     on:click={deleteHandler}
     disabled={!$groupOrders.length}>Izbriši</button
   >
-  <button id="preobrni" title="Preobrne izbrane zapise" on:click={invertSelectionHandler}
-    >Preobrni</button
+  <button
+    id="preobrni"
+    title="Preobrne izbrane zapise"
+    on:click={invertSelectionHandler}>Preobrni</button
   >
   <button
     use:copy={toCopyText}
     on:click={readDbAndPutIntoClipboard}
     title="Kopira podatke v odložišče"
+    disabled={!$groupOrders.length}
   >
     Kopiraj podatke
   </button>
@@ -139,7 +145,9 @@
     on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
   >
   <AddRecord bind:clickToOpenAddRecord={showAddRecord} />
-  <ExplainDataFormat bind:clickToOpenExplainDataFormat={showInfoAboutDataFormat} />
+  <ExplainDataFormat
+    bind:clickToOpenExplainDataFormat={showInfoAboutDataFormat}
+  />
 </div>
 
 <style>
