@@ -12,7 +12,7 @@
     Input,
   } from "flowbite-svelte";
 
-  import { ordersList, numberOfAllRecords } from "$lib/db";
+  import { ordersList, numberOfAllRecords, db } from "$lib/db";
   import { fieldsInTable } from "$lib/constants.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
   import { groupOrders } from "$lib/stores.js";
@@ -56,12 +56,13 @@
 
   $: {
     groupPattern;
+    orderDirection;
     orderBy;
   }
-
-  const orderByHandler = (/** @type {string} */ value) => {
+  // function to order the list of orders by the selected column
+  const orderByHandler = (/** @type {string} */ sortColumn) => {
     orderDirection = !orderDirection;
-    orderBy = value;
+    orderBy = sortColumn;
   };
 
   const selectAllHandlers = (/** @type {any} */ event) => {
@@ -75,12 +76,29 @@
     }
   };
 
-  $: filteredOrderList = items.filter(
-    (item) =>
-      // @ts-expect-error
-      item[filterByColumn].toLowerCase().indexOf(groupPattern.toLowerCase()) !==
-      -1,
-  );
+  const editOrderHandler = (/** @type {number} */ orderId) => {
+    const order = items.find((item) => item.id === orderId);
+    console.log("Edit order: ", order);
+  };
+
+  $: filteredOrderList = items
+    .filter(
+      (item) =>
+        // @ts-expect-error
+        item[filterByColumn]
+          .toLowerCase()
+          .indexOf(groupPattern.toLowerCase()) !== -1,
+    )
+    .sort((a, b) => {
+      if (orderDirection) {
+        // @ts-ignore
+        return a[orderBy] > b[orderBy] ? 1 : -1;
+      } else {
+        // @ts-ignore
+        return a[orderBy] < b[orderBy] ? 1 : -1;
+      }
+    });
+
   //! number of filtered records when filter is not used is equal to number of all records
   $: numberOfFiltered = filteredOrderList.length;
   $: if (numberOfFiltered > 0)
@@ -90,10 +108,10 @@
 <NavButtonOrdersTable />
 <div class="grid grid-cols-5">
   <div class="col-span-3">
-    <b>Izbranih zapisov:</b>
-    {$groupOrders.length}
     <b>Skupaj zapisov:</b>
     {$numberOfAllRecords}
+    <b>Izbranih zapisov:</b>
+    {$groupOrders.length}
     {#if groupPattern !== ""}
       <b>Filtriranih zapisov:</b>
       {numberOfFiltered}
@@ -112,20 +130,18 @@
         <tr>
           <TableHeadCell colspan="10">
             <div class="flex flex-row gap-2">
-              <Label for="filterByColumn" class="align-middle"
-                >Stolpec za filtriranje:</Label
-              >
+              <Label for="filterByColumn"><b>Stolpec za filtriranje:</b></Label>
               <Select
                 id="filterByColumn"
                 items={fieldsInTable}
                 bind:value={filterByColumn}
                 class="w-60"
               />
-              <Label for="search">Filter:</Label>
+              <Label for="search"><b>Filter:</b></Label>
               <Input
                 type="text"
                 id="search"
-                placeholder="Išči: {filterByColumn}"
+                placeholder="Vnesi: {filterByColumn}"
                 bind:value={groupPattern}
                 class="w-60"
               />
@@ -143,41 +159,76 @@
           </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("id")}
-            class="cursor-pointer">Id</TableHeadCell
+            class="cursor-pointer"
           >
+            Id {orderBy === "id" ? (orderDirection ? "↑" : "↓") : ""}
+          </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("placnik")}
-            class="cursor-pointer">Plačnik</TableHeadCell
+            class="cursor-pointer"
+            >Plačnik {orderBy === "placnik"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("skupina")}
-            class="cursor-pointer">Skupina</TableHeadCell
+            class="cursor-pointer">Skupina {orderBy === "skupina"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("znesek")}
-            class="cursor-pointer">Znesek</TableHeadCell
+            class="cursor-pointer">Znesek {orderBy === "znesek"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("koda_namena")}
-            class="cursor-pointer">Koda namena</TableHeadCell
+            class="cursor-pointer">Koda namena {orderBy === "koda_namena"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("namen_placila")}
-            class="cursor-pointer">Namen plačila</TableHeadCell
+            class="cursor-pointer">Namen plačila {orderBy === "namen_placila"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("trr")}
-            class="cursor-pointer">TRR</TableHeadCell
+            class="cursor-pointer">TRR {orderBy === "trr"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("referenca")}
             class="cursor-pointer"
-            >Referenca
+            >Referenca {orderBy === "referenca"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}
             <!-- TODO: add cotrol sum calculation for SI12 -->
           </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("prejemnik")}
-            class="cursor-pointer">Prejemnik</TableHeadCell
+            class="cursor-pointer">Prejemnik {orderBy === "prejemnik"
+            ? orderDirection
+              ? "↑"
+              : "↓"
+            : ""}</TableHeadCell
           >
         </tr>
       </TableHead>
@@ -194,7 +245,8 @@
               </TableBodyCell>
               <TableBodyCell
                 class="cursor-pointer"
-                title="Dvoklik za urejanje zapisa z ID={order.id}"
+                title="Klik za urejanje zapisa z ID={order.id}"
+                on:click={() => editOrderHandler(order.id)}
                 >{order.id}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
@@ -229,6 +281,6 @@
 
 <style>
   .line-between-head-rows {
-    border-bottom: groove #aec7d1;;
+    border-bottom: groove #aec7d1;
   }
 </style>

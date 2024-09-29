@@ -1,10 +1,12 @@
 import { writable } from 'svelte/store';
 import Dexie, { liveQuery } from 'dexie';
 
-export const db = new Dexie('myDatabase');
+export const db = new Dexie('upngrDb');
 
+// Popravi , indexe: plaćnik*skupina ne rabiš
 db.version(2).stores({
-  orders: '++id, [placnik+skupina], placnik, skupina, znesek, koda_namena, namen_placila, trr, referenca, prejemnik'
+  orders: '++id'
+  // , [placnik+skupina], placnik, skupina, znesek, koda_namena, namen_placila, trr, referenca, prejemnik
 });
 
 export const numberOfAllRecords = writable(0);
@@ -17,6 +19,33 @@ export const ordersList = liveQuery(async () => {
   numberOfAllRecords.set(recordsCount);
   return await collection.toArray();
 });
+
+// create function for adding new order
+export const addOrder = async (/** @type {any} */ order) => {
+  // @ts-ignore
+  await db.orders.add(order);
+};
+
+// create function for deleting order
+// @ts-ignore
+export const deleteOrder = async (id) => {
+  // @ts-ignore
+  await db.orders.delete(id);
+};
+
+// create function for updating order
+// @ts-ignore
+export const updateOrder = async (id, /** @type {any} */ order) => {
+  // @ts-ignore
+  await db.orders.update(id, order);
+};
+
+// create function for reading order
+// @ts-ignore
+export const readOrder = async (id) => {
+  // @ts-ignore
+  return await db.orders.get(id);
+};
 
 
 
