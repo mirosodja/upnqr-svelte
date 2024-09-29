@@ -46,7 +46,7 @@
   /**
    * @type {Orders[]}
    */
-  let filteredOrderList = [];
+  let filteredOrders = [];
 
   ordersList.subscribe((value) => {
     items = value;
@@ -67,7 +67,7 @@
 
   const selectAllHandlers = (/** @type {any} */ event) => {
     if (event.target.checked) {
-      const /** @type {any}[] */ groupOrdersIds = filteredOrderList.map(
+      const /** @type {any}[] */ groupOrdersIds = filteredOrders.map(
           (/** @type {{ id: any; }} */ order) => order.id,
         );
       groupOrders.set(groupOrdersIds);
@@ -81,7 +81,7 @@
     console.log("Edit order: ", order);
   };
 
-  $: filteredOrderList = items
+  $: filteredOrders = items
     .filter(
       (item) =>
         // @ts-expect-error
@@ -100,7 +100,7 @@
     });
 
   //! number of filtered records when filter is not used is equal to number of all records
-  $: numberOfFiltered = filteredOrderList.length;
+  $: numberOfFiltered = filteredOrders.length;
   $: if (numberOfFiltered > 0)
     checkedSelectAll = $groupOrders.length === numberOfFiltered;
 </script>
@@ -174,104 +174,109 @@
           >
           <TableHeadCell
             on:click={() => orderByHandler("skupina")}
-            class="cursor-pointer">Skupina {orderBy === "skupina"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >Skupina {orderBy === "skupina"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("znesek")}
-            class="cursor-pointer">Znesek {orderBy === "znesek"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >Znesek {orderBy === "znesek"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("koda_namena")}
-            class="cursor-pointer">Koda namena {orderBy === "koda_namena"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >Koda namena {orderBy === "koda_namena"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("namen_placila")}
-            class="cursor-pointer">Namen plačila {orderBy === "namen_placila"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >Namen plačila {orderBy === "namen_placila"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("trr")}
-            class="cursor-pointer">TRR {orderBy === "trr"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >TRR {orderBy === "trr"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
           <TableHeadCell
             on:click={() => orderByHandler("referenca")}
             class="cursor-pointer"
             >Referenca {orderBy === "referenca"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}
             <!-- TODO: add cotrol sum calculation for SI12 -->
           </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("prejemnik")}
-            class="cursor-pointer">Prejemnik {orderBy === "prejemnik"
-            ? orderDirection
-              ? "↑"
-              : "↓"
-            : ""}</TableHeadCell
+            class="cursor-pointer"
+            >Prejemnik {orderBy === "prejemnik"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
           >
         </tr>
       </TableHead>
-      <TableBody>
-        {#if filteredOrderList}
-          {#each filteredOrderList as order (order.id)}
+      <TableBody tableBodyClass="divide-y">
+        {#if filteredOrders}
+          {#each filteredOrders as item}
             <TableBodyRow>
               <TableBodyCell>
                 <Checkbox
-                  id={order.id}
+                  id={item.id}
                   bind:group={$groupOrders}
-                  value={order.id}
+                  value={item.id}
                 />
               </TableBodyCell>
               <TableBodyCell
                 class="cursor-pointer"
-                title="Klik za urejanje zapisa z ID={order.id}"
-                on:click={() => editOrderHandler(order.id)}
-                >{order.id}</TableBodyCell
+                title="Klik za urejanje zapisa z ID={item.id}"
+                on:click={() => editOrderHandler(item.id)}
+                >{item.id}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
-                >{order.placnik}</TableBodyCell
+                >{item.placnik}</TableBodyCell
               >
-              <TableBodyCell>{order.skupina}</TableBodyCell>
-              <TableBodyCell>{order.znesek}</TableBodyCell>
-              <TableBodyCell>{order.koda_namena}</TableBodyCell>
+              <TableBodyCell>{item.skupina}</TableBodyCell>
+              <TableBodyCell>{item.znesek}</TableBodyCell>
+              <TableBodyCell>{item.koda_namena}</TableBodyCell>
               <TableBodyCell class="whitespace-normal"
-                >{order.namen_placila}</TableBodyCell
+                >{item.namen_placila}</TableBodyCell
               >
-              <TableBodyCell class="whitespace-normal"
-                >{order.trr}</TableBodyCell
-              >
-              <TableBodyCell class="whitespace-normal"
-                >{order.referenca}</TableBodyCell
+              <TableBodyCell class="whitespace-normal">{item.trr}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
-                >{order.prejemnik}</TableBodyCell
+                >{item.referenca}</TableBodyCell
+              >
+              <TableBodyCell class="whitespace-normal"
+                >{item.prejemnik}</TableBodyCell
               >
             </TableBodyRow>
           {/each}
         {:else}
           <TableBodyRow>
-            <TableBodyCell colspan="10">Nalagam podatke</TableBodyCell>
+            <TableBodyCell colspan="10">Ni podatkov</TableBodyCell>
           </TableBodyRow>
         {/if}
       </TableBody>

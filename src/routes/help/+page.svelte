@@ -67,12 +67,12 @@
           Ker so podatki v IndexedDB v vašem brskalniku, to pomeni, da
           uporabljajte vedno isti brskalnik, saj se podatki med brskalniki ne
           prenašajo. Prav tako je potrebno paziti na "www" zapis pred imenom
-          domene "potep.in". "www.potep.in" in "potep.in" za IndexedDB ni isti
+          domene "potep.eu". "www.potep.eu" in "potep.eu" za IndexedDB ni isti
           server, IndexedDB pa shranjuje glede na ime serverja. V kolikor ne
           pazite na to, to povzroča težave, saj baza kar naenkrat "izgine".
           Torej pazite, da <strong>delate vedno</strong> ali na
-          <strong>"potep.in/upnqr"</strong> ali na
-          <strong>"www.potep.in/upnqr"</strong> naslovu.
+          <strong>"potep.eu/upnqr"</strong> ali na
+          <strong>"www.potep.eu/upnqr"</strong> naslovu.
         </p>
         <h3 id="tiskanje">Tiskanje - važno</h3>
         <p>
