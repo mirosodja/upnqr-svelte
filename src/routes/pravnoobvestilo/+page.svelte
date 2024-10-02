@@ -4,14 +4,14 @@
 </svelte:head>
 
 <div class="text-column">
-  <h1>Pravno obvestilo spletnega mesta potep.eu</h1>
+  <h2>Pravno obvestilo spletnega mesta potep.eu</h2>
   <p>
     Vse pravice so pridržane. Obvestilo se nanaša na začetno stran in vse
     podstrani domene potep.eu. Informacije in gradiva na elektronskem naslovu
     potep.eu so zaščitene s pravicami intelektualne lastnine Mira Sodja (v
     nadaljevanju avtor).
   </p>
-  <h1>Omejitev odgovornosti</h1>
+  <h3>Omejitev odgovornosti</h3>
   <p>
     Vse informacije in gradiva na potep.eu so informativne narave. Avtor se bo
     trudil, da bo domena potep.eu in programi na njej delovali nemoteno, vendar
@@ -27,7 +27,7 @@
     spremeni kadarkoli in brez predhodnega obvestila in ne prevzema nikakršne
     odgovornosti za posledice teh sprememb.
   </p>
-  <h1>Varovanje osebnih podatkov in zasebnost spletnega mesta potep.eu</h1>
+  <h3>Varovanje osebnih podatkov in zasebnost spletnega mesta potep.eu</h3>
   <p>
     Brez privolitve uporabnika ali naročnika avtor ne zbira in ne obdeluje na
     tej spletni strani nobenih osebnih podatkov. Med obiskom anonimne osebe z
