@@ -28,6 +28,7 @@
   },
   "type": "module",
   "dependencies": {
-    "dexie": "^4.0.8"
+    "dexie": "^4.0.8",
+    "jspdf": "^2.5.2"
   }
 }

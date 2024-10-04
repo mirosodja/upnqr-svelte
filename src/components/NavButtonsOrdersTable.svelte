@@ -1,6 +1,7 @@
 <script>
   import { copy } from "svelte-copy";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
+  import { createPdf } from "$lib/createPdf";
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import AddRecord from "./AddRecord.svelte";
   import { db } from "$lib/db";
@@ -143,6 +144,9 @@
     id="infoAboutDataFormat"
     title="Prikaže informacije o formatu podatkov za uvoz"
     on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
+  >
+  <button id="createPdf" title="Ustvari PDF" on:click={() => createPdf()}
+    >Ustvari PDF</button
   >
   <AddRecord bind:clickToOpenAddRecord={showAddRecord} />
   <ExplainDataFormat
