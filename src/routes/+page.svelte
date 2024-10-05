@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Tabela nalogov</title>
+  <title>UPN QR->Tabela nalogov</title>
   <meta name="description" content="Tabela nalogov UPNQR" />
 </svelte:head>
 

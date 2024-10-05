@@ -1,5 +1,5 @@
 <svelte:head>
-  <title>O programu</title>
+  <title>UPN QR->O programu</title>
   <meta name="description" content="Opis programa" />
 </svelte:head>
 
