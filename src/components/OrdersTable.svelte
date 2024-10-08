@@ -12,7 +12,7 @@
     Input,
   } from "flowbite-svelte";
 
-  import { ordersList, numberOfAllRecords, db } from "$lib/db";
+  import { ordersList, numberOfAllRecords } from "$lib/db";
   import { fieldsInTable } from "$lib/constants.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
   import { groupOrders } from "$lib/stores.js";
@@ -48,6 +48,9 @@
    */
   let filteredOrders = [];
 
+  // code subscribes to the `ordersList` store and updates the `items` variable
+  // whenever the value of `ordersList` changes. This ensures that `items` always
+  // contains the latest data from the `ordersList` store.
   ordersList.subscribe((value) => {
     items = value;
   });
