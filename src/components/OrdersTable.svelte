@@ -25,6 +25,8 @@
   let checkedSelectAll = false;
   let filterByColumn = "skupina";
 
+  // TODO: add field for datum_placila
+
   /**
    * @typedef {Object} Orders
    * @property {number} id - ID.
@@ -33,6 +35,7 @@
    * @property {string|number} znesek - znesek (string or number).
    * @property {string} koda_namena - koda namena.
    * @property {string} namen_placila - namen placila.
+   * @property {string} rok_placila - rok placila.
    * @property {string} trr - TRR.
    * @property {string} referenca - referenca.
    * @property {string} prejemnik - prejemnik.
@@ -54,6 +57,8 @@
   ordersList.subscribe((value) => {
     items = value;
   });
+
+  // The reactive statement `$: groupOrders` is used to automatically update the grouped orders whenever the dependencies change.
 
   $: groupOrders;
 
@@ -212,6 +217,15 @@
               : ""}</TableHeadCell
           >
           <TableHeadCell
+            on:click={() => orderByHandler("rok_placila")}
+            class="cursor-pointer"
+            >Rok plačila {orderBy === "rok_placila"
+              ? orderDirection
+                ? "↑"
+                : "↓"
+              : ""}</TableHeadCell
+          >
+          <TableHeadCell
             on:click={() => orderByHandler("trr")}
             class="cursor-pointer"
             >TRR {orderBy === "trr"
@@ -228,7 +242,7 @@
                 ? "↑"
                 : "↓"
               : ""}
-            <!-- TODO: add cotrol sum calculation for SI12 -->
+            <!-- TODO: add control sum calculation for SI12 -->
           </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("prejemnik")}
@@ -267,6 +281,9 @@
               <TableBodyCell class="whitespace-normal"
                 >{item.namen_placila}</TableBodyCell
               >
+              <TableBodyCell class="whitespace-normal"
+                >{item.rok_placila}</TableBodyCell
+              >
               <TableBodyCell class="whitespace-normal">{item.trr}</TableBodyCell
               >
               <TableBodyCell class="whitespace-normal"
@@ -279,7 +296,7 @@
           {/each}
         {:else}
           <TableBodyRow>
-            <TableBodyCell colspan="10">Ni podatkov</TableBodyCell>
+            <TableBodyCell colspan="11">Ni podatkov</TableBodyCell>
           </TableBodyRow>
         {/if}
       </TableBody>

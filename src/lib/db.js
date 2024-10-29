@@ -3,7 +3,7 @@ import Dexie, { liveQuery } from 'dexie';
 
 export const db = new Dexie('upngrDb');
 
-// Popravi , indexe: plaćnik*skupina ne rabiš
+
 db.version(2).stores({
   orders: '++id'
   // , [placnik+skupina], placnik, skupina, znesek, koda_namena, namen_placila, trr, referenca, prejemnik

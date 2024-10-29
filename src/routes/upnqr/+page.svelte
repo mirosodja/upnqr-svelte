@@ -1,6 +1,8 @@
 <script>
 	import { ordersList } from "$lib/db";
 	import { groupOrders } from "$lib/stores.js";
+	import HeadlessQr from "../../components/HeadlessQr.svelte";
+
 	/**
 	 * @typedef {Object} Orders
 	 * @property {number} id - ID.
@@ -9,6 +11,7 @@
 	 * @property {string|number} znesek - znesek (string or number).
 	 * @property {string} koda_namena - koda namena.
 	 * @property {string} namen_placila - namen placila.
+	 * @property {string} rok_placila - rok placila.
 	 * @property {string} trr - TRR.
 	 * @property {string} referenca - referenca.
 	 * @property {string} prejemnik - prejemnik.
@@ -33,8 +36,7 @@
 
 	$: groupOrders;
 
-	$: orders = items.filter(item => $groupOrders.includes(item.id));
-
+	$: orders = items.filter((item) => $groupOrders.includes(item.id));
 </script>
 
 <svelte:head>
@@ -52,6 +54,29 @@
 		<div>{order.id}</div>
 		<div>{order.placnik}</div>
 	{/each}
+
+	<HeadlessQr
+		input="UPNQR
+
+
+
+
+Rabič Erazem
+Jelovška cesta 12
+4264 Bohinjska Bistrica
+00000001750
+
+
+OTHR
+Vadnina 09/24-rok.pl.21.10.24
+30.10.2024
+SI56043310002902064
+SI120202409000574
+NK Bohinj
+Majhnova 9
+4264 Bohinjska Bistrica
+198"
+	/>
 </div>
 
 <style>

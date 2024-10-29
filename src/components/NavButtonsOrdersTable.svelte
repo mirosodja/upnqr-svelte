@@ -4,7 +4,7 @@
   import { createPdf } from "$lib/createPdf";
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import AddRecord from "./AddRecord.svelte";
-  import { db } from "$lib/db";
+  import { db, numberOfAllRecords } from "$lib/db";
   import { groupOrders } from "$lib/stores.js";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
@@ -13,6 +13,7 @@
   let showInfoAboutDataFormat = false;
   let showAddRecord = false;
 
+  // read data from indexedDB and put into clipboard
   const readDbAndPutIntoClipboard = async () => {
     // @ts-ignore
     const data = await db.orders.toArray();
@@ -20,15 +21,16 @@
       $groupOrders.includes(obj.id),
     );
     let arrFirstLine = [
-      "ID",
-      "PLAČNIK",
-      "SKUPINA",
-      "ZNESEK",
-      "KODA NAMENA",
-      "NAMEN PLAČILA",
-      "TRR",
-      "REFERENCA",
-      "PREJEMNIK",
+      "Id",
+      "Plačnik",
+      "Skupina",
+      "Znesek",
+      "Koda namena",
+      "Namen plačila",
+      "Trr",
+      "Rok plačila",
+      "Referenca",
+      "Prejemnik",
     ];
     const headers = arrFirstLine.join("\t");
 
@@ -102,6 +104,7 @@
       });
     });
   };
+
 </script>
 
 <div class="navButton">
@@ -116,7 +119,8 @@
   <button
     id="preobrni"
     title="Preobrne izbrane zapise"
-    on:click={invertSelectionHandler}>Preobrni</button
+    on:click={invertSelectionHandler}
+    disabled={$numberOfAllRecords===0}>Preobrni</button
   >
   <button
     use:copy={toCopyText}

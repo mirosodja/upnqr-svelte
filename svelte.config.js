@@ -22,6 +22,9 @@ const config = {
   },
 
   preprocess: [vitePreprocess({})],
+  compilerOptions: {
+    customElement: true,
+  }
 };
 
 export default config;

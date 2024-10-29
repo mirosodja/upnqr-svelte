@@ -51,6 +51,13 @@
       Primer: "Nakup na tržnici";
     </li>
     <li>
+      <strong>Rok plačila</strong> - datum plačila. Preverja se: format datuma
+      (dd.mm.yyyy), veljaven datum ali prazno polje;
+    </li>
+    <li>
+      <strong>TRR</strong> - transakcijski račun prejemnika. Preverja se: dolžina
+      (natančno 19 znakov), prva dva znaka oznaka države, npr.: "SI56 1234 5678 9012 345";
+    <li>
       <strong>Referenca</strong> - referenca plačila. Niz "SI" ali "RF" in
       dvomestna številka, presledek in številka, ki ima lahko pomišljaje, v
       skladu s standardom;

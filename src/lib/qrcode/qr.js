@@ -19,6 +19,8 @@
 //---------------------------------------------------------------------
 
 // source: https://github.com/Rich-Harris/headless-qr/
+// predelana koda od tu: https://github.com/kazuhikoarase/qrcode-generator/
+// implementacija (za HeadlessQr.svelte): https://github.com/ahmetozantekin/headless-qr-webcomponent
 
 import { QRErrorCorrectionLevel, QRMaskPattern } from './constants.js';
 

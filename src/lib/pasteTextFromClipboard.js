@@ -20,7 +20,7 @@ async function pasteTextFromClipboard(pastedText) {
     const text = pastedText;
     // @ts-ignore
     const rows = text.split("\n").map((row) => row.split("\t"));
-    if (rows[0].length !== 9) {
+    if (rows[0].length !== 10) {
       alert("Napaka: Nepravilno število polj v vrstici!");
       return;
     }
@@ -35,11 +35,12 @@ async function pasteTextFromClipboard(pastedText) {
         znesek: row[3],
         koda_namena: row[4],
         namen_placila: row[5],
-        trr: row[6],
-        referenca: row[7],
-        prejemnik: row[8],
+        rok_placila: row[6],
+        trr: row[7],
+        referenca: row[8],
+        prejemnik: row[9],
       };
-      if (row.length === 9) {
+      if (row.length === 10) {
         if (!isPositiveInteger(obj.id)) {
           alert(`Napaka: Id=${obj.id} ni pozitivno celo število!`);
           return;
@@ -70,10 +71,16 @@ async function pasteTextFromClipboard(pastedText) {
           return;
         }
 
+        if (obj.rok_placila !== "" && !obj.rok_placila.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
+          alert(`Napaka: Polje 'Rok plačila=${obj.rok_placila}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+          return;
+        }
+
         if (!obj.trr.match(/^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/)) {
           alert(`Napaka: Polje 'TRR=${obj.trr}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
+
 
         if (!obj.referenca.match(/(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/)) {
           alert(`Napaka: Polje 'Referenca=${obj.referenca}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
