@@ -242,7 +242,6 @@
                 ? "↑"
                 : "↓"
               : ""}
-            <!-- TODO: add control sum calculation for SI12 -->
           </TableHeadCell>
           <TableHeadCell
             on:click={() => orderByHandler("prejemnik")}
@@ -267,7 +266,7 @@
                 />
               </TableBodyCell>
               <TableBodyCell
-                class="cursor-pointer"
+                class="cursor-pointer text-red-400 hover:font-extrabold"
                 title="Klik za urejanje zapisa z ID={item.id}"
                 on:click={() => editOrderHandler(item.id)}
                 >{item.id}</TableBodyCell
@@ -308,4 +307,5 @@
   .line-between-head-rows {
     border-bottom: groove #aec7d1;
   }
+
 </style>

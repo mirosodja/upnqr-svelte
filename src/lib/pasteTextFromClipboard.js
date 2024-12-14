@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import ts from "typescript";
+// ne rabim?: import ts from "typescript";
 
 /**
  * @param {unknown} value
@@ -56,13 +56,13 @@ async function pasteTextFromClipboard(pastedText) {
           return;
         }
 
-        if (!obj.koda_namena.match(/^[A-Z]{4}$/)) {
-          alert(`Napaka: Polje 'Koda namena=${obj.koda_namena}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+        if (!obj.znesek.match(/^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/)) {
+          alert(`Napaka: Polje 'Znesek=${obj.znesek}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
 
-        if (!obj.znesek.match(/^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/)) {
-          alert(`Napaka: Polje 'Znesek=${obj.znesek}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
+        if (!obj.koda_namena.match(/^[A-Z]{4}$/)) {
+          alert(`Napaka: Polje 'Koda namena=${obj.koda_namena}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
 
@@ -80,7 +80,6 @@ async function pasteTextFromClipboard(pastedText) {
           alert(`Napaka: Polje 'TRR=${obj.trr}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
           return;
         }
-
 
         if (!obj.referenca.match(/(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/)) {
           alert(`Napaka: Polje 'Referenca=${obj.referenca}' v vrstici z id=${obj.id} ne ustreza zahtevanemu formatu!`);
@@ -111,7 +110,8 @@ async function pasteTextFromClipboard(pastedText) {
     }
     alert(`Uvoženo ${numberOfImportedRows} vrstic.`);
   } catch (err) {
-    console.error("Napaka pri branju iz odložišča: ", err);
+    alert("Napaka pri uvozu podatkov: " + err);
+    // console.error("Napaka pri branju iz odložišča: ", err);
   }
 }
 

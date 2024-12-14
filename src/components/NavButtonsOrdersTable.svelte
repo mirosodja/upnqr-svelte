@@ -157,7 +157,7 @@
     bind:clickToOpenExplainDataFormat={showInfoAboutDataFormat}
   />
 </div>
-
+ <!-- TODO: add button: sum calculation for SI12 for selected records -->
 <style>
   .navButton {
     display: flex;

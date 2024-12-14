@@ -1,8 +1,7 @@
-<svelte:head>
-  <title>UPN QR->O programu</title>
-  <meta name="description" content="Opis programa" />
-</svelte:head>
-
+<script>
+  import { titleOfPage } from "$lib/stores.js";
+  $: titleOfPage.set("Pravno obvestilo");
+</script>
 <div class="text-column">
   <h2>Pravno obvestilo spletnega mesta potep.eu</h2>
   <p>

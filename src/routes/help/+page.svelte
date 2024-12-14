@@ -1,8 +1,9 @@
-<svelte:head>
-  <title>UPN QR->O programu</title>
-  <meta name="description" content="Opis programa" />
-</svelte:head>
+<script>
+  import { titleOfPage } from "$lib/stores.js";
+  $: titleOfPage.set("Pomoč");
+</script>
 
+<!-- TODO: uredi še izgled strani, ker je A4 list -->
 <div class="text-column">
   <h2>
     Pomoč za uporabo programa "Univerzalni plačilni nalogi - UPN QR program"

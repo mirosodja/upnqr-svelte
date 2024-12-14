@@ -29,6 +29,8 @@
   "type": "module",
   "dependencies": {
     "dexie": "^4.0.8",
-    "jspdf": "^2.5.2"
+    "jspdf": "^2.5.2",
+    "svelte-forms-lib": "^2.0.1",
+    "yup": "^1.5.0"
   }
 }

@@ -1,10 +1,9 @@
 <script>
+  import { titleOfPage } from "$lib/stores.js";
   import OrdersTable from "../components/OrdersTable.svelte";
+
+$:  titleOfPage.set("Tabela nalogov");
+
+// TODO: uredi še izgled strani, ker je A4 list
 </script>
-
-<svelte:head>
-  <title>UPN QR->Tabela nalogov</title>
-  <meta name="description" content="Tabela nalogov UPNQR" />
-</svelte:head>
-
-  <OrdersTable />
+<OrdersTable />

@@ -1,11 +1,11 @@
 <script>
   import "../app.postcss";
-  import Header from "./Header.svelte";
+  import MainNavigation from "./MainNavigation.svelte";
   import "./styles.css";
 </script>
 
 <div class="app">
-  <Header />
+  <MainNavigation />
 
   <main>
     <slot />
