@@ -2,19 +2,24 @@
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
     import { Button } from "flowbite-svelte";
+    import { addOrder } from "$lib/db";
 
-    const { form, errors, handleChange, handleSubmit } = createForm({
-        initialValues: {
-            placnik: "",
-            skupina: "",
-            znesek: "",
-            kodaNamena: "",
-            namenPlacila: "",
-            rokPlacila: "",
-            trr: "",
-            referenca: "",
-            prejemnik: "",
-        },
+    $: isFormEmpty = Object.values($form).every((value) => value === "");
+
+    const initialValues = {
+        placnik: "",
+        skupina: "",
+        znesek: "",
+        koda_namena: "",
+        namen_placila: "",
+        rok_placila: "",
+        trr: "",
+        referenca: "",
+        prejemnik: "",
+    };
+
+    const { form, errors, isValid, handleChange, handleSubmit } = createForm({
+        initialValues,
         validationSchema: yup.object().shape({
             placnik: yup
                 .string()
@@ -34,39 +39,72 @@
                     /^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/,
                     "Znesek je obvezen podatek v formatu: 1.100,00",
                 ),
-            kodaNamena: yup
+            koda_namena: yup
                 .string()
                 .matches(
                     /^[A-Z]{4}$/,
                     "Koda namena je obvezen podatek, natančno 4 znaki, velike črke, samo angleška abeceda.",
                 ),
-            namenPlacila: yup
+            namen_placila: yup
                 .string()
                 .max(
                     42,
                     "Namen plačila je obvezen podatek, brez vodilnih ali sledečih presledkov.",
                 ),
-            rokPlacila: yup
+            rok_placila: yup
                 .string()
-                .required(
-                    "Rok plačila je neobvezen podatek. Format »DD.MM.LLLL« ali prazno.",
+                .matches(
+                    /^(|\d{2}\.\d{2}\.\d{4})$/,
+                    "Rok plačila ni obvezen podatek. Format »DD.MM.LLLL« ali prazno.",
                 ),
-            trr: yup.string().required("TRR je obvezen podatek."),
-            referenca: yup.string().required("Referenca je obvezen podatek."),
-            prejemnik: yup.string().required("Prejemnik je obvezen podatek."),
+            trr: yup
+                .string()
+                .matches(
+                    /^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/,
+                    "TRR je obvezen podatek v formatu: SI56 1234 5678 9123 456.",
+                ),
+            referenca: yup
+                .string()
+                .matches(
+                    /^SI\d{2}\s\d{6}$/,
+                    "Referenca je obvezen podatek v formatu: SI00 123456.",
+                ),
+            prejemnik: yup
+                .string()
+                .matches(
+                    /[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}/,
+                    "Prejemnik je obvezen podatek v formatu: Ime Priimek(min.: 1, max.:32 znak), Naslov(max.:32), Pošta(max.:32).",
+                ),
         }),
         onSubmit: (values) => {
-            console.log("Shrani is clicked");
+            addOrder(values);
             alert(JSON.stringify(values));
         },
     });
+
+    // create function to insert example data
+    const insertExampleData = () => {
+        $form.placnik = "Jože Novak, Novakova ulica 10, 1234 Novaki";
+        $form.skupina = "Primer podatkov";
+        $form.znesek = "1.005,00";
+        $form.koda_namena = "OTHR";
+        $form.namen_placila = "Plačilo storitev";
+        $form.rok_placila = "24.02.2024";
+        $form.trr = "SI56 1234 5678 9123 456";
+        $form.referenca = "SI00 123456";
+        $form.prejemnik = "Podjetje d.o.o., Podjetniška ulica 10, 1234 Kraj";
+    };
 </script>
 
-<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-    Vnesite podatke za nov zapis.
-</p>
-<!-- create input fields here for adding new record: Plačnik, Skupina, Znesek, Koda
-namena, Namen plačila, TRR, Referenca, Prejemnik -->
+<div class="mt-4 flex items-center justify-between">
+    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        Vnesi podatke o plačilu. Če želiš, lahko vstaviš primer podatkov s
+        klikom na gumb.
+    </p>
+    <Button type="button" color="primary" disabled={!isFormEmpty}
+        on:click={insertExampleData}>Vstavi primer podatkov</Button
+    >
+</div>
 <form on:submit={handleSubmit}>
     <div class="mt-4">
         <label
@@ -140,66 +178,66 @@ namena, Namen plačila, TRR, Referenca, Prejemnik -->
     <div class="mt-4">
         <label
             class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            for="kodaNamena"
+            for="koda_namena"
         >
             Koda namena
         </label>
         <input
             type="text"
-            id="kodaNamena"
-            name="kodaNamena"
+            id="koda_namena"
+            name="koda_namena"
             placeholder="Npr.: OTHR"
-            bind:value={$form.kodaNamena}
+            bind:value={$form.koda_namena}
             on:input={handleChange}
             on:blur={handleChange}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
-        {#if $errors.kodaNamena}
+        {#if $errors.koda_namena}
             <p class="text-red-500 text-xs italic mt-1">
-                {$errors.kodaNamena}
+                {$errors.koda_namena}
             </p>
         {/if}
     </div>
     <div class="mt-4">
-        <label placeholder="Npr.: Plačilo storitev" for="namenPlacila">
+        <label placeholder="Npr.: Plačilo storitev" for="namen_placila">
             Namen plačila
         </label>
         <input
             type="text"
-            id="namenPlacila"
-            name="namenPlacila"
+            id="namen_placila"
+            name="namen_placila"
             placeholder="Npr.: Plačilo storitev"
-            bind:value={$form.namenPlacila}
+            bind:value={$form.namen_placila}
             on:input={handleChange}
             on:blur={handleChange}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
-        {#if $errors.namenPlacila}
+        {#if $errors.namen_placila}
             <p class="text-red-500 text-xs italic mt-1">
-                {$errors.namenPlacila}
+                {$errors.namen_placila}
             </p>
         {/if}
     </div>
     <div class="mt-4">
         <label
             class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            for="rokPlacila"
+            for="rok_placila"
         >
             Rok plačila
         </label>
         <input
             type="text"
-            id="rokPlacila"
-            name="rokPlacila"
-            placeholder="Npr.: SI56 1234 5678 9123 456"
-            bind:value={$form.trr}
+            id="rok_placila"
+            name="rok_placila"
+            placeholder="Npr.: 24.02.2024"
+            bind:value={$form.rok_placila}
             on:input={handleChange}
             on:blur={handleChange}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
-        {#if $errors.rokPlacila}
+        {#if $errors.rok_placila}
             <p class="text-red-500 text-xs italic mt-1">
-                {$errors.rokPlacila}
+                {$errors.rok_placila}
             </p>
         {/if}
     </div>
@@ -271,6 +309,10 @@ namena, Namen plačila, TRR, Referenca, Prejemnik -->
         {/if}
     </div>
     <div class="mt-4 flex items-center justify-center">
-        <Button type="submit" color="primary">Shrani</Button>
+        <Button
+            type="submit"
+            color="primary"
+            disabled={!$isValid}>Shrani</Button
+        >
     </div>
 </form>
