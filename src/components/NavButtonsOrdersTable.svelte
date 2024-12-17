@@ -110,6 +110,7 @@
 <div class="navButton">
   <button id="add" title="Dodaj zapis" on:click={addRecordHandler}>Dodaj</button
   >
+  <!-- TODO preveri še disabled buttons kje bi bilo smiselno -->
   <button
     id="delete"
     title="Izbriše izbrane zapise"

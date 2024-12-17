@@ -2,24 +2,28 @@
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
     import { Button } from "flowbite-svelte";
-    import { addOrder } from "$lib/db";
+    import { addOrder, updateOrder, readOrder } from "$lib/db";
+    import { onMount } from "svelte";
+
+    /**
+     * @type {number}
+     */
+    let id;
 
     $: isFormEmpty = Object.values($form).every((value) => value === "");
 
-    const initialValues = {
-        placnik: "",
-        skupina: "",
-        znesek: "",
-        koda_namena: "",
-        namen_placila: "",
-        rok_placila: "",
-        trr: "",
-        referenca: "",
-        prejemnik: "",
-    };
-
     const { form, errors, isValid, handleChange, handleSubmit } = createForm({
-        initialValues,
+        initialValues: {
+            placnik: "",
+            skupina: "",
+            znesek: "",
+            koda_namena: "",
+            namen_placila: "",
+            rok_placila: "",
+            trr: "",
+            referenca: "",
+            prejemnik: "",
+        },
         validationSchema: yup.object().shape({
             placnik: yup
                 .string()
@@ -66,7 +70,7 @@
             referenca: yup
                 .string()
                 .matches(
-                    /^SI\d{2}\s\d{6}$/,
+                    /(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/,
                     "Referenca je obvezen podatek v formatu: SI00 123456.",
                 ),
             prejemnik: yup
@@ -77,8 +81,12 @@
                 ),
         }),
         onSubmit: (values) => {
-            addOrder(values);
-            alert(JSON.stringify(values));
+            console.log("Shrani is clicked");
+            if (id) {
+                updateOrder(id, values);
+            } else {
+                addOrder(values);
+            }
         },
     });
 
@@ -94,14 +102,29 @@
         $form.referenca = "SI00 123456";
         $form.prejemnik = "Podjetje d.o.o., Podjetniška ulica 10, 1234 Kraj";
     };
+
+    onMount(() => {
+        if (id && !$form.placnik) {
+            readOrder(id)
+                .then((order) => {
+                    $form = order;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    });
 </script>
 
 <div class="mt-4 flex items-center justify-between">
     <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
         Vnesi podatke o plačilu. Če želiš, lahko vstaviš primer podatkov s
-        klikom na gumb.
+        klikom na gumb "Vstavi primer podatkov".
     </p>
-    <Button type="button" color="primary" disabled={!isFormEmpty}
+    <Button
+        type="button"
+        color="primary"
+        disabled={!isFormEmpty}
         on:click={insertExampleData}>Vstavi primer podatkov</Button
     >
 </div>
@@ -117,9 +140,8 @@
             type="text"
             id="placnik"
             name="placnik"
-            bind:value={$form.placnik}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.placnik}
             placeholder="Npr.: Ime Priimek, Neka ulica 10, 1234 Kraj"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
             autocomplete="off"
@@ -142,9 +164,8 @@
             id="skupina"
             name="skupina"
             placeholder="Npr.: Skupina A"
-            bind:value={$form.skupina}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.skupina}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.skupina}
@@ -161,12 +182,11 @@
             Znesek
         </label>
         <input
-            bind:value={$form.znesek}
-            on:input={handleChange}
-            on:blur={handleChange}
             id="znesek"
             name="znesek"
             placeholder="Npr.: 100,00"
+            on:input={handleChange}
+            bind:value={$form.znesek}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.znesek}
@@ -187,9 +207,8 @@
             id="koda_namena"
             name="koda_namena"
             placeholder="Npr.: OTHR"
-            bind:value={$form.koda_namena}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.koda_namena}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.koda_namena}
@@ -207,9 +226,8 @@
             id="namen_placila"
             name="namen_placila"
             placeholder="Npr.: Plačilo storitev"
-            bind:value={$form.namen_placila}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.namen_placila}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.namen_placila}
@@ -230,9 +248,8 @@
             id="rok_placila"
             name="rok_placila"
             placeholder="Npr.: 24.02.2024"
-            bind:value={$form.rok_placila}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.rok_placila}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.rok_placila}
@@ -249,12 +266,11 @@
             TRR
         </label>
         <input
-            placeholder="Npr.: SI56 1234 5678 9123 456"
-            bind:value={$form.trr}
-            on:input={handleChange}
-            on:blur={handleChange}
             id="trr"
             name="trr"
+            placeholder="Npr.: SI56 1234 5678 9123 456"
+            on:input={handleChange}
+            bind:value={$form.trr}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.trr}
@@ -267,16 +283,15 @@
         <label
             class="block text-sm font-medium text-gray-700 dark:text-gray-300"
             for="referenca"
-        >
+            >Referenca
         </label>
         <input
             type="text"
             id="referenca"
             name="referenca"
             placeholder="Npr.: SI00 123456"
-            bind:value={$form.referenca}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.referenca}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.referenca}
@@ -297,9 +312,8 @@
             id="prejemnik"
             name="prejemnik"
             placeholder="Npr.: Podjetje d.o.o., Podjetniška ulica 10, 1234 Kraj"
-            bind:value={$form.prejemnik}
             on:input={handleChange}
-            on:blur={handleChange}
+            bind:value={$form.prejemnik}
             class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
         />
         {#if $errors.prejemnik}
@@ -309,10 +323,6 @@
         {/if}
     </div>
     <div class="mt-4 flex items-center justify-center">
-        <Button
-            type="submit"
-            color="primary"
-            disabled={!$isValid}>Shrani</Button
-        >
+        <Button type="submit" color="primary">Shrani</Button>
     </div>
 </form>

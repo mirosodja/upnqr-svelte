@@ -44,7 +44,8 @@ export const updateOrder = async (id, /** @type {any} */ order) => {
 // @ts-ignore
 export const readOrder = async (id) => {
   // @ts-ignore
-  return await db.orders.get(id);
+  const order = await db.orders.get(id);
+  return order;
 };
 
 

@@ -25,8 +25,6 @@
   let checkedSelectAll = false;
   let filterByColumn = "skupina";
 
-  // TODO: add field for datum_placila
-
   /**
    * @typedef {Object} Orders
    * @property {number} id - ID.

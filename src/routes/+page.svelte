@@ -4,6 +4,5 @@
 
 $:  titleOfPage.set("Tabela nalogov");
 
-// TODO: uredi še izgled strani, ker je A4 list
 </script>
 <OrdersTable />
