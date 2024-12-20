@@ -23,7 +23,8 @@ export const ordersList = liveQuery(async () => {
 // create function for adding new order
 export const addOrder = async (/** @type {any} */ order) => {
   // @ts-ignore
-  await db.orders.add(order);
+  const id = await db.orders.add(order);
+  return id;
 };
 
 // create function for deleting order

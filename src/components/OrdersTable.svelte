@@ -16,6 +16,10 @@
   import { fieldsInTable } from "$lib/constants.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
   import { groupOrders } from "$lib/stores.js";
+  import AddRecord from "./AddRecord.svelte";
+  // modal for editing record
+  let showAddRecord = false;
+  let id = 0;
 
   // Query parameters:
   let groupPattern = "";
@@ -85,6 +89,9 @@
   const editOrderHandler = (/** @type {number} */ orderId) => {
     const order = items.find((item) => item.id === orderId);
     console.log("Edit order: ", order);
+    console.log("Edit order ID: ", orderId);
+    id = orderId;
+    showAddRecord = true;
   };
 
   $: filteredOrders = items
@@ -111,6 +118,7 @@
     checkedSelectAll = $groupOrders.length === numberOfFiltered;
 </script>
 
+<AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id />
 <NavButtonOrdersTable />
 <div class="grid grid-cols-5">
   <div class="col-span-3">
@@ -305,5 +313,4 @@
   .line-between-head-rows {
     border-bottom: groove #aec7d1;
   }
-
 </style>
