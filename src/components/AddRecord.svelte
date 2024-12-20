@@ -8,7 +8,6 @@
     import * as yup from "yup";
     import { Button, Modal, Alert } from "flowbite-svelte";
     import { addOrder, updateOrder, readOrder } from "$lib/db";
-    import { onMount } from "svelte";
 
     export let clickToOpenAddRecord = false;
     export let id = 0;
@@ -147,27 +146,27 @@
         form.set(exampleData);
     };
 
-    onMount(() => {
-        if (id && !$form.placnik) {
-            console.log("ID on Mount:", id);
-            readOrder(id)
-                .then((order) => {
-                    console.log("Order:", order);
-                    $form = order;
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-        if (id) {
-            infoTitle = "Urejanje zapisa";
-        } else {
-            infoTitle = "Dodajanje zapisa";
-        }
-    });
+   $: if (id) {
+        infoTitle = "Urejanje zapisa";
+        readOrder(id)
+            .then((order) => {
+                // form.set(order);
+                $form = order;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    } else {
+        infoTitle = "Dodajanje zapisa";
+    }
 </script>
 
-<Modal title={infoTitle} bind:open={clickToOpenAddRecord} autoclose={false}>
+<Modal
+    title={infoTitle}
+    bind:open={clickToOpenAddRecord}
+    autoclose={false}
+    on:close={() => (id = 0)}
+>
     <div class="mt-4 flex items-center justify-between space-x-4">
         <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
             {#if id}

@@ -87,9 +87,9 @@
   };
 
   const editOrderHandler = (/** @type {number} */ orderId) => {
-    const order = items.find((item) => item.id === orderId);
-    console.log("Edit order: ", order);
-    console.log("Edit order ID: ", orderId);
+    // const order = items.find((item) => item.id === orderId);
+    // console.log("Edit order: ", order);
+    // console.log("Edit order ID: ", orderId);
     id = orderId;
     showAddRecord = true;
   };
@@ -118,7 +118,7 @@
     checkedSelectAll = $groupOrders.length === numberOfFiltered;
 </script>
 
-<AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id />
+<AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id={id} />
 <NavButtonOrdersTable />
 <div class="grid grid-cols-5">
   <div class="col-span-3">
