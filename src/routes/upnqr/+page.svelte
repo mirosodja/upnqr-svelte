@@ -1,7 +1,10 @@
 <script>
 	import { ordersList } from "$lib/db";
+	import { generateSvg } from "$lib/qrcode/createQrSvnString ";
 	import { groupOrders, titleOfPage } from "$lib/stores.js";
-	import HeadlessQr from "../../components/HeadlessQr.svelte";
+	/** Utils */
+	import Config from "$lib/qrcode/configQrDefault.js";
+	import { qr } from "$lib/qrcode/qr";
 
 	/**
 	 * @typedef {Object} Orders
@@ -15,7 +18,13 @@
 	 * @property {string} trr - TRR.
 	 * @property {string} referenca - referenca.
 	 * @property {string} prejemnik - prejemnik.
+	 * @property {string} qrModulesString - qr modules string.
+	 * @property {string} qrSvnString - qr svn string.
 	 */
+
+	const color = Config.color;
+	const background = Config.backgroundColor;
+	const size = Config.size;
 
 	/**
 	 * @type {Orders[]}
@@ -34,25 +43,54 @@
 		items = value;
 	});
 
-	$: groupOrders;
+	// @ts-ignore
+// @ts-ignore
+		$: groupOrders;
 
-	$: titleOfPage.set("UPN QR v pdf");
+	// @ts-ignore
+// @ts-ignore
+		$: titleOfPage.set("UPN QR v pdf");
 
+	// @ts-ignore
+	// @ts-ignore
 	$: orders = items.filter((item) => $groupOrders.includes(item.id));
 
-	//convert order to array of string for qr code
-		
+	// add qr svn strig to order object
+	orders.forEach(async (order) => {
+		const qrString =
+			order.id +
+			order.placnik +
+			order.skupina +
+			order.znesek +
+			order.koda_namena +
+			order.namen_placila +
+			order.rok_placila +
+			order.trr +
+			order.referenca +
+			order.prejemnik;
+
+		// @ts-ignore
+		const qrModulesString = qr(qrString, Config.QR);
+
+		order.qrModulesString = JSON.stringify(qrModulesString);
+
+		const qrSvnString = generateSvg(
+			qrModulesString,
+			size,
+			color,
+			background,
+		);
+		order.qrSvnString = qrSvnString;
+	});
 </script>
 
 <div class="a4">
 	<div>Test</div>
-	<div>{$groupOrders}</div>
 	{#each orders as order}
 		<div>{order.id}</div>
 		<div>{order.placnik}</div>
-		<HeadlessQr
-		input={order}
-	/>
+		<div>{order.qrModulesString}</div>
+		<div>{order.qrSvnString}</div>
 	{/each}
 </div>
 
