@@ -1,6 +1,6 @@
 <script>
 	import { ordersList } from "$lib/db";
-	import { generateSvg } from "$lib/qrcode/createQrSvnString ";
+	import { generateSvg } from "$lib/qrcode/createQrSvnString";
 	import { groupOrders, titleOfPage } from "$lib/stores.js";
 	/** Utils */
 	import Config from "$lib/qrcode/configQrDefault.js";
