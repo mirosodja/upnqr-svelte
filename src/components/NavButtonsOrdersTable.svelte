@@ -104,7 +104,6 @@
       });
     });
   };
-
 </script>
 
 <div class="navButton">
@@ -121,7 +120,7 @@
     id="preobrni"
     title="Preobrne izbrane zapise"
     on:click={invertSelectionHandler}
-    disabled={$numberOfAllRecords===0}>Preobrni</button
+    disabled={$numberOfAllRecords === 0}>Preobrni</button
   >
   <button
     use:copy={toCopyText}
@@ -158,7 +157,8 @@
     bind:clickToOpenExplainDataFormat={showInfoAboutDataFormat}
   />
 </div>
- <!-- TODO: add button: sum calculation for SI12 for selected records -->
+
+<!-- TODO: add button: sum calculation for SI12 for selected records -->
 <style>
   .navButton {
     display: flex;

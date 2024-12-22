@@ -118,7 +118,7 @@
     checkedSelectAll = $groupOrders.length === numberOfFiltered;
 </script>
 
-<AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id={id} />
+<AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id />
 <NavButtonOrdersTable />
 <div class="grid grid-cols-5">
   <div class="col-span-3">
@@ -153,7 +153,6 @@
               />
               <Label for="search"><b>Filter:</b></Label>
               <Input
-                type="text"
                 id="search"
                 placeholder="Vnesi: {filterByColumn}"
                 bind:value={groupPattern}

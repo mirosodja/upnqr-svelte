@@ -39,6 +39,9 @@
 	$: titleOfPage.set("UPN QR v pdf");
 
 	$: orders = items.filter((item) => $groupOrders.includes(item.id));
+
+	//convert order to array of string for qr code
+		
 </script>
 
 <div class="a4">
@@ -47,30 +50,10 @@
 	{#each orders as order}
 		<div>{order.id}</div>
 		<div>{order.placnik}</div>
-	{/each}
-
-	<HeadlessQr
-		input="UPNQR
-
-
-
-
-Rabič Erazem
-Jelovška cesta 12
-4264 Bohinjska Bistrica
-00000001750
-
-
-OTHR
-Vadnina 09/24-rok.pl.21.10.24
-30.10.2024
-SI56043310002902064
-SI120202409000574
-NK Bohinj
-Majhnova 9
-4264 Bohinjska Bistrica
-198"
+		<HeadlessQr
+		input={order}
 	/>
+	{/each}
 </div>
 
 <style>
