@@ -4,7 +4,6 @@
 	import { groupOrders, titleOfPage } from "$lib/stores.js";
 	/** Utils */
 	import Config from "$lib/qrcode/configQrDefault.js";
-	import { qr } from "$lib/qrcode/qr";
 
 	/**
 	 * @typedef {Object} Orders
@@ -18,7 +17,6 @@
 	 * @property {string} trr - TRR.
 	 * @property {string} referenca - referenca.
 	 * @property {string} prejemnik - prejemnik.
-	 * @property {string} qrModulesString - qr modules string.
 	 * @property {string} qrSvnString - qr svn string.
 	 */
 
@@ -49,7 +47,7 @@
 
 	// @ts-ignore
 // @ts-ignore
-		$: titleOfPage.set("UPN QR v pdf");
+		$: titleOfPage.set("UPN QR");
 
 	// @ts-ignore
 	// @ts-ignore
@@ -69,19 +67,17 @@
 			order.referenca +
 			order.prejemnik;
 
-		// @ts-ignore
-		const qrModulesString = qr(qrString, Config.QR);
-
-		order.qrModulesString = JSON.stringify(qrModulesString);
-
 		const qrSvnString = generateSvg(
-			qrModulesString,
+			qrString,
 			size,
 			color,
 			background,
 		);
 		order.qrSvnString = qrSvnString;
 	});
+
+
+
 </script>
 
 <div class="a4">
@@ -89,7 +85,6 @@
 	{#each orders as order}
 		<div>{order.id}</div>
 		<div>{order.placnik}</div>
-		<div>{order.qrModulesString}</div>
 		<div>{order.qrSvnString}</div>
 	{/each}
 </div>
