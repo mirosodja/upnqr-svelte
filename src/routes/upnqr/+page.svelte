@@ -6,7 +6,7 @@
 	import Config from "$lib/qrcode/configQrDefault.js";
 
 	/**
-	 * @typedef {Object} Orders
+	 * @typedef {Object} Order
 	 * @property {number} id - ID.
 	 * @property {string} placnik - placnik.
 	 * @property {string} skupina - skupina.
@@ -25,14 +25,17 @@
 	const size = Config.size;
 
 	/**
-	 * @type {Orders[]}
+	 * @type {Order[]}
 	 */
 	let items = [];
 
 	/**
-	 * @type {Orders[]}
+	 * @type {Order[]}
 	 */
 	let orders = [];
+
+	// watch loading
+	let loading = false;
 
 	// code subscribes to the `ordersList` store and updates the `items` variable
 	// whenever the value of `ordersList` changes. This ensures that `items` always
@@ -42,42 +45,63 @@
 	});
 
 	// @ts-ignore
-// @ts-ignore
-		$: groupOrders;
+	// @ts-ignore
+	$: groupOrders;
 
 	// @ts-ignore
-// @ts-ignore
-		$: titleOfPage.set("UPN QR");
+	// @ts-ignore
+	$: titleOfPage.set("UPN QR");
 
 	// @ts-ignore
 	// @ts-ignore
 	$: orders = items.filter((item) => $groupOrders.includes(item.id));
 
 	// add qr svn strig to order object
-	orders.forEach(async (order) => {
-		const qrString =
-			order.id +
-			order.placnik +
-			order.skupina +
-			order.znesek +
-			order.koda_namena +
-			order.namen_placila +
-			order.rok_placila +
-			order.trr +
-			order.referenca +
-			order.prejemnik;
+	$: orders.forEach((order) => {
+		const qrString = prepareOrderData(order);
 
-		const qrSvnString = generateSvg(
-			qrString,
-			size,
-			color,
-			background,
-		);
+		const qrSvnString = generateSvg(qrString, size, color, background);
 		order.qrSvnString = qrSvnString;
 	});
 
+	/**
+	 * @param {Order} order
+	 * @returns {string}
+	 * @description
+	 * Prepare order data for UPN QR code.
+	 */
+	function prepareOrderData(order) {
+		const konstanta = "UPNQR";
+		const placnik_IBAN = "";
+		const polog = "";
+		const dvig = "";
+		const placnik_referenca = "";
+		const imePlacnik = order.placnik
+			.replaceAll(", ", ",")
+			.replaceAll(",", "\n");
+		const znesek = order.znesek
+			.toString()
+			.replace(".", "")
+			.replace(",", "")
+			.padStart(11, "0"); // 1.628,45 => "00000162845"
+		const datum_placila = "";
+		const nujno = "";
+		const koda_namena = order.koda_namena;
+		const namen_rok_placila = order.namen_placila;
+		const rok_placila = order.rok_placila;
+		const prejemnik_IBAN = order.trr.replace(/\s/g, "");
+		const prejemnik_referenca = order.referenca.replace(/\s/g, "");
+		const imePrejemnik = order.prejemnik
+			.replaceAll(", ", ",")
+			.replaceAll(",", "\n");
 
+		const orderData = `${konstanta}\n${placnik_IBAN}\n${polog}\n${dvig}\n${placnik_referenca}\n${imePlacnik}\n${znesek}\n${datum_placila}\n${nujno}\n${koda_namena}\n${namen_rok_placila}\n${rok_placila}\n${prejemnik_IBAN}\n
+${prejemnik_referenca}\n${imePrejemnik}\n`;
 
+		const controlSum = orderData.length.toString().padStart(3, "0");
+
+		return `${orderData}${controlSum}\n`;
+	}
 </script>
 
 <div class="a4">
@@ -85,7 +109,7 @@
 	{#each orders as order}
 		<div>{order.id}</div>
 		<div>{order.placnik}</div>
-		<div>{order.qrSvnString}</div>
+		<div>{@html order.qrSvnString}</div>
 	{/each}
 </div>
 

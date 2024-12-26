@@ -87,9 +87,6 @@
   };
 
   const editOrderHandler = (/** @type {number} */ orderId) => {
-    // const order = items.find((item) => item.id === orderId);
-    // console.log("Edit order: ", order);
-    // console.log("Edit order ID: ", orderId);
     id = orderId;
     showAddRecord = true;
   };
