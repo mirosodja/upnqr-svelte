@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-// ne rabim?: import ts from "typescript";
+import { isLoadingData } from "./stores";
 
 /**
  * @param {unknown} value
@@ -16,6 +16,8 @@ function isPositiveInteger(value) {
   */
 // @ts-ignore
 async function pasteTextFromClipboard(pastedText) {
+  let numberOfImportedRows = 0;
+  isLoadingData.set(true);
   try {
     const text = pastedText;
     // @ts-ignore
@@ -25,7 +27,6 @@ async function pasteTextFromClipboard(pastedText) {
       return;
     }
     rows.shift();
-    let numberOfImportedRows = 0;
     for (const row of rows) {
       // Create array of objects with validations
       const obj = {
@@ -108,10 +109,12 @@ async function pasteTextFromClipboard(pastedText) {
 
       }
     }
-    alert(`Uvoženo ${numberOfImportedRows} vrstic.`);
   } catch (err) {
     alert("Napaka pri uvozu podatkov: " + err);
     // console.error("Napaka pri branju iz odložišča: ", err);
+  } finally {
+    isLoadingData.set(false);
+    alert(`Uvoženo ${numberOfImportedRows} vrstic.`);
   }
 }
 

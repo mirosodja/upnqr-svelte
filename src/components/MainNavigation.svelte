@@ -1,7 +1,8 @@
 <script>
   import { page } from "$app/stores";
-  import { groupOrders, titleOfPage } from "$lib/stores.js";
+  import { groupOrders, isLoadingData, titleOfPage } from "$lib/stores.js";
   import { base } from "$app/paths";
+  import { Spinner } from "flowbite-svelte";
 
   // import logo from '$lib/images/svelte-logo.svg';
   // import github from '$lib/images/github.svg';
@@ -46,6 +47,11 @@
         <a href="{base}/pravnoobvestilo">Pravno obvestilo</a>
       </li>
     </ul>
+    {#if $isLoadingData}
+      <div class="text-center">
+        <Spinner color="purple" /> Potrpi, nalagam podatke ...&nbsp;&nbsp;{$isLoadingData}
+      </div>
+    {/if}
   </nav>
 </header>
 
