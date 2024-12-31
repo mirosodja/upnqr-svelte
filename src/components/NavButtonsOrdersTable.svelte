@@ -5,7 +5,7 @@
   import ExplainDataFormat from "./ExplainDataFormat.svelte";
   import AddRecord from "./AddRecord.svelte";
   import { db, numberOfAllRecords } from "$lib/db";
-  import { groupOrders } from "$lib/stores.js";
+  import { groupOrdersStoreIds } from "$lib/stores.js";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let toCopyText = "";
@@ -18,7 +18,7 @@
     // @ts-ignore
     const data = await db.orders.toArray();
     const selectedData = data.filter((/** @type {any} */ obj) =>
-      $groupOrders.includes(obj.id),
+      $groupOrdersStoreIds.includes(obj.id),
     );
     let arrFirstLine = [
       "Id",
@@ -88,9 +88,9 @@
   const deleteHandler = async () => {
     if (confirm("Ali res želite izbrisati izbrane zapise?")) {
       // @ts-expect-error
-      await db.orders.bulkDelete($groupOrders);
-      // remove ids from groupOrders
-      groupOrders.set([]);
+      await db.orders.bulkDelete($groupOrdersStoreIds);
+      // remove ids from groupOrdersStoreIds
+      groupOrdersStoreIds.set([]);
     }
   };
 
@@ -98,9 +98,9 @@
     // select all ids from table db.orders using liveQuery
     // @ts-ignore
     db.orders.orderBy("id").keys(function (allIds) {
-      $groupOrders = allIds.filter((/** @type {any} */ id) => {
+      $groupOrdersStoreIds = allIds.filter((/** @type {any} */ id) => {
         // @ts-ignore
-        return !$groupOrders.includes(id);
+        return !$groupOrdersStoreIds.includes(id);
       });
     });
   };
@@ -114,7 +114,7 @@
     id="delete"
     title="Izbriše izbrane zapise"
     on:click={deleteHandler}
-    disabled={!$groupOrders.length}>Izbriši</button
+    disabled={!$groupOrdersStoreIds.length}>Izbriši</button
   >
   <button
     id="preobrni"
@@ -126,7 +126,7 @@
     use:copy={toCopyText}
     on:click={readDbAndPutIntoClipboard}
     title="Kopira podatke v odložišče"
-    disabled={!$groupOrders.length}
+    disabled={!$groupOrdersStoreIds.length}
   >
     Kopiraj podatke
   </button>

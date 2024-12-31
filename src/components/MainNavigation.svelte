@@ -1,12 +1,12 @@
 <script>
   import { page } from "$app/stores";
-  import { groupOrders, isLoadingData, titleOfPage } from "$lib/stores.js";
+  import { groupOrdersStoreIds, isLoadingData, titleOfPage } from "$lib/stores.js";
   import { base } from "$app/paths";
   import { Spinner } from "flowbite-svelte";
 
   // import logo from '$lib/images/svelte-logo.svg';
   // import github from '$lib/images/github.svg';
-  $: disabled = !$groupOrders.length;
+  $: disabled = !$groupOrdersStoreIds.length;
 </script>
 
 <svelte:head>
@@ -49,7 +49,7 @@
     </ul>
     {#if $isLoadingData}
       <div class="text-center">
-        <Spinner color="purple" /> Potrpi, nalagam podatke ...&nbsp;&nbsp;{$isLoadingData}
+        <Spinner color="purple" /> Potrpi, nalagam podatke ...&nbsp;&nbsp;
       </div>
     {/if}
   </nav>
