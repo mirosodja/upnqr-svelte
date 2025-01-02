@@ -25,50 +25,49 @@
 	 * @type {Order[]}
 	 */
 	let orders = [];
+	let numOfOrders = 0;
+
 	onMount(() => {
 		createOrdersWithSvgString().then((result) => {
 			orders = result;
+			numOfOrders = orders.length;
 		});
 	});
 </script>
 
-<div class="a4">
-	<div>Test</div>
-	{#each orders as order}
-		<div>{order.id}</div>
-		<div>{order.placnik}</div>
-		<div>{@html order.qrSvnString}</div>
-	{/each}
-</div>
+{#each Array(Math.ceil(orders.length / 3)) as _, pageIndex}
+	<page size="A4">
+		{#each orders.slice(pageIndex * 3, pageIndex * 3 + 3) as order}
+			<div>{order.id}</div>
+			<div>{order.placnik}</div>
+			<div>{@html order.qrSvnString}</div>
+		{/each}
+	</page>
+{/each}
 
 <style>
-	.a4 {
-		width: 210mm;
-		height: 297mm;
-		margin: auto;
-		padding: 20mm;
-		box-sizing: border-box;
-		background: rgb(232, 134, 134);
+	page[size="A4"] {
+		background: white;
+		width: 21cm;
+		height: 29.7cm;
+		display: block;
+		margin: 0 auto;
+		margin-bottom: 0.5cm;
+		box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 	}
 
 	@media print {
 		:global(body *) {
 			visibility: hidden;
 		}
-		.a4,
-		.a4 * {
+		page[size="A4"] * {
 			visibility: visible;
 		}
-		.a4 {
-			position: absolute;
-			left: 0;
+		page[size="A4"] {
 			top: 0;
-		}
-		@page {
-			margin-left: 0;
-			margin-right: 0;
-			margin-top: 0;
-			margin-bottom: 0;
+			left: 0;
+			margin: 0;
+			box-shadow: 0;
 		}
 	}
 </style>

@@ -2,8 +2,7 @@
 import Config from "$lib/qrcode/configQrDefault.js";
 import { qr } from "./qr";
 
-
-export const createQrSvgString  = (
+export const createQrSvgString = (
     /** @type {string} */ qrString,
     /** @type {number} */ size,
     /** @type {string} */ color,
