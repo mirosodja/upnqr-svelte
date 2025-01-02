@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { readOrder } from './db';
 import { groupOrdersStoreIds, isLoadingData } from "./stores";
-import { createImgTag, createQrSvgString } from './qrcode/createQrSvgString';
+import { createQrSvgString } from './qrcode/createQrSvgString';
 import configQrDefault from './qrcode/configQrDefault';
 
 
@@ -51,11 +51,9 @@ function prepareOrderData(order) {
         .replaceAll(", ", ",")
         .replaceAll(",", "\n");
 
-    const orderData = `${konstanta}\n${placnik_IBAN}\n${polog}\n${dvig}\n${placnik_referenca}\n${imePlacnik}\n${znesek}\n${datum_placila}\n${nujno}\n${koda_namena}\n${namen_rok_placila}\n${rok_placila}\n${prejemnik_IBAN}\n
-${prejemnik_referenca}\n${imePrejemnik}\n`;
+    const orderData = `${konstanta}\n${placnik_IBAN}\n${polog}\n${dvig}\n${placnik_referenca}\n${imePlacnik}\n${znesek}\n${datum_placila}\n${nujno}\n${koda_namena}\n${namen_rok_placila}\n${rok_placila}\n${prejemnik_IBAN}\n${prejemnik_referenca}\n${imePrejemnik}\n`;
 
     const controlSum = orderData.length.toString().padStart(3, "0");
-
     return `${orderData}${controlSum}\n`;
 }
 
@@ -82,7 +80,7 @@ export async function createOrdersWithSvgString() {
             // @ts-ignore
             const order = await readOrder(id);
             const str = prepareOrderData(order);
-            const svgString = await createImgTag(str, configQrDefault.size, 2, "QR koda");
+            const svgString = await createQrSvgString(str, configQrDefault.size, configQrDefault.color, configQrDefault.backgroundColor);
             order.qrSvnString = svgString;
             return order;
         }));
