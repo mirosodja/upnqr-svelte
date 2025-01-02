@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { readOrder } from './db';
 import { groupOrdersStoreIds, isLoadingData } from "./stores";
-import { createQrSvgString } from './qrcode/createQrSvgString';
+import { createImgTag, createQrSvgString } from './qrcode/createQrSvgString';
 import configQrDefault from './qrcode/configQrDefault';
 
 
@@ -82,7 +82,7 @@ export async function createOrdersWithSvgString() {
             // @ts-ignore
             const order = await readOrder(id);
             const str = prepareOrderData(order);
-            const svgString = await createQrSvgString(str, configQrDefault.size, configQrDefault.color, configQrDefault.backgroundColor);
+            const svgString = await createImgTag(str, configQrDefault.size, 2, "QR koda");
             order.qrSvnString = svgString;
             return order;
         }));
