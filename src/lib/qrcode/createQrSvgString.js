@@ -1,6 +1,6 @@
 /** Utils */
 import Config from "$lib/qrcode/configQrDefault.js";
-import { qr } from "./qr";
+import { qr } from "$lib/qrcode/qr";
 
 
 export const createQrSvgString = (
