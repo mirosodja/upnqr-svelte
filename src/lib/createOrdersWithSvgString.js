@@ -3,6 +3,7 @@ import { readOrder } from './db';
 import { groupOrdersStoreIds, isLoadingData } from "./stores";
 import { createQrSvgString } from './qrcode/createQrSvgString';
 import configQrDefault from './qrcode/configQrDefault';
+import qrcodegen from '$lib/qrcode/qrcodegen';
 
 
 /**
@@ -57,6 +58,38 @@ function prepareOrderData(order) {
     return `${orderData}${controlSum}\n`;
 }
 
+/**
+ * Converts a QR code object to an SVG string representation.
+ *
+ * @param {qrcodegen.QrCode} qr - The QR code object to convert.
+ * @param {number} border - The width of the border to add around the QR code. Must be non-negative.
+ * @param {string} lightColor - The color to use for the light (background) areas of the QR code.
+ * @param {string} darkColor - The color to use for the dark (foreground) areas of the QR code.
+ * @returns {string} The SVG string representation of the QR code.
+ * @throws {RangeError} If the border is negative.
+ */
+function toSvgString(qr, border, lightColor, darkColor) {
+    if (border < 0)
+        throw new RangeError("Border must be non-negative");
+    /**
+     * @type {Array<string>}
+     */
+    let parts = [];
+    for (let y = 0; y < qr.size; y++) {
+        for (let x = 0; x < qr.size; x++) {
+            if (qr.getModule(x, y))
+                parts.push(`M${x + border},${y + border}h1v1h-1z`);
+        }
+    }
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${qr.size + border * 2} ${qr.size + border * 2}" stroke="none">
+<rect width="100%" height="100%" fill="${lightColor}"/>
+<path d="${parts.join(" ")}" fill="${darkColor}"/>
+</svg>
+`;
+}
+
 
 export async function createOrdersWithSvgString() {
     isLoadingData.set(true);
@@ -80,7 +113,10 @@ export async function createOrdersWithSvgString() {
             // @ts-ignore
             const order = await readOrder(id);
             const str = prepareOrderData(order);
-            const svgString = await createQrSvgString(str, configQrDefault.size, configQrDefault.color, configQrDefault.backgroundColor);
+            // const svgString = createQrSvgString(str, configQrDefault.size, configQrDefault.color, configQrDefault.backgroundColor);
+            const QRC = qrcodegen.QrCode;
+            const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
+            const svgString = toSvgString(qr0, 4, '#FFFFFF', '#000000');
             order.qrSvnString = svgString;
             return order;
         }));
