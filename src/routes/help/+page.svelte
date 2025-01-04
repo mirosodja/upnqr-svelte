@@ -3,7 +3,9 @@
   $: titleOfPage.set("Pomoč");
 </script>
 
-<!-- TODO: uredi še izgled strani, ker je A4 list -->
+<!-- TODO: uredi še izgled strani, ker je A4 list 
+  in napiši: "Hiter začetek"
+-->
 <div class="text-column">
   <h2>
     Pomoč za uporabo programa "Univerzalni plačilni nalogi - UPN QR program"

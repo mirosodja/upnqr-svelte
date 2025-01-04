@@ -1,7 +1,8 @@
 <script>
   import "../app.postcss";
-  import MainNavigation from "../components/MainNavigation.svelte";
   import "./styles.css";
+
+  import MainNavigation from "../components/MainNavigation.svelte";
 </script>
 
 <div class="app">

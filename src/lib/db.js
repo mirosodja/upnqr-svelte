@@ -1,8 +1,10 @@
 import { writable } from 'svelte/store';
 import Dexie, { liveQuery } from 'dexie';
+import { isLoadingData } from './stores';
 
 export const db = new Dexie('upngrDb');
 
+// TODO: check if all functions are used in the app
 
 db.version(2).stores({
   orders: '++id'
@@ -12,11 +14,13 @@ db.version(2).stores({
 export const numberOfAllRecords = writable(0);
 
 export const ordersList = liveQuery(async () => {
+  isLoadingData.set(true);
   // @ts-expect-error
   const collection = await db.orders.orderBy('id');
   // where('placnik').startsWithIgnoreCase('')
   const recordsCount = await collection.count();
   numberOfAllRecords.set(recordsCount);
+  isLoadingData.set(false);
   return await collection.toArray();
 });
 

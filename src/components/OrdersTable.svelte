@@ -13,9 +13,9 @@
   } from "flowbite-svelte";
 
   import { ordersList, numberOfAllRecords } from "$lib/db";
-  import { fieldsInTable } from "$lib/constants.js";
+  import { fieldsInTable } from "$lib/fieldsInTable.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
-  import { groupOrders } from "$lib/stores.js";
+  import { groupOrdersStoreIds } from "$lib/stores.js";
   import AddRecord from "./AddRecord.svelte";
   // modal for editing record
   let showAddRecord = false;
@@ -60,9 +60,9 @@
     items = value;
   });
 
-  // The reactive statement `$: groupOrders` is used to automatically update the grouped orders whenever the dependencies change.
+  // The reactive statement `$: groupOrdersStoreIds` is used to automatically update the grouped orders whenever the dependencies change.
 
-  $: groupOrders;
+  $: groupOrdersStoreIds;
 
   $: {
     groupPattern;
@@ -80,16 +80,13 @@
       const /** @type {any}[] */ groupOrdersIds = filteredOrders.map(
           (/** @type {{ id: any; }} */ order) => order.id,
         );
-      groupOrders.set(groupOrdersIds);
+      groupOrdersStoreIds.set(groupOrdersIds);
     } else {
-      groupOrders.set([]);
+      groupOrdersStoreIds.set([]);
     }
   };
 
   const editOrderHandler = (/** @type {number} */ orderId) => {
-    // const order = items.find((item) => item.id === orderId);
-    // console.log("Edit order: ", order);
-    // console.log("Edit order ID: ", orderId);
     id = orderId;
     showAddRecord = true;
   };
@@ -115,7 +112,7 @@
   //! number of filtered records when filter is not used is equal to number of all records
   $: numberOfFiltered = filteredOrders.length;
   $: if (numberOfFiltered > 0)
-    checkedSelectAll = $groupOrders.length === numberOfFiltered;
+    checkedSelectAll = $groupOrdersStoreIds.length === numberOfFiltered;
 </script>
 
 <AddRecord bind:clickToOpenAddRecord={showAddRecord} bind:id />
@@ -125,7 +122,7 @@
     <b>Skupaj zapisov:</b>
     {$numberOfAllRecords}
     <b>Izbranih zapisov:</b>
-    {$groupOrders.length}
+    {$groupOrdersStoreIds.length}
     {#if groupPattern !== ""}
       <b>Filtriranih zapisov:</b>
       {numberOfFiltered}
@@ -266,7 +263,7 @@
               <TableBodyCell>
                 <Checkbox
                   id={item.id}
-                  bind:group={$groupOrders}
+                  bind:group={$groupOrdersStoreIds}
                   value={item.id}
                 />
               </TableBodyCell>
