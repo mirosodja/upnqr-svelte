@@ -4,6 +4,7 @@ import { isLoadingData } from './stores';
 
 export const db = new Dexie('upngrDb');
 
+// TODO: check if all functions are used in the app
 
 db.version(2).stores({
   orders: '++id'

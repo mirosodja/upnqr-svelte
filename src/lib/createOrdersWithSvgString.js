@@ -1,8 +1,6 @@
 import { get } from 'svelte/store';
 import { readOrder } from './db';
 import { groupOrdersStoreIds, isLoadingData } from "./stores";
-import { createQrSvgString } from './qrcode/createQrSvgString';
-import configQrDefault from './qrcode/configQrDefault';
 import qrcodegen from '$lib/qrcode/qrcodegen';
 
 
