@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import { isLoadingData } from "./stores";
+import { isInsertingData } from "./stores";
 
 /**
  * @param {unknown} value
@@ -17,7 +17,7 @@ function isPositiveInteger(value) {
 // @ts-ignore
 async function pasteTextFromClipboard(pastedText) {
   let numberOfImportedRows = 0;
-  isLoadingData.set(true);
+  isInsertingData.set(true);
   try {
     const text = pastedText;
     // @ts-ignore
@@ -27,6 +27,7 @@ async function pasteTextFromClipboard(pastedText) {
       return;
     }
     rows.shift();
+    // const arrObj = [];
     for (const row of rows) {
       // Create array of objects with validations
       const obj = {
@@ -102,18 +103,26 @@ async function pasteTextFromClipboard(pastedText) {
               obj[key] = obj[key].trim();;
             }
           });
+          // arrObj.push(obj);
           // @ts-ignore
-          const id = await db.orders.put(obj);
+          await db.orders.put(obj);
           numberOfImportedRows++;
         }
-
       }
+      // // @ts-ignore
+      // await db.orders.bulkAdd(arrObj).then(() => {
+      //   console.log("Podatki so bili uspešno uvoženi.");
+      // }).catch((/** @type {{ name: string; failures: any; }} */ error) => {
+      //   if (error.name === "BulkError") {
+      //     console.error("Prišlo je do napake pri uvozu podatkov: ", error.failures);
+      //   } else {
+      //   }
+      // });
     }
   } catch (err) {
     alert("Napaka pri uvozu podatkov: " + err);
-    // console.error("Napaka pri branju iz odložišča: ", err);
   } finally {
-    isLoadingData.set(false);
+    isInsertingData.set(false);
     alert(`Uvoženo ${numberOfImportedRows} vrstic.`);
   }
 }

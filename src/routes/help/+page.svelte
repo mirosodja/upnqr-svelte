@@ -10,6 +10,8 @@
   <h2>
     Pomoč za uporabo programa "Univerzalni plačilni nalogi - UPN QR program"
   </h2>
+  <h3>Hiter začetek:</h3>
+  <p>TO DO</p>
   <h3>Program "Univerzalni plačilni nalogi - UPN QR program"</h3>
   <ul>
     <li>

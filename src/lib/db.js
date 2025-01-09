@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import Dexie, { liveQuery } from 'dexie';
-import { isLoadingData } from './stores';
+import { isLoadingData, isInsertingData } from './stores';
 
 export const db = new Dexie('upngrDb');
 
@@ -14,13 +14,14 @@ db.version(2).stores({
 export const numberOfAllRecords = writable(0);
 
 export const ordersList = liveQuery(async () => {
-  isLoadingData.set(true);
+  // to prevent showing/hiding loading spinner when inserting data
+  if (!isInsertingData) { isLoadingData.set(true) }
   // @ts-expect-error
   const collection = await db.orders.orderBy('id');
   // where('placnik').startsWithIgnoreCase('')
   const recordsCount = await collection.count();
   numberOfAllRecords.set(recordsCount);
-  isLoadingData.set(false);
+  if (!isInsertingData) { isLoadingData.set(false) }
   return await collection.toArray();
 });
 

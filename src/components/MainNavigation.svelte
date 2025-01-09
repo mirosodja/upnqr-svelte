@@ -1,6 +1,11 @@
 <script>
   import { page } from "$app/stores";
-  import { groupOrdersStoreIds, isLoadingData, titleOfPage } from "$lib/stores.js";
+  import {
+    groupOrdersStoreIds,
+    isLoadingData,
+    isInsertingData,
+    titleOfPage,
+  } from "$lib/stores.js";
   import { base } from "$app/paths";
   import { Spinner } from "flowbite-svelte";
 
@@ -13,8 +18,12 @@
   <title>UPN QR->{$titleOfPage}</title>
   <meta name="description" content={$titleOfPage} />
 </svelte:head>
-
-<header>
+{#if $isLoadingData || $isInsertingData}
+  <div class="overlay">
+    <Spinner color="purple" /> Trenutek, nalagam podatke ...&nbsp;&nbsp;
+  </div>
+{/if}
+<header class:disabled={$isLoadingData || $isInsertingData}>
   <div class="corner">
     <a href="./">
       <h1>Univerzalni plačilni nalogi UPN QR - {$titleOfPage}</h1>
@@ -47,11 +56,6 @@
         <a href="{base}/pravnoobvestilo">Pravno obvestilo</a>
       </li>
     </ul>
-    {#if $isLoadingData}
-      <div class="text-center">
-        <Spinner color="purple" /> Potrpi, nalagam podatke ...&nbsp;&nbsp;
-      </div>
-    {/if}
   </nav>
 </header>
 
@@ -146,6 +150,20 @@
     background: linear-gradient(to bottom, #d1d1d1 5%, #f9f9f9 100%);
     background-color: #d1d1d1;
     color: #a0a0a0;
+    pointer-events: none;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
     pointer-events: none;
   }
 </style>
