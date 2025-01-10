@@ -3,6 +3,7 @@
 	import { titleOfPage } from "$lib/stores.js";
 	/** Utils */
 	import { createOrdersWithSvgString } from "$lib/createOrdersWithSvgString";
+	import NavButtonsUpnQr from "$lib/components/NavButtonsUpnQr.svelte";
 
 	$: titleOfPage.set("UPN QR");
 	/**
@@ -56,6 +57,8 @@
 		return `top: ${index * 99}mm; left: 0;`;
 	};
 </script>
+
+<NavButtonsUpnQr ordersForPdf={orders} />
 
 {#each Array(Math.ceil(orders.length / 3)) as _, pageIndex}
 	<page size="A4">

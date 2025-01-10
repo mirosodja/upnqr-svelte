@@ -165,12 +165,15 @@
     flex-wrap: wrap;
     padding-top: 10px;
     padding-bottom: 10px;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
+    gap: 10px;
     background-size: contain;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding-left: 10px;
     margin-bottom: 20px;
   }
+  
   .pastediv {
     box-shadow: 3px 4px 0px 0px #1564ad;
     background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);

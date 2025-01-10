@@ -2,7 +2,7 @@
   import "../app.postcss";
   import "./styles.css";
 
-  import MainNavigation from "../components/MainNavigation.svelte";
+  import MainNavigation from "$lib/components/MainNavigation.svelte";
 </script>
 
 <div class="app">

@@ -11,7 +11,6 @@
     Select,
     Input,
   } from "flowbite-svelte";
-
   import { ordersList, numberOfAllRecords } from "$lib/db";
   import { fieldsInTable } from "$lib/fieldsInTable.js";
   import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
