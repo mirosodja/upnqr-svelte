@@ -1,30 +1,28 @@
 <script>
-  import { numberOfAllRecords } from "$lib/db";
+  import saveAs from "file-saver";
 
-  import { groupOrdersStoreIds } from "$lib/stores.js";
+  /**
+   * @typedef {Object} Order
+   * @property {number} id - ID.
+   * @property {string} placnik - placnik.
+   * @property {string} skupina - skupina.
+   * @property {string|number} znesek - znesek (string or number).
+   * @property {string} koda_namena - koda namena.
+   * @property {string} namen_placila - namen placila.
+   * @property {string} rok_placila - rok placila.
+   * @property {string} trr - TRR.
+   * @property {string} referenca - referenca.
+   * @property {string} prejemnik - prejemnik.
+   * @property {string} qrSvnString - qr svn string.
+   */
 
-  	/**
-	 * @typedef {Object} Order
-	 * @property {number} id - ID.
-	 * @property {string} placnik - placnik.
-	 * @property {string} skupina - skupina.
-	 * @property {string|number} znesek - znesek (string or number).
-	 * @property {string} koda_namena - koda namena.
-	 * @property {string} namen_placila - namen placila.
-	 * @property {string} rok_placila - rok placila.
-	 * @property {string} trr - TRR.
-	 * @property {string} referenca - referenca.
-	 * @property {string} prejemnik - prejemnik.
-	 * @property {string} qrSvnString - qr svn string.
-	 */
+  //  * @property {string} [upnQrString] - UPN QR string.
 
-	//  * @property {string} [upnQrString] - UPN QR string.
+  /**
+   * @type {Order[]}
+   */
 
-	/**
-	 * @type {Order[]}
-	 */
-
-  export let ordersForPdf = [];
+  export let ordersForPdf = []; // ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
 
   const createPdf = async () => {
     // @ts-ignore
@@ -61,30 +59,39 @@
     doc.save("upn-qr.pdf");
   };
 
-  let showAddRecord = false;
-  const addRecordHandler = () => {
-    showAddRecord = true;
-  };
+  // function to create a PNG image file from the order. The image is then added to zip file for download
+  const createPng = async () => {
+    const { downloadZip } = await import("client-zip");
 
-  const deleteHandler = async () => {
-    if (confirm("Ali res želite izbrisati izbrane zapise?")) {
-      // @ts-expect-error
-      await db.orders.bulkDelete($groupOrdersStoreIds);
-      // remove ids from groupOrdersStoreIds
-      groupOrdersStoreIds.set([]);
-    }
-  };
-
-  const invertSelectionHandler = () => {
-    // select all ids from table db.orders using liveQuery
     // @ts-ignore
-    db.orders.orderBy("id").keys(function (allIds) {
-      $groupOrdersStoreIds = allIds.filter((/** @type {any} */ id) => {
+    const zip = new downloadZip();
+
+    ordersForPdf.forEach((order, index) => {
+      const svgString = order.qrSvnString;
+      const svg = new Blob([svgString], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(svg);
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
         // @ts-ignore
-        return !$groupOrdersStoreIds.includes(id);
-      });
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const dataUrl = canvas.toDataURL("image/png");
+        zip.file(`upn-qr-${index}.png`, dataUrl.split(",")[1], {
+          base64: true,
+        });
+      };
+      img.src = url;
+    });
+
+    zip.generateAsync({ type: "blob" }).then((/** @type {any} */ content) => {
+      saveAs(content, "upn-qr.zip");
     });
   };
+
 </script>
 
 <div class="navButton">
@@ -96,8 +103,7 @@
   <button
     id="tozip"
     title="Pretvori UPN QR naloge v ZIP datoteko za pošiljanje"
-    on:click={invertSelectionHandler}
-    disabled={$numberOfAllRecords === 0}>V ZIP</button
+    on:click={createPng}>V ZIP</button
   >
 </div>
 
