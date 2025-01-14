@@ -1,5 +1,18 @@
 <script>
+  import { Dropdown, Radio, Helper } from "flowbite-svelte";
+  // import { ChevronDownOutline } from 'flowbite-svelte-icons';
   import saveAs from "file-saver";
+
+  import { createPdf } from "$lib/createPdf";
+
+  // radio button group
+
+  /**
+   * @type {"pdf" | "zipPDF" | "zipPNG"}
+   * Represents the type of file to save.
+   */
+  let saveType = "pdf";
+  let dropdownOpen = false;
 
   /**
    * @typedef {Object} Order
@@ -13,7 +26,7 @@
    * @property {string} trr - TRR.
    * @property {string} referenca - referenca.
    * @property {string} prejemnik - prejemnik.
-   * @property {string} qrSvnString - qr svn string.
+   * @property {string} qrSvgString - qr svn string.
    */
 
   //  * @property {string} [upnQrString] - UPN QR string.
@@ -24,40 +37,21 @@
 
   export let ordersForPdf = []; // ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
 
-  const createPdf = async () => {
-    // @ts-ignore
-    const { jsPDF } = await import("jspdf");
+  //! This function is not used, but it is left here for future reference
+  // const htmlToJpg = () => {
+  //   var canvas = document.querySelector(".to-print");
+  //   screenWidth = parseFloat(window.getComputedStyle(canvas).width);
 
-    const doc = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
-
-    ordersForPdf.forEach((order, index) => {
-      const svgString = order.qrSvnString;
-      const svg = new Blob([svgString], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(svg);
-
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        // @ts-ignore
-        context.drawImage(img, 0, 0, img.width, img.height);
-        const dataUrl = canvas.toDataURL("image/png");
-        doc.addImage(dataUrl, "PNG", 0, 0, 297, 210);
-        if (index < ordersForPdf.length - 1) {
-          doc.addPage();
-        }
-      };
-      img.src = url;
-    });
-
-    doc.save("upn-qr.pdf");
-  };
+  //   var problematic = document.querySelectorAll(".convert-to-jpg");
+  //   problematic.forEach(function (el) {
+  //     html2canvas(el, {
+  //       scale: 2480 / screenWidth, // 2480px - size for A4 paper, 300 dpi
+  //     }).then(function (canvas) {
+  //       var img = canvas.toDataURL("image/jpeg");
+  //       el.innerHTML = '<img src="' + img + '" class="img">';
+  //     });
+  //   });
+  // };
 
   // function to create a PNG image file from the order. The image is then added to zip file for download
   const createPng = async () => {
@@ -67,7 +61,7 @@
     const zip = new downloadZip();
 
     ordersForPdf.forEach((order, index) => {
-      const svgString = order.qrSvnString;
+      const svgString = order.qrSvgString;
       const svg = new Blob([svgString], { type: "image/svg+xml" });
       const url = URL.createObjectURL(svg);
 
@@ -92,19 +86,77 @@
     });
   };
 
+  const saveFileHandler = () => {
+    if (saveType === "pdf") {
+      createPdf(ordersForPdf);
+    } else if (saveType === "zipPDF") {
+      alert("Not implemented yet");
+    } else {
+      alert("Not implemented yet");
+    }
+  };
 </script>
 
 <div class="navButton">
   <button
     id="topdf"
-    title="Pretvori UPN QR naloge v PDF za tiskanje"
-    on:click={createPdf}>V PDF</button
+    title="Pretvori in shrani UPN QR naloge v PDF za tiskanje"
+    on:click={saveFileHandler}>Shrani PDF</button
   >
-  <button
-    id="tozip"
-    title="Pretvori UPN QR naloge v ZIP datoteko za pošiljanje"
-    on:click={createPng}>V ZIP</button
+  <button class="right-align"
+    >Shrani v: {saveType}<svg
+      class="w-2.5 h-2.5 ms-3"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 10 6"
+      ><path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="m1 1 4 4 4-4"
+      /></svg
+    ></button
   >
+  <Dropdown class="w-60 p-3 space-y-1" bind:open={dropdownOpen}>
+    <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+      <Radio
+        name="saveType"
+        bind:group={saveType}
+        on:click={() => {
+          dropdownOpen = false;
+          saveType = "pdf";
+        }}
+        value="pdf">PDF</Radio
+      >
+      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+    </li>
+    <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+      <Radio
+        name="saveType"
+        bind:group={saveType}
+        on:click={() => {
+          dropdownOpen = false;
+          saveType = "zipPDF";
+        }}
+        value="zipPDF">Enable 2FA auth</Radio
+      >
+      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+    </li>
+    <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+      <Radio
+        name="saveType"
+        bind:group={saveType}
+        on:click={() => {
+          dropdownOpen = false;
+          saveType = "zipPNG";
+        }}
+        value="zipPNG">Subscribe newsletter</Radio
+      >
+      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+    </li>
+  </Dropdown>
 </div>
 
 <style>
@@ -153,6 +205,15 @@
     color: #a0a0a0;
     cursor: not-allowed;
     box-shadow: none;
+  }
+
+  .right-align {
+    margin-left: auto;
+    margin-right: 20px;
+  }
+
+  svg {
+    display: inline-block;
   }
 
   @keyframes blink {

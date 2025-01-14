@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import { isInsertingData } from "./stores";
+import { isInsertingData } from "$lib/stores";
 
 /**
  * @param {unknown} value

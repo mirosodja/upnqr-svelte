@@ -18,7 +18,7 @@
 	 * @property {string} trr - TRR.
 	 * @property {string} referenca - referenca.
 	 * @property {string} prejemnik - prejemnik.
-	 * @property {string} qrSvnString - qr svn string.
+	 * @property {string} qrSvgString - qr svn string.
 	 */
 
 	//  * @property {string} [upnQrString] - UPN QR string.
@@ -80,7 +80,7 @@
 					<div class="ime-prejemnik-potrdilo">{order.prejemnik}</div>
 				</div>
 				<div class="talon">
-					<div class="qrcode">{@html order.qrSvnString}</div>
+					<div class="qrcode">{@html order.qrSvgString}</div>
 					<div class="ime-placnik">
 						{order.placnik}
 					</div>
@@ -109,8 +109,10 @@
 		display: block;
 		margin: 0 0 0.5cm 0;
 		background-size: 100%;
-		/*! for production use point in path */
-		background-image: url("https://potep.eu/upn-test/img/upnqr-a4.png");
+		/*! production */
+		/* background-image: url("./img/upnqr-a4.png"); */
+		/*! dev */
+		background-image: url("/img/upnqr-a4.png");
 		box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 		page-break-after: always;
 	}
@@ -122,8 +124,8 @@
 
 	.potrdilo {
 		position: absolute;
-		top: 6mm;
 		left: 4mm;
+		top: 6mm;
 		width: 52.5mm;
 		height: 99mm;
 		font-family: "Courier New", Courier, monospace;
@@ -132,53 +134,53 @@
 
 	.ime-placnik-potrdilo {
 		position: absolute;
-		top: 2mm;
 		left: 2mm;
+		top: 2mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
 
 	.namen-rok-placila-potrdilo {
 		position: absolute;
-		top: 18mm;
 		left: 2mm;
+		top: 18mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
 
 	.znesek-potrdilo {
 		position: absolute;
-		top: 30mm;
 		left: 14mm;
+		top: 30mm;
 		width: 38mm;
 	}
 
 	.prejemnik-iban-potrdilo {
 		position: absolute;
-		top: 39mm;
 		left: 2mm;
+		top: 39mm;
 		width: 50mm;
 	}
 
 	.prejemnik-referenca-potrdilo {
 		position: absolute;
-		top: 43mm;
 		left: 2mm;
+		top: 43mm;
 		width: 50mm;
 	}
 
 	.ime-prejemnik-potrdilo {
 		position: absolute;
-		top: 54mm;
 		left: 2mm;
+		top: 54mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
 
 	.talon {
 		position: absolute;
-		top: 0;
 		left: 60mm;
+		top: 0;
 		width: 150mm;
 		height: 99mm;
 		font-family: "Courier New", Courier, monospace;
@@ -194,58 +196,51 @@
 	}
 	.ime-placnik {
 		position: absolute;
-		top: 23mm;
 		left: 49mm;
+		top: 23mm;
 		width: 60mm;
 		white-space: pre-line;
 	}
-
-	.rok-placila {
-		position: absolute;
-		top: 50mm;
-		left: 118mm;
-		width: 28mm;
-	}
-
-	.koda-namena {
-		position: absolute;
-		top: 50mm;
-		left: 6mm;
-		width: 12mm;
-	}
-
-	.namen-placila {
-		position: absolute;
-		top: 50mm;
-		left: 23mm;
-		width: 90mm;
-	}
-
 	.znesek {
 		position: absolute;
-		top: 41mm;
 		left: 56mm;
+		top: 41mm;
 		width: 38mm;
 	}
-
+	.rok-placila {
+		position: absolute;
+		left: 118mm;
+		top: 50mm;
+		width: 28mm;
+	}
+	.koda-namena {
+		position: absolute;
+		left: 6mm;
+		top: 50mm;
+		width: 12mm;
+	}
+	.namen-placila {
+		position: absolute;
+		left: 23mm;
+		top: 50mm;
+		width: 90mm;
+	}
 	.prejemnik-iban {
 		position: absolute;
-		top: 59mm;
 		left: 6mm;
+		top: 59mm;
 		width: 130mm;
 	}
-
 	.prejemnik-referenca {
 		position: absolute;
-		top: 67mm;
 		left: 6mm;
+		top: 67mm;
 		width: 97mm;
 	}
-
 	.ime-prejemnik {
 		position: absolute;
-		top: 75mm;
 		left: 6mm;
+		top: 75mm;
 		width: 97mm;
 		white-space: pre-line;
 	}

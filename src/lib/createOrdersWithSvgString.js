@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
-import { readOrder } from './db';
-import { groupOrdersStoreIds, isLoadingData } from "./stores";
+import { readOrder } from '$lib/db';
+import { groupOrdersStoreIds, isLoadingData } from "$lib/stores";
 import qrcodegen from '$lib/qrcode/qrcodegen';
 
 
@@ -16,7 +16,7 @@ import qrcodegen from '$lib/qrcode/qrcodegen';
  * @property {string} trr - TRR.
  * @property {string} referenca - referenca.
  * @property {string} prejemnik - prejemnik.
- * @property {string} qrSvnString - qr svn string.
+ * @property {string} qrSvgString - qr svn string.
  */
 
 /**
@@ -111,11 +111,10 @@ export async function createOrdersWithSvgString() {
             // @ts-ignore
             const order = await readOrder(id);
             const str = prepareOrderData(order);
-            // const svgString = createQrSvgString(str, configQrDefault.size, configQrDefault.color, configQrDefault.backgroundColor);
             const QRC = qrcodegen.QrCode;
             const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
             const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
-            order.qrSvnString = svgString;
+            order.qrSvgString = svgString;
             return order;
         }));
     } catch (error) {
