@@ -15,6 +15,34 @@ import { isLoadingData } from "$lib/stores";
  * @property {string} qrSvgString - qr svn string.
  */
 
+// od tu naprej je moj dodatek
+// const {body} = document
+
+// const canvas = document.createElement('canvas')
+// const ctx = canvas.getContext('2d')
+// canvas.width = canvas.height = 100
+
+// const tempImg = document.createElement('img')
+// tempImg.addEventListener('load', onTempImageLoad)
+// tempImg.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>em{color:red;}</style><em>I</em> lick <span>cheese</span></div></foreignObject></svg>')
+
+// const targetImg = document.createElement('img')
+// body.appendChild(targetImg)
+
+// /**
+//  * @param {Event} e
+//  */
+// function onTempImageLoad(e){
+//     if (ctx !== null) {
+//         // Safe to use ctx here
+//         ctx.fillText("Hello, world!", 50, 50);
+//     } else {
+//         console.error("Context is null");
+//     }
+//   targetImg.src = canvas.toDataURL()
+// }
+
+// do tu je moj dodatek
 
 export const createPdf = async (
     /**
@@ -73,25 +101,25 @@ export const createPdf = async (
         doc.text(order.prejemnik, 66, 79 + yOffset, { maxWidth: 97 });
 
         // Add QR code
-        // const svgString = order.qrSvnString;
-        // const svg = new Blob([svgString], { type: "image/svg+xml" });
-        // const url = URL.createObjectURL(svg);
+        const svgString = order.qrSvgString;
+        const svg = new Blob([svgString], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(svg);
 
-        // const img = new Image();
-        // img.onload = () => {
-        //   const canvas = document.createElement("canvas");
-        //   const context = canvas.getContext("2d");
-        //   canvas.width = img.width;
-        //   canvas.height = img.height;
-        //   // @ts-ignore
-        //   context.drawImage(img, 0, 0, img.width, img.height);
-        //   const dataUrl = canvas.toDataURL("image/png");
-        //   doc.addImage(dataUrl, "PNG", 65, 6 + yOffset, 39.5, 39.5);
-        //   if (index < ordersForPdf.length - 1) {
-        //     doc.addPage();
-        //   }
-        // };
-        // img.src = url;
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          // @ts-ignore
+          context.drawImage(img, 0, 0, img.width, img.height);
+          const dataUrl = canvas.toDataURL("image/png");
+          doc.addImage(dataUrl, "PNG", 65, 6 + yOffset, 39.5, 39.5);
+          if (index < ordersForPdf.length - 1) {
+            doc.addPage();
+          }
+        };
+        img.src = url;
     });
     const now = new Date();
     const formattedDate = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;

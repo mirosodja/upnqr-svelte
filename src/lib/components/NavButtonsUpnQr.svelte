@@ -54,36 +54,83 @@
   // };
 
   // function to create a PNG image file from the order. The image is then added to zip file for download
+  // const createPng = async () => {
+  //   const { downloadZip } = await import("client-zip");
+
+  //   const zip = new downloadZip();
+
+  //   ordersForPdf.forEach((order, index) => {
+  //     const svgString = order.qrSvgString;
+  //     const svg = new Blob([svgString], { type: "image/svg+xml" });
+  //     const url = URL.createObjectURL(svg);
+
+  //     const img = new Image();
+  //     img.onload = () => {
+  //       const canvas = document.createElement("canvas");
+  //       const context = canvas.getContext("2d");
+  //       canvas.width = img.width;
+  //       canvas.height = img.height;
+  //       // @ts-ignore
+  //       context.drawImage(img, 0, 0, img.width, img.height);
+  //       const dataUrl = canvas.toDataURL("image/png");
+  //       console.log(dataUrl);
+  //       zip.file(`upn-qr-${index}.png`, dataUrl.split(",")[1], {
+  //         base64: true,
+  //       });
+  //     };
+  //     img.src = url;
+  //   });
+
+  //   zip.generateAsync({ type: "blob" }).then((/** @type {any} */ content) => {
+  //     saveAs(content, "upn-qr.zip");
+  //   });
+  // };
+
+  /**
+   * @typedef {Object} FileEntry
+   * @property {string} name
+   * @property {string} input
+   * @property {Object} options
+   * @property {boolean} options.base64
+   */
+  // Function to create a PNG image file from the order. The image is then added to zip file for download
   const createPng = async () => {
     const { downloadZip } = await import("client-zip");
 
-    // @ts-ignore
-    const zip = new downloadZip();
+    /** @type {FileEntry[]} */
+    const files = [];
 
     ordersForPdf.forEach((order, index) => {
       const svgString = order.qrSvgString;
       const svg = new Blob([svgString], { type: "image/svg+xml" });
       const url = URL.createObjectURL(svg);
 
-      const img = new Image();
+      const img = new Image(100, 100);
       img.onload = () => {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        // @ts-ignore
-        context.drawImage(img, 0, 0, img.width, img.height);
-        const dataUrl = canvas.toDataURL("image/png");
-        zip.file(`upn-qr-${index}.png`, dataUrl.split(",")[1], {
-          base64: true,
-        });
+        if (context) {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          context.drawImage(img, 0, 0, img.width, img.height);
+          const dataUrl = canvas.toDataURL("image/png");
+          console.log(dataUrl);
+          files.push({
+            name: `upn-qr-${index}.png`,
+            input: dataUrl.split(",")[1],
+            options: { base64: true },
+          });
+        }
       };
       img.src = url;
     });
 
-    zip.generateAsync({ type: "blob" }).then((/** @type {any} */ content) => {
-      saveAs(content, "upn-qr.zip");
-    });
+    const zipBlob = await downloadZip(files).blob();
+    const zipUrl = URL.createObjectURL(zipBlob);
+    const a = document.createElement("a");
+    a.href = zipUrl;
+    a.download = "orders.zip";
+    a.click();
   };
 
   const saveFileHandler = () => {
@@ -92,7 +139,7 @@
     } else if (saveType === "zipPDF") {
       alert("Not implemented yet");
     } else {
-      alert("Not implemented yet");
+      createPng();
     }
   };
 </script>
@@ -100,7 +147,7 @@
 <div class="navButton">
   <button
     id="topdf"
-    title="Pretvori in shrani UPN QR naloge v PDF za tiskanje"
+    title="Shrani UPN QR naloge v izbranem formatu"
     on:click={saveFileHandler}>Shrani PDF</button
   >
   <button class="right-align"
@@ -130,7 +177,7 @@
         }}
         value="pdf">PDF</Radio
       >
-      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+      <Helper class="ps-6">Shrani PDF datoteko. Primerno za tiskanje.</Helper>
     </li>
     <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
       <Radio
@@ -140,9 +187,9 @@
           dropdownOpen = false;
           saveType = "zipPDF";
         }}
-        value="zipPDF">Enable 2FA auth</Radio
+        value="zipPDF">PDF v zip</Radio
       >
-      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+      <Helper class="ps-6">Shrani zip datoteko, kjer je vsak nalog v svoji PDF datoteki.</Helper>
     </li>
     <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
       <Radio
@@ -152,9 +199,9 @@
           dropdownOpen = false;
           saveType = "zipPNG";
         }}
-        value="zipPNG">Subscribe newsletter</Radio
+        value="zipPNG">PNG v zip</Radio
       >
-      <Helper class="ps-6">Some helpful instruction goes over here.</Helper>
+      <Helper class="ps-6">Shrani zip datoteko, kjer je vsak nalog v svoji PNG datoteki.</Helper>
     </li>
   </Dropdown>
 </div>
