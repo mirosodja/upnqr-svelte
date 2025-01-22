@@ -13,9 +13,9 @@
   } from "flowbite-svelte";
   import { ordersList, numberOfAllRecords } from "$lib/db";
   import { fieldsInTable } from "$lib/fieldsInTable.js";
-  import NavButtonOrdersTable from "./NavButtonsOrdersTable.svelte";
+  import NavButtonOrdersTable from "$lib/components/NavButtonsOrdersTable.svelte";
   import { groupOrdersStoreIds } from "$lib/stores.js";
-  import AddRecord from "./AddRecord.svelte";
+  import AddRecord from "$lib/components/AddRecord.svelte";
   // modal for editing record
   let showAddRecord = false;
   let id = 0;

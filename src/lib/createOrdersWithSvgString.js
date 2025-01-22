@@ -3,6 +3,92 @@ import { readOrder } from '$lib/db';
 import { groupOrdersStoreIds, isLoadingData } from "$lib/stores";
 import qrcodegen from '$lib/qrcode/qrcodegen';
 
+/**
+ * Converts an SVG string to a PNG data URL.
+ *
+ * @param {string} svgString - The SVG string to convert.
+ * @returns {Promise<string>}
+ */
+function svgToPngV1(svgString) {
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        img.src = URL.createObjectURL(blob);
+        img.onload = () => {
+            if (ctx) {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const png = canvas.toDataURL('image/png');
+                resolve(png);
+            } else {
+                reject(new Error("Failed to get 2D context"));
+            }
+        };
+        img.onerror = (error) => reject(error);
+    });
+}
+
+/**
+ * Converts an SVG string to a PNG data URL.
+ *
+ * @param {string} svgString - The SVG string to convert.
+ * @returns {Promise<string>}
+ */
+function svgToPngV2(svgString) {
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const img = new Image(canvas.width, canvas.height);
+        img.src = URL.createObjectURL(blob);
+        img.onload = () => {
+            if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(URL.createObjectURL(blob));
+                    } else {
+                        reject(new Error("Failed to convert canvas to blob"));
+                    }
+                }, 'image/png');
+            } else {
+                reject(new Error("Failed to get 2D context"));
+            }
+        };
+        img.onerror = (error) => reject(error);
+    });
+}
+
+/**
+ * Converts an svg string into a data:image/png;base64 string.
+ * @param {string} svg
+ * @param {number | undefined} width
+ * @param {number | undefined} height
+ */
+async function svg2png(svg, width = 150, height = 150) {
+    const img = new Image();
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+    });
+  
+    const canvas = document.createElement("canvas");
+    [canvas.width, canvas.height] = [width, height];
+  
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+        ctx.drawImage(img, 0, 0, width, height);
+    } else {
+        throw new Error("Failed to get 2D context");
+    }
+  
+    return canvas.toDataURL("image/png");
+  }
 
 /**
  * @typedef {Object} Order
@@ -115,6 +201,52 @@ export async function createOrdersWithSvgString() {
             const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
             const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
             order.qrSvgString = svgString;
+            console.log('order', svgString);
+            return order;
+        }));
+    } catch (error) {
+        console.error('Error generating order QR codes:', error);
+        throw error;
+    }
+    finally {
+        isLoadingData.set(false);
+    }
+}
+
+/**
+ * Generates PNG strings for orders and updates the orders with the generated PNG strings.
+ *
+ * @param {number} id - The ID of the order.
+ * @returns {Promise<Order[]>} A promise that resolves to an array of updated orders with PNG strings.
+ * @throws Will throw an error if there is an issue generating the order QR codes.
+ */
+export async function createPngStringForOrder(id) {
+    try {
+
+        /**
+         * @type {Order[]}
+         */
+        let orders;
+
+        // Get the array of IDs from the store
+        /**
+         * @type { number[]}
+         */
+        const ids = get(groupOrdersStoreIds);
+
+        /**
+         * @type {Order[]}
+         */
+        return orders = await Promise.all(ids.map(async (id) => {
+            // @ts-ignore
+            const order = await readOrder(id);
+            const str = prepareOrderData(order);
+            const QRC = qrcodegen.QrCode;
+            const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
+            const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
+            const pngString = await svg2png(svgString);
+            order.qrSvgString = pngString;
+            console.log('order', pngString);
             return order;
         }));
     } catch (error) {

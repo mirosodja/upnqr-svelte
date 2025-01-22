@@ -1,14 +1,12 @@
 <script>
-  import { copy } from "svelte-copy";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import { createPdf } from "$lib/createPdf";
-  import ExplainDataFormat from "./ExplainDataFormat.svelte";
-  import AddRecord from "./AddRecord.svelte";
+  import ExplainDataFormat from "$lib/components/ExplainDataFormat.svelte";
+  import AddRecord from "$lib/components/AddRecord.svelte";
   import { db, numberOfAllRecords } from "$lib/db";
   import { groupOrdersStoreIds } from "$lib/stores.js";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
-  let toCopyText = "";
   let txtPasteBtn = "Prilepi podatke";
   let showInfoAboutDataFormat = false;
   let showAddRecord = false;
@@ -41,12 +39,15 @@
 
     // Join headers and rows with newline delimiter
     const result = [headers, ...rows].join("\n");
-    toCopyText = result;
+    const type = "text/plain";
+    const blob = new Blob([result], { type });
+    const dataForClipboard = [new ClipboardItem({ [type]: blob })];
+    await navigator.clipboard.write(dataForClipboard);
     const numberOfRecords = result.split("\n").length - 1;
     alert(`Število zapisov kopirano v odložišče: ${numberOfRecords}`);
   };
 
-  // write text to clipboard
+  // paste text from clipboard
   // @ts-ignore
   const pasteDataHandler = async (event) => {
     event.preventDefault();
@@ -123,7 +124,6 @@
     disabled={$numberOfAllRecords === 0}>Preobrni</button
   >
   <button
-    use:copy={toCopyText}
     on:click={readDbAndPutIntoClipboard}
     title="Kopira podatke v odložišče"
     disabled={!$groupOrdersStoreIds.length}
@@ -173,7 +173,7 @@
     padding-left: 10px;
     margin-bottom: 20px;
   }
-  
+
   .pastediv {
     box-shadow: 3px 4px 0px 0px #1564ad;
     background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%);

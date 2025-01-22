@@ -69,9 +69,6 @@ importers:
       svelte-check:
         specifier: ^3.8.5
         version: 3.8.6(postcss-load-config@4.0.2(postcss@8.4.47))(postcss@8.4.47)(svelte@4.2.19)
-      svelte-copy:
-        specifier: ^1.4.2
-        version: 1.4.2(svelte@4.2.19)
       tailwindcss:
         specifier: ^3.4.9
         version: 3.4.13
@@ -1017,11 +1014,6 @@ packages:
     hasBin: true
     peerDependencies:
       svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
-
-  svelte-copy@1.4.2:
-    resolution: {integrity: sha512-Q99JvWDzB58JlbVWX2VxjHX/CQ5ayDLUGGJgL2EqU1+3c9CDOtxLrKFZx5CVN5bN/DDl62nxtazz0j3nGX1Xew==}
-    peerDependencies:
-      svelte: ^3.55.0 || ^4.0.0
 
   svelte-forms-lib@2.0.1:
     resolution: {integrity: sha512-kwbJ3ynsepsrrJyAMrvSc0Lj/myc9vfI2DL8OKxgArZimrNYsRh1gENYhvrcKEI3BiZrv8q3VFfmGo/GMyk7Zg==}
@@ -2109,10 +2101,6 @@ snapshots:
       - sass
       - stylus
       - sugarss
-
-  svelte-copy@1.4.2(svelte@4.2.19):
-    dependencies:
-      svelte: 4.2.19
 
   svelte-forms-lib@2.0.1:
     dependencies:
