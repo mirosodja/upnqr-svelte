@@ -114,7 +114,6 @@
           canvas.height = img.height;
           context.drawImage(img, 0, 0, img.width, img.height);
           const dataUrl = canvas.toDataURL("image/png");
-          console.log(dataUrl);
           files.push({
             name: `upn-qr-${index}.png`,
             input: dataUrl.split(",")[1],
@@ -148,7 +147,7 @@
   <button
     id="topdf"
     title="Shrani UPN QR naloge v izbranem formatu"
-    on:click={saveFileHandler}>Shrani PDF</button
+    on:click={saveFileHandler}>Shrani</button
   >
   <button class="right-align"
     >Shrani v: {saveType}<svg

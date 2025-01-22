@@ -201,7 +201,6 @@ export async function createOrdersWithSvgString() {
             const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
             const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
             order.qrSvgString = svgString;
-            console.log('order', svgString);
             return order;
         }));
     } catch (error) {
@@ -246,7 +245,6 @@ export async function createPngStringForOrder(id) {
             const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
             const pngString = await svg2png(svgString);
             order.qrSvgString = pngString;
-            console.log('order', pngString);
             return order;
         }));
     } catch (error) {
