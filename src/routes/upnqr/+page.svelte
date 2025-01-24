@@ -18,11 +18,8 @@
 	 * @property {string} trr - TRR.
 	 * @property {string} referenca - referenca.
 	 * @property {string} prejemnik - prejemnik.
-	 * @property {string} qrSvgString - qr svn string.
+	 * @property {string} pngString - png base64 string.
 	 */
-
-	//  * @property {string} [upnQrString] - UPN QR string.
-
 	/**
 	 * @type {Order[]}
 	 */
@@ -80,7 +77,7 @@
 					<div class="ime-prejemnik-potrdilo">{order.prejemnik}</div>
 				</div>
 				<div class="talon">
-					<div class="qrcode">{@html order.qrSvgString}</div>
+					<div class="qrcode"><img src="{order.pngString}" alt="qrcode-id-{order.id}"></div>
 					<div class="ime-placnik">
 						{order.placnik}
 					</div>
@@ -246,7 +243,7 @@
 	}
 
 	@media print {
-		* {
+		:global(*) {
 			visibility: hidden;
 		}
 

@@ -1,5 +1,6 @@
 import { db } from "$lib/db";
 import { isInsertingData } from "$lib/stores";
+import { createPngStringForOrder } from "$lib/createOrdersWithSvgString";
 
 /**
  * @param {unknown} value
@@ -103,21 +104,14 @@ async function pasteTextFromClipboard(pastedText) {
               obj[key] = obj[key].trim();;
             }
           });
-          // arrObj.push(obj);
+          // adding png base64 to obj
+          // const pngString = await createPngStringForOrder(obj);
+          // const objWithPng = { ...obj, pngString };
           // @ts-ignore
           await db.orders.put(obj);
           numberOfImportedRows++;
         }
       }
-      // // @ts-ignore
-      // await db.orders.bulkAdd(arrObj).then(() => {
-      //   console.log("Podatki so bili uspešno uvoženi.");
-      // }).catch((/** @type {{ name: string; failures: any; }} */ error) => {
-      //   if (error.name === "BulkError") {
-      //     console.error("Prišlo je do napake pri uvozu podatkov: ", error.failures);
-      //   } else {
-      //   }
-      // });
     }
   } catch (err) {
     alert("Napaka pri uvozu podatkov: " + err);

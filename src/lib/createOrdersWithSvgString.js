@@ -71,24 +71,24 @@ function svgToPngV2(svgString) {
 async function svg2png(svg, width = 150, height = 150) {
     const img = new Image();
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-  
+
     await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
+        img.onload = resolve;
+        img.onerror = reject;
     });
-  
+
     const canvas = document.createElement("canvas");
     [canvas.width, canvas.height] = [width, height];
-  
+
     const ctx = canvas.getContext("2d");
     if (ctx) {
         ctx.drawImage(img, 0, 0, width, height);
     } else {
         throw new Error("Failed to get 2D context");
     }
-  
+
     return canvas.toDataURL("image/png");
-  }
+}
 
 /**
  * @typedef {Object} Order
@@ -102,7 +102,6 @@ async function svg2png(svg, width = 150, height = 150) {
  * @property {string} trr - TRR.
  * @property {string} referenca - referenca.
  * @property {string} prejemnik - prejemnik.
- * @property {string} qrSvgString - qr svn string.
  */
 
 /**
@@ -199,7 +198,7 @@ export async function createOrdersWithSvgString() {
             const str = prepareOrderData(order);
             const QRC = qrcodegen.QrCode;
             const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
-            const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
+            const svgString = toSvgString(qr0, 1, '#FFFFFF', '#000000');
             order.qrSvgString = svgString;
             return order;
         }));
@@ -212,46 +211,38 @@ export async function createOrdersWithSvgString() {
     }
 }
 
+
+/**
+ * @typedef {Object} Order2
+ * @property {number} id - ID.
+ * @property {string} placnik - placnik.
+ * @property {string} skupina - skupina.
+ * @property {string|number} znesek - znesek (string or number).
+ * @property {string} koda_namena - koda namena.
+ * @property {string} namen_placila - namen placila.
+ * @property {string} rok_placila - rok placila.
+ * @property {string} trr - TRR.
+ * @property {string} referenca - referenca.
+ * @property {string} prejemnik - prejemnik.
+ */
 /**
  * Generates PNG strings for orders and updates the orders with the generated PNG strings.
  *
- * @param {number} id - The ID of the order.
- * @returns {Promise<Order[]>} A promise that resolves to an array of updated orders with PNG strings.
+ * @param {Order2} order - The ID of the order.
+ * @returns {Promise<string>} A promise that resolves to an array of updated orders with PNG strings.
  * @throws Will throw an error if there is an issue generating the order QR codes.
  */
-export async function createPngStringForOrder(id) {
+export async function createPngStringForOrder(order) {
     try {
-
-        /**
-         * @type {Order[]}
-         */
-        let orders;
-
-        // Get the array of IDs from the store
-        /**
-         * @type { number[]}
-         */
-        const ids = get(groupOrdersStoreIds);
-
-        /**
-         * @type {Order[]}
-         */
-        return orders = await Promise.all(ids.map(async (id) => {
-            // @ts-ignore
-            const order = await readOrder(id);
-            const str = prepareOrderData(order);
-            const QRC = qrcodegen.QrCode;
-            const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
-            const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
-            const pngString = await svg2png(svgString);
-            order.qrSvgString = pngString;
-            return order;
-        }));
-    } catch (error) {
+        const str = prepareOrderData(order);
+        const QRC = qrcodegen.QrCode;
+        const qr0 = QRC.encodeText(str, QRC.Ecc.MEDIUM);
+        const svgString = toSvgString(qr0, 2, '#FFFFFF', '#000000');
+        const pngString = await svg2png(svgString);
+        return pngString;
+    }
+    catch (error) {
         console.error('Error generating order QR codes:', error);
         throw error;
-    }
-    finally {
-        isLoadingData.set(false);
     }
 }

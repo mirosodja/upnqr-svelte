@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 import Dexie, { liveQuery } from 'dexie';
 import { isLoadingData, isInsertingData } from './stores';
 
-export const db = new Dexie('upngrDb');
+export const db = new Dexie('upnqrDb');
 
 // TODO: check if all functions are used in the app
 
