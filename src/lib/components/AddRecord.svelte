@@ -158,13 +158,29 @@
     } else {
         infoTitle = "Dodajanje zapisa";
     }
+
+    const closeHandler = () => {
+        form.set({
+                placnik: "",
+                skupina: "",
+                znesek: "",
+                koda_namena: "",
+                namen_placila: "",
+                rok_placila: "",
+                trr: "",
+                referenca: "",
+                prejemnik: "",
+            });
+        clickToOpenAddRecord = false;
+        id = 0;
+    };
 </script>
 
 <Modal
     title={infoTitle}
     bind:open={clickToOpenAddRecord}
     autoclose={false}
-    on:close={() => (id = 0)}
+    on:close={closeHandler}
 >
     <div class="mt-4 flex items-center justify-between space-x-4">
         <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
