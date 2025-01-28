@@ -1,6 +1,6 @@
-<script>
-  import { Button, Modal } from "flowbite-svelte";
-  export let clickToOpenExplainDataFormat = false;
+<script lang="ts">
+  import { Modal } from "flowbite-svelte";
+  export let clickToOpenExplainDataFormat: boolean = false;
 </script>
 
 <Modal

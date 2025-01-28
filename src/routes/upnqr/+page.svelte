@@ -1,36 +1,21 @@
-<script>
+<script lang="ts">
 	import { onMount } from "svelte";
-	import { titleOfPage } from "$lib/stores.js";
+	import { titleOfPage } from "$lib/stores";
 	/** Utils */
-	import { createOrdersWithSvgString } from "$lib/createOrdersWithSvgString";
+	import { createOrdersWithPngString } from "$lib/createPngString";
 	import NavButtonsUpnQr from "$lib/components/NavButtonsUpnQr.svelte";
+	import type { OrderWithPngString } from "$lib/models/Order";
 
 	$: titleOfPage.set("UPN QR");
-	/**
-	 * @typedef {Object} Order
-	 * @property {number} id - ID.
-	 * @property {string} placnik - placnik.
-	 * @property {string} skupina - skupina.
-	 * @property {string|number} znesek - znesek (string or number).
-	 * @property {string} koda_namena - koda namena.
-	 * @property {string} namen_placila - namen placila.
-	 * @property {string} rok_placila - rok placila.
-	 * @property {string} trr - TRR.
-	 * @property {string} referenca - referenca.
-	 * @property {string} prejemnik - prejemnik.
-	 * @property {string} pngString - png base64 string.
-	 */
-	/**
-	 * @type {Order[]}
-	 */
-	let orders = [];
-	let numOfOrders = 0;
+
+	let orders: OrderWithPngString[] = [];
+	let numOfordersWithPng = 0;
 
 	onMount(() => {
-		createOrdersWithSvgString()
+		createOrdersWithPngString()
 			.then((result) => {
 				orders = result;
-				numOfOrders = orders.length;
+				numOfordersWithPng = orders.length;
 			})
 			.catch((error) => {
 				console.error(error);
@@ -50,7 +35,7 @@
 	 * @param {number} index - The index for which to get the order position.
 	 * @returns {string} The order position corresponding to the given index.
 	 */
-	const getOrderPosition = (index) => {
+	const getOrderPosition = (index: number): string => {
 		return `top: ${index * 99}mm; left: 0;`;
 	};
 </script>
@@ -77,7 +62,9 @@
 					<div class="ime-prejemnik-potrdilo">{order.prejemnik}</div>
 				</div>
 				<div class="talon">
-					<div class="qrcode"><img src="{order.pngString}" alt="qrcode-id-{order.id}"></div>
+					<div class="qrcode">
+						<img src={order.pngString} alt="qrcode-id-{order.id}" />
+					</div>
 					<div class="ime-placnik">
 						{order.placnik}
 					</div>

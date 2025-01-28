@@ -1,5 +1,5 @@
-<script>
-  import { titleOfPage } from "$lib/stores.js";
+<script lang="ts">
+  import { titleOfPage } from "$lib/stores";
   $: titleOfPage.set("Pomoč");
 </script>
 

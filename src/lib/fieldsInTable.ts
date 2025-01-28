@@ -1,5 +1,10 @@
 // definira polja v tabeli
-export const fieldsInTable = [
+interface Field {
+    value: string;
+    name: string;
+}
+
+export const fieldsInTable: Field[] = [
     { value: 'placnik', name: 'Plačnik' },
     { value: 'skupina', name: 'Skupina' },
     { value: 'znesek', name: 'Znesek' },

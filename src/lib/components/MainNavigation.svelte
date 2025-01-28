@@ -1,17 +1,17 @@
-<script>
+<script lang="ts">
   import { page } from "$app/stores";
   import {
     groupOrdersStoreIds,
     isLoadingData,
     isInsertingData,
     titleOfPage,
-  } from "$lib/stores.js";
+  } from "$lib/stores";
   import { base } from "$app/paths";
   import { Spinner } from "flowbite-svelte";
 
   // import logo from '$lib/images/svelte-logo.svg';
   // import github from '$lib/images/github.svg';
-  $: disabled = !$groupOrdersStoreIds.length;
+  $: disabled = !($groupOrdersStoreIds as number[]).length;
 </script>
 
 <svelte:head>

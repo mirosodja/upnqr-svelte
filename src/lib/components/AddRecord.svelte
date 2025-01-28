@@ -1,116 +1,115 @@
-<script>
-    // form validation: https://joyofcode.xyz/working-with-forms-in-sveltekit#form-validation-in-sveltekit
-    // form validator YUP:
-    // https://github.com/jquense/yup
-    // https://github.com/tjinauyeung/svelte-forms-lib?tab=readme-ov-file IN https://svelte-forms-lib-sapper-docs.vercel.app/field
-
+<script lang="ts">
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
     import { Button, Modal, Alert } from "flowbite-svelte";
-    import { addOrder, updateOrder, readOrder } from "$lib/db";
+    import { addOrder, updateOrderPngString, readOrder } from "$lib/db";
+    import type { Order } from "$lib/models/Order";
 
-    export let clickToOpenAddRecord = false;
+    export let clickToOpenAddRecord: boolean = false;
     export let id = 0;
 
-    // /**
-    //  * @type {number}
-    //  */
-    // let id;
-    let showInfo = false;
-    let infoTitle = "";
-    let infoText = "";
+    let showInfo: boolean = false;
+    let infoTitle: string = "";
+    let infoText: string = "";
 
-    $: isFormEmpty = Object.values($form).every((value) => value === "");
+    $: isFormEmpty = Object.values($form)
+        .filter((value) => typeof value === "string")
+        .every((value) => value === "");
 
-    const { form, errors, isValid, handleChange, handleSubmit } = createForm({
-        initialValues: {
-            placnik: "",
-            skupina: "",
-            znesek: "",
-            koda_namena: "",
-            namen_placila: "",
-            rok_placila: "",
-            trr: "",
-            referenca: "",
-            prejemnik: "",
+    type FormValues = Partial<Order>;
+
+    const { form, errors, handleChange, handleSubmit } = createForm<FormValues>(
+        {
+            initialValues: {
+                placnik: "",
+                skupina: "",
+                znesek: "",
+                koda_namena: "",
+                namen_placila: "",
+                rok_placila: "",
+                trr: "",
+                referenca: "",
+                prejemnik: "",
+            },
+            validationSchema: yup.object().shape({
+                placnik: yup
+                    .string()
+                    .matches(
+                        /^[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}$/,
+                        "Plačnik je obvezen podatek v formatu: Ime Priimek(min.: 1, max.:32 znak), Naslov(max.:32), Pošta(max.:32).",
+                    ),
+                skupina: yup
+                    .string()
+                    .max(
+                        20,
+                        "Skupina je neobvezen podatek, max.: 20 znakov. Namenjeno grupiranju podatkov v tabeli.",
+                    ),
+                znesek: yup
+                    .string()
+                    .matches(
+                        /^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/,
+                        "Znesek je obvezen podatek v formatu: 1.100,00",
+                    ),
+                koda_namena: yup
+                    .string()
+                    .matches(
+                        /^[A-Z]{4}$/,
+                        "Koda namena je obvezen podatek, natančno 4 znaki, velike črke, samo angleška abeceda.",
+                    ),
+                namen_placila: yup
+                    .string()
+                    .max(
+                        42,
+                        "Namen plačila je obvezen podatek, brez vodilnih ali sledečih presledkov.",
+                    ),
+                rok_placila: yup
+                    .string()
+                    .matches(
+                        /^(|\d{2}\.\d{2}\.\d{4})$/,
+                        "Rok plačila ni obvezen podatek. Format »DD.MM.LLLL« ali prazno.",
+                    ),
+                trr: yup
+                    .string()
+                    .matches(
+                        /^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/,
+                        "TRR je obvezen podatek v formatu: SI56 1234 5678 9123 456.",
+                    ),
+                referenca: yup
+                    .string()
+                    .matches(
+                        /(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/,
+                        "Referenca je obvezen podatek v formatu: SI00 123456.",
+                    ),
+                prejemnik: yup
+                    .string()
+                    .matches(
+                        /[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}/,
+                        "Prejemnik je obvezen podatek v formatu: Ime Priimek(min.: 1, max.:32 znak), Naslov(max.:32), Pošta(max.:32).",
+                    ),
+            }),
+            onSubmit: (values) => {
+                if (id) {
+                    // @ts-ignore  - form vaues
+                    updateOrderPngString(id, values)
+                        .then(() => {
+                            infoText = `Zapis z ID-jem ${id} je posodobljen.`;
+                            displayInfo();
+                        })
+                        .catch((error) => console.error(error));
+                } else {
+                    // @ts-ignore
+                    addOrder(values)
+                        .then((updatedId) => {
+                            id = updatedId;
+                            infoText = `Zapis z ID-jem ${id} je dodan.`;
+                            displayInfo();
+                        })
+                        .catch((error) => console.error(error));
+                }
+            },
         },
-        validationSchema: yup.object().shape({
-            placnik: yup
-                .string()
-                .matches(
-                    /^[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}$/,
-                    "Plačnik je obvezen podatek v formatu: Ime Priimek(min.: 1, max.:32 znak), Naslov(max.:32), Pošta(max.:32).",
-                ),
-            skupina: yup
-                .string()
-                .max(
-                    20,
-                    "Skupina je neobvezen podatek, max.: 20 znakov. Namenjeno grupiranju podatkov v tabeli.",
-                ),
-            znesek: yup
-                .string()
-                .matches(
-                    /^(\d{0,3}\.)?\d{1,3}(,\d{0,2})?$/,
-                    "Znesek je obvezen podatek v formatu: 1.100,00",
-                ),
-            koda_namena: yup
-                .string()
-                .matches(
-                    /^[A-Z]{4}$/,
-                    "Koda namena je obvezen podatek, natančno 4 znaki, velike črke, samo angleška abeceda.",
-                ),
-            namen_placila: yup
-                .string()
-                .max(
-                    42,
-                    "Namen plačila je obvezen podatek, brez vodilnih ali sledečih presledkov.",
-                ),
-            rok_placila: yup
-                .string()
-                .matches(
-                    /^(|\d{2}\.\d{2}\.\d{4})$/,
-                    "Rok plačila ni obvezen podatek. Format »DD.MM.LLLL« ali prazno.",
-                ),
-            trr: yup
-                .string()
-                .matches(
-                    /^[A-Z]{2}\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{3}$/,
-                    "TRR je obvezen podatek v formatu: SI56 1234 5678 9123 456.",
-                ),
-            referenca: yup
-                .string()
-                .matches(
-                    /(^SI\d{2}\s(?=(?:[^-]*-){0,2}[^-]*$)[0-9-]{0,22}$)|(^RF\d{2}\s[0-9A-Za-z]{0,21}$)/,
-                    "Referenca je obvezen podatek v formatu: SI00 123456.",
-                ),
-            prejemnik: yup
-                .string()
-                .matches(
-                    /[^,;]{1,32},[^,;]{0,32},[^,;]{0,32}/,
-                    "Prejemnik je obvezen podatek v formatu: Ime Priimek(min.: 1, max.:32 znak), Naslov(max.:32), Pošta(max.:32).",
-                ),
-        }),
-        onSubmit: (values) => {
-            if (id) {
-                updateOrder(id, values)
-                    .then(() => {
-                        infoText = `Zapis z ID-jem ${id} je posodobljen.`;
-                        displayInfo();
-                    })
-                    .catch((error) => console.error(error));
-            } else {
-                addOrder(values)
-                    .then((updatedId) => {
-                        id = updatedId;
-                        infoText = `Zapis z ID-jem ${id} je dodan.`;
-                        displayInfo();
-                    })
-                    .catch((error) => console.error(error));
-            }
-        },
-    });
+    );
 
-    // create function to display info about insert/update record
     const displayInfo = () => {
         showInfo = true;
         setTimeout(() => {
@@ -130,9 +129,8 @@
         }, 1500);
     };
 
-    // create function to insert example data
     const insertExampleData = () => {
-        const exampleData = {
+        const exampleData: FormValues = {
             placnik: "Jože Novak, Novakova ulica 10, 1234 Novaki",
             skupina: "Primer podatkov",
             znesek: "1.005,00",
@@ -146,12 +144,13 @@
         form.set(exampleData);
     };
 
-   $: if (id) {
+    $: if (id) {
         infoTitle = "Urejanje zapisa";
         readOrder(id)
             .then((order) => {
-                // form.set(order);
-                $form = order;
+                if (order) {
+                    $form = order;
+                }
             })
             .catch((error) => {
                 console.error(error);

@@ -1,26 +1,20 @@
 import { isLoadingData } from "$lib/stores";
 
-/**
- * @typedef {Object} Order
- * @property {number} id - ID.
- * @property {string} placnik - placnik.
- * @property {string} skupina - skupina.
- * @property {string|number} znesek - znesek (string or number).
- * @property {string} koda_namena - koda namena.
- * @property {string} namen_placila - namen placila.
- * @property {string} rok_placila - rok placila.
- * @property {string} trr - TRR.
- * @property {string} referenca - referenca.
- * @property {string} prejemnik - prejemnik.
- * @property {string} pngString - png base string.
- */
+interface OrderWithPngString {
+    id: number;
+    placnik: string;
+    skupina: string;
+    znesek: string; // znesek je bil prej string ali number?
+    koda_namena: string;
+    namen_placila: string;
+    rok_placila: string;
+    trr: string;
+    referenca: string;
+    prejemnik: string;
+    pngString: string;
+}
 
-
-export const createPdf = async (
-    /**
-      * @type {Order[]}
-      */
-    ordersForPdf) => {
+export const createPdf = async (ordersForPdf: OrderWithPngString[]): Promise<void> => {
     isLoadingData.set(true);
 
     const { jsPDF } = await import("jspdf");
@@ -32,7 +26,6 @@ export const createPdf = async (
         putOnlyUsedFonts: true,
     });
 
-    // doc.addImage("/img/upnqr-a4.png", "PNG", 0, 0, 210, 297);
     doc.addFileToVFS("FreeMono.ttf", fontString);
     doc.addFont("FreeMono.ttf", "FreeMono", "normal");
     
@@ -48,7 +41,6 @@ export const createPdf = async (
         }
 
         // Potrdilo section
-        // po y sem dodal +2, ker je bilo previsoko
         doc.setFontSize(7);
         doc.text(order.placnik, 6, 10 + yOffset, { maxWidth: 50 });
         const namen_placila = order.rok_placila
@@ -62,7 +54,7 @@ export const createPdf = async (
 
         // Talon section
         doc.setFontSize(10);
-        doc.addSvgAsImage(order.pngString, 65, 6 + yOffset, 39.5, 39.5);
+        doc.addImage(order.pngString, 65, 6 + yOffset, 39.5, 39.5);
         doc.text(order.placnik, 109, 27 + yOffset, { maxWidth: 60 });
         doc.text(`***${order.znesek}`, 116, 45 + yOffset, { maxWidth: 38 });
         doc.text(order.rok_placila, 164, 45 + yOffset, { maxWidth: 28 });
@@ -72,6 +64,7 @@ export const createPdf = async (
         doc.text(order.referenca, 66, 70 + yOffset, { maxWidth: 97 });
         doc.text(order.prejemnik, 66, 79 + yOffset, { maxWidth: 97 });
     });
+
     const now = new Date();
     const formattedDate = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
     const fileName = `upn-${formattedDate}.pdf`;

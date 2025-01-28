@@ -1,10 +1,9 @@
 <script>
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
-  import { createPdf } from "$lib/createPdf";
   import ExplainDataFormat from "$lib/components/ExplainDataFormat.svelte";
   import AddRecord from "$lib/components/AddRecord.svelte";
   import { db, numberOfAllRecords } from "$lib/db";
-  import { groupOrdersStoreIds } from "$lib/stores.js";
+  import { groupOrdersStoreIds } from "$lib/stores";
 
   let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
   let txtPasteBtn = "Prilepi podatke";
@@ -13,7 +12,6 @@
 
   // read data from indexedDB and put into clipboard
   const readDbAndPutIntoClipboard = async () => {
-    // @ts-ignore
     const data = await db.orders.toArray();
     const selectedData = data.filter((/** @type {any} */ obj) =>
       $groupOrdersStoreIds.includes(obj.id),
@@ -88,7 +86,6 @@
 
   const deleteHandler = async () => {
     if (confirm("Ali res želite izbrisati izbrane zapise?")) {
-      // @ts-expect-error
       await db.orders.bulkDelete($groupOrdersStoreIds);
       // remove ids from groupOrdersStoreIds
       groupOrdersStoreIds.set([]);
@@ -148,9 +145,6 @@
     id="infoAboutDataFormat"
     title="Prikaže informacije o formatu podatkov za uvoz"
     on:click={showInfoAboutDataFormatHandler}>Info format podat.</button
-  >
-  <button id="createPdf" title="Ustvari PDF" on:click={() => createPdf()}
-    >Ustvari PDF</button
   >
   <AddRecord bind:clickToOpenAddRecord={showAddRecord} />
   <ExplainDataFormat

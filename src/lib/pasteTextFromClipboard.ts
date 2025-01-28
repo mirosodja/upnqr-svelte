@@ -1,37 +1,31 @@
 import { db } from "$lib/db";
 import { isInsertingData } from "$lib/stores";
-import { createPngStringForOrder } from "$lib/createOrdersWithSvgString";
+import { createPngStringForOrder } from "$lib/createPngString";
+import type { Order } from "$lib/models/Order";
 
 /**
- * @param {unknown} value
+ * Checks if the given value is a positive integer.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a positive integer, otherwise false.
  */
-function isPositiveInteger(value) {
+function isPositiveInteger(value: unknown): value is number {
   return typeof value === "number" && value > 0 && Number.isInteger(value);
 }
 
-/**
-  * @returns {Promise<string | undefined>}
-  * @see https://stackoverflow.com/a/65957232/1148001
-  * @see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText
-  * paste text from clipboard
-  */
-// @ts-ignore
-async function pasteTextFromClipboard(pastedText) {
+async function pasteTextFromClipboard(pastedText: string): Promise<void> {
   let numberOfImportedRows = 0;
   isInsertingData.set(true);
   try {
     const text = pastedText;
-    // @ts-ignore
     const rows = text.split("\n").map((row) => row.split("\t"));
     if (rows[0].length !== 10) {
       alert("Napaka: Nepravilno število polj v vrstici!");
       return;
     }
     rows.shift();
-    // const arrObj = [];
     for (const row of rows) {
-      // Create array of objects with validations
-      const obj = {
+      const obj: Order = {
         id: +row[0],
         placnik: row[1],
         skupina: row[2],
@@ -94,20 +88,17 @@ async function pasteTextFromClipboard(pastedText) {
           return;
         }
 
-        // @ts-ignore
         const existingKey = await db.orders.get({ id: obj.id });
         if (!existingKey) {
           Object.keys(obj).forEach((key) => {
-            // @ts-ignore
-            if (typeof obj[key] === 'string') {
-              // @ts-expect-error
-              obj[key] = obj[key].trim();;
+            if (typeof obj[key as keyof Order] === 'string') {
+              // @ts-ignore
+              obj[key as keyof Order] = (obj[key as keyof Order] as string).trim();
             }
           });
-          // adding png base64 to obj
-          // const pngString = await createPngStringForOrder(obj);
-          // const objWithPng = { ...obj, pngString };
-          // @ts-ignore
+          const pngString = await createPngStringForOrder(obj);
+          const objWithPng = { id: obj.id, pngString: pngString };
+          await db.pngStrings.put(objWithPng);
           await db.orders.put(obj);
           numberOfImportedRows++;
         }

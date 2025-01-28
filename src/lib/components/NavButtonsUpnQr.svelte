@@ -1,56 +1,54 @@
-<script>
+<script lang="ts">
   import { Dropdown, Radio, Helper } from "flowbite-svelte";
   import { createPdf } from "$lib/createPdf";
+  import type { OrderWithPngString } from "$lib/models/Order";
 
-  // radio button group
+
+//   interface OrderWithPngString {
+//     id: number;
+//     placnik: string;
+//     skupina: string;
+//     znesek: string; // znesek je bil prej string ali number?
+//     koda_namena: string;
+//     namen_placila: string;
+//     rok_placila: string;
+//     trr: string;
+//     referenca: string;
+//     prejemnik: string;
+//     pngString: string;
+// } 
 
   /**
-   * @type {"pdf" | "zipPDF" | "zipPNG"}
    * Represents the type of file to save.
    */
-  let saveType = "pdf";
+  let saveType: "pdf" | "zipPDF" | "zipPNG" = "pdf";
   let dropdownOpen = false;
 
-  /**
-   * @typedef {Object} Order
-   * @property {number} id - ID.
-   * @property {string} placnik - placnik.
-   * @property {string} skupina - skupina.
-   * @property {string|number} znesek - znesek (string or number).
-   * @property {string} koda_namena - koda namena.
-   * @property {string} namen_placila - namen placila.
-   * @property {string} rok_placila - rok placila.
-   * @property {string} trr - TRR.
-   * @property {string} referenca - referenca.
-   * @property {string} prejemnik - prejemnik.
-   * @property {string} pngString - qr svn string.
-   */
+//  ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
+  export let ordersForPdf: OrderWithPngString[] = [];
 
   /**
-   * @type {Order[]}
+   * FileEntry type definition
    */
+  type FileEntry = {
+    name: string;
+    input: string;
+    options: {
+      base64: boolean;
+    };
+  };
 
-  export let ordersForPdf = []; // ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
-
-
-  /**
-   * @typedef {Object} FileEntry
-   * @property {string} name
-   * @property {string} input
-   * @property {Object} options
-   * @property {boolean} options.base64
-   */
   // Function to create a PNG image file from the order. The image is then added to zip file for download
+  // glej tu kako base64 to save file as png  https://gist.github.com/madhums/e749dca107e26d72b64d
   const createPng = async () => {
     const { downloadZip } = await import("client-zip");
 
-    /** @type {FileEntry[]} */
-    const files = [];
+    const files: FileEntry[] = [];
 
     ordersForPdf.forEach((order, index) => {
       files.push({
         name: `upn-qr-${index}.png`,
-        input: order.pngString,
+        input: order.pngString || "",
         options: { base64: true },
       });
     });
