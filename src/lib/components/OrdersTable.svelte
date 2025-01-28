@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     Table,
     TableBody,
@@ -16,6 +16,8 @@
   import NavButtonOrdersTable from "$lib/components/NavButtonsOrdersTable.svelte";
   import { groupOrdersStoreIds } from "$lib/stores";
   import AddRecord from "$lib/components/AddRecord.svelte";
+  import type { Order } from "$lib/types/Order";
+    import { get } from "svelte/store";
   // modal for editing record
   let showAddRecord = false;
   let id = 0;
@@ -28,29 +30,9 @@
   let checkedSelectAll = false;
   let filterByColumn = "skupina";
 
-  /**
-   * @typedef {Object} Orders
-   * @property {number} id - ID.
-   * @property {string} placnik - placnik.
-   * @property {string} skupina - skupina.
-   * @property {string|number} znesek - znesek (string or number).
-   * @property {string} koda_namena - koda namena.
-   * @property {string} namen_placila - namen placila.
-   * @property {string} rok_placila - rok placila.
-   * @property {string} trr - TRR.
-   * @property {string} referenca - referenca.
-   * @property {string} prejemnik - prejemnik.
-   */
+  let items: Order[] = [];
 
-  /**
-   * @type {Orders[]}
-   */
-  let items = [];
-
-  /**
-   * @type {Orders[]}
-   */
-  let filteredOrders = [];
+  let filteredOrders: Order[] = [];
 
   // code subscribes to the `ordersList` store and updates the `items` variable
   // whenever the value of `ordersList` changes. This ensures that `items` always
@@ -69,23 +51,25 @@
     orderBy;
   }
   // function to order the list of orders by the selected column
-  const orderByHandler = (/** @type {string} */ sortColumn) => {
+  const orderByHandler = (sortColumn: string) => {
+    const groupedOrdersIds: number[] = get(groupOrdersStoreIds);
     orderDirection = !orderDirection;
     orderBy = sortColumn;
+    groupOrdersStoreIds.set(groupedOrdersIds);
   };
 
-  const selectAllHandlers = (/** @type {any} */ event) => {
+  const selectAllHandlers = (event: any) => {
     if (event.target.checked) {
-      const /** @type {any}[] */ groupOrdersIds = filteredOrders.map(
-          (/** @type {{ id: any; }} */ order) => order.id,
-        );
+      const groupOrdersIds: number[] = filteredOrders.map(
+        (order) => order.id,
+      );
       groupOrdersStoreIds.set(groupOrdersIds);
     } else {
       groupOrdersStoreIds.set([]);
     }
   };
 
-  const editOrderHandler = (/** @type {number} */ orderId) => {
+  const editOrderHandler = (orderId: number) => {
     id = orderId;
     showAddRecord = true;
   };
@@ -258,12 +242,15 @@
       <TableBody tableBodyClass="divide-y">
         {#if filteredOrders}
           {#each filteredOrders as item}
+            <!-- TODO id should be sorted to -->
+            <!-- TODO check if key is ok -->
             <TableBodyRow>
               <TableBodyCell>
                 <Checkbox
                   id={item.id}
                   bind:group={$groupOrdersStoreIds}
                   value={item.id}
+                  key={item.id}
                 />
               </TableBodyCell>
               <TableBodyCell

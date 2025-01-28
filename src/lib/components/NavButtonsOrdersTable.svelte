@@ -51,8 +51,11 @@
   };
 
   // paste text from clipboard
-  // @ts-ignore
-  const pasteDataHandler = async (event) => {
+  // TODO check if the data is in the correct format
+  const pasteDataHandler = async (event: {
+    preventDefault: () => void;
+    clipboardData: any;
+  }) => {
     event.preventDefault();
     // @ts-ignore
     let pastedText = (event.clipboardData || window.clipboardData).getData(
@@ -102,7 +105,6 @@
     db.orders.orderBy("id").keys(function (allIds) {
       // @ts-ignore
       $groupOrdersStoreIds = allIds.filter((id: number) => {
-        // @ts-ignore
         return !$groupOrdersStoreIds.includes(id);
       });
     });
@@ -112,7 +114,7 @@
 <div class="navButton">
   <button id="add" title="Dodaj zapis" on:click={addRecordHandler}>Dodaj</button
   >
-  <!-- TODO preveri še disabled buttons kje bi bilo smiselno -->
+  <!-- TODO preveri še disabled buttons, kje bi bilo smiselno -->
   <button
     id="delete"
     title="Izbriše izbrane zapise"

@@ -157,9 +157,9 @@ export async function createOrdersWithPngString(): Promise<OrderWithPngString[]>
     let orders: OrderWithPngString[] = [];
     try {
         // Get the array of IDs from the store
-        const ids: number[] = get(groupOrdersStoreIds);
+        const groupOrdersIds: number[] = get(groupOrdersStoreIds);
 
-        orders = await Promise.all(ids.map(async (id) => {
+        orders = await Promise.all(groupOrdersIds.map(async (id) => {
             const orderWithPngString: OrderWithPngString = await prepareOrderWithPngString({ id });
             return orderWithPngString;
         }));
