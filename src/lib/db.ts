@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 import Dexie, { liveQuery } from 'dexie';
 import { isLoadingData, isInsertingData } from './stores';
 //
-import type { Order, PngTable } from '$lib/models/Order';
+import type { Order, PngTable } from '$lib/types/Order';
 import { createPngStringForOrder } from './createPngString';
 
 export const db = new Dexie('upnqrDb') as Dexie & {

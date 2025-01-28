@@ -1,7 +1,7 @@
 import { db } from "$lib/db";
 import { isInsertingData } from "$lib/stores";
 import { createPngStringForOrder } from "$lib/createPngString";
-import type { Order } from "$lib/models/Order";
+import type { Order } from "$lib/types/Order";
 
 /**
  * Checks if the given value is a positive integer.

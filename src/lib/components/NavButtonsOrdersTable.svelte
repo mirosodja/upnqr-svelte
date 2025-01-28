@@ -1,11 +1,13 @@
-<script>
+<script lang="ts">
+  import { get } from "svelte/store";
   import pasteTextFromClipboard from "$lib/pasteTextFromClipboard";
   import ExplainDataFormat from "$lib/components/ExplainDataFormat.svelte";
   import AddRecord from "$lib/components/AddRecord.svelte";
   import { db, numberOfAllRecords } from "$lib/db";
   import { groupOrdersStoreIds } from "$lib/stores";
+  import type { Order } from "$lib/types/Order";
 
-  let pastediv = /** @type {HTMLDivElement} */ ($$props.pastediv);
+  let pastediv: HTMLDivElement = $$props.pastediv;
   let txtPasteBtn = "Prilepi podatke";
   let showInfoAboutDataFormat = false;
   let showAddRecord = false;
@@ -13,9 +15,12 @@
   // read data from indexedDB and put into clipboard
   const readDbAndPutIntoClipboard = async () => {
     const data = await db.orders.toArray();
-    const selectedData = data.filter((/** @type {any} */ obj) =>
-      $groupOrdersStoreIds.includes(obj.id),
-    );
+    // select all data from db.orders where id is in $groupOrdersStoreIds
+    const ids: number[] = get(groupOrdersStoreIds);
+    const selectedData = data.filter((obj: Order) => ids.includes(obj.id));
+    // const selectedData = data.filter((obj: Order) =>
+    //   $groupOrdersStoreIds.includes(obj.id),
+    // );
     let arrFirstLine = [
       "Id",
       "Plačnik",
@@ -66,7 +71,7 @@
     pastediv.focus();
   };
 
-  const keyRemoveFocusHandler = (/** @type {{ key: string; }} */ event) => {
+  const keyRemoveFocusHandler = (event: { key: string }) => {
     if (event.key === "Escape") {
       pastediv.blur();
     }
@@ -94,9 +99,9 @@
 
   const invertSelectionHandler = () => {
     // select all ids from table db.orders using liveQuery
-    // @ts-ignore
     db.orders.orderBy("id").keys(function (allIds) {
-      $groupOrdersStoreIds = allIds.filter((/** @type {any} */ id) => {
+      // @ts-ignore
+      $groupOrdersStoreIds = allIds.filter((id: number) => {
         // @ts-ignore
         return !$groupOrdersStoreIds.includes(id);
       });

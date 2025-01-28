@@ -3,7 +3,7 @@
     import * as yup from "yup";
     import { Button, Modal, Alert } from "flowbite-svelte";
     import { addOrder, updateOrderPngString, readOrder } from "$lib/db";
-    import type { Order } from "$lib/models/Order";
+    import type { Order } from "$lib/types/Order";
 
     export let clickToOpenAddRecord: boolean = false;
     export let id = 0;

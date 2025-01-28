@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Dropdown, Radio, Helper } from "flowbite-svelte";
   import { createPdf } from "$lib/createPdf";
-  import type { OrderWithPngString } from "$lib/models/Order";
+  import type { OrderWithPngString } from "$lib/types/Order";
 
 
 //   interface OrderWithPngString {

@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 import { readOrder, readPngString } from '$lib/db';
 import { groupOrdersStoreIds, isLoadingData } from "$lib/stores";
 import qrcodegen from '$lib/qrcode/qrcodegen';
-import { Order, OrderWithPngString } from '$lib/models/Order';
+import { Order, OrderWithPngString } from '$lib/types/Order';
 
 
 /**

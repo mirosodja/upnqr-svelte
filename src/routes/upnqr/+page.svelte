@@ -4,7 +4,7 @@
 	/** Utils */
 	import { createOrdersWithPngString } from "$lib/createPngString";
 	import NavButtonsUpnQr from "$lib/components/NavButtonsUpnQr.svelte";
-	import type { OrderWithPngString } from "$lib/models/Order";
+	import type { OrderWithPngString } from "$lib/types/Order";
 
 	$: titleOfPage.set("UPN QR");
 
