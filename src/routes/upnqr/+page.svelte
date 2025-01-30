@@ -36,7 +36,7 @@
 	 * @returns {string} The order position corresponding to the given index.
 	 */
 	const getOrderPosition = (index: number): string => {
-		return `top: ${index * 99}mm; left: 0;`;
+		return `top: ${index * 99}mm; left: 0mm;`;
 	};
 </script>
 
@@ -87,30 +87,38 @@
 
 <style>
 	page[size="A4"] {
+		position: relative;
 		/* background: white; */
-		width: 21cm;
-		height: 29.7cm;
+		width: 210mm;
+		height: 297mm;
 		display: block;
 		margin: 0 0 0.5cm 0;
 		background-size: 100%;
-		/*! production */
-		/* background-image: url("./img/upnqr-a4.png"); */
-		/*! dev */
-		background-image: url("/img/upnqr-a4.png");
 		box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 		page-break-after: always;
 	}
 
 	.order {
-		position: relative;
-		width: 100%;
+		position: absolute;
+		width: 210mm;
+		height: 99mm;
+		/* build */
+		/* background-image: url("./img/upnqr.jpg"); */
+		/* dev */
+		background-image: url("/upn-test/img/upn-a4-1x-screen.jpg");
+		background-position: 0 0;
+		background-size: 100%;
+		background-repeat: no-repeat;
 	}
 
 	.potrdilo {
+		/* TODO !! ni na izhodišču 0,0 
+		!!! left je že popravljen
+		*/
 		position: absolute;
-		left: 4mm;
+		left: 0mm;
 		top: 6mm;
-		width: 52.5mm;
+		width: 56.5mm;
 		height: 99mm;
 		font-family: "Courier New", Courier, monospace;
 		font-size: 7pt;
@@ -118,7 +126,7 @@
 
 	.ime-placnik-potrdilo {
 		position: absolute;
-		left: 2mm;
+		left: 6mm;
 		top: 2mm;
 		width: 50mm;
 		white-space: pre-line;
@@ -126,7 +134,7 @@
 
 	.namen-rok-placila-potrdilo {
 		position: absolute;
-		left: 2mm;
+		left: 6mm;
 		top: 18mm;
 		width: 50mm;
 		white-space: pre-line;
@@ -134,28 +142,28 @@
 
 	.znesek-potrdilo {
 		position: absolute;
-		left: 14mm;
+		left: 18mm;
 		top: 30mm;
 		width: 38mm;
 	}
 
 	.prejemnik-iban-potrdilo {
 		position: absolute;
-		left: 2mm;
+		left: 6mm;
 		top: 39mm;
 		width: 50mm;
 	}
 
 	.prejemnik-referenca-potrdilo {
 		position: absolute;
-		left: 2mm;
+		left: 6mm;
 		top: 43mm;
 		width: 50mm;
 	}
 
 	.ime-prejemnik-potrdilo {
 		position: absolute;
-		left: 2mm;
+		left: 6mm;
 		top: 54mm;
 		width: 50mm;
 		white-space: pre-line;
@@ -164,7 +172,7 @@
 	.talon {
 		position: absolute;
 		left: 60mm;
-		top: 0;
+		top: 0mm;
 		width: 150mm;
 		height: 99mm;
 		font-family: "Courier New", Courier, monospace;
