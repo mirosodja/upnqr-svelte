@@ -1,6 +1,6 @@
  // izracun kontrolne številke po modulu 11
 
- function calcControlNumber11(referenca: string): string {
+ export function calcControlNumber11(referenca: string): string {
     let i = 0;
     let sestevek = 0;
     let ponder = 2;

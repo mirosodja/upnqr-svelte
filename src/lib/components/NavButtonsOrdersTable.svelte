@@ -6,6 +6,7 @@
   import { db, numberOfAllRecords } from "$lib/db";
   import { groupOrdersStoreIds } from "$lib/stores";
   import type { Order } from "$lib/types/Order";
+  import { updateOrderSI123 } from "$lib/db";
 
   let pastediv: HTMLDivElement = $$props.pastediv;
   let txtPasteBtn = "Prilepi podatke";
@@ -92,6 +93,12 @@
     showAddRecord = true;
   };
 
+  const calcSumSI12Handler = async () => {
+    // select all data from db.orders where id is in $groupOrdersStoreIds
+    const ids: number[] = get(groupOrdersStoreIds);
+    await updateOrderSI123(ids);
+  };
+
   const deleteHandler = async () => {
     if (confirm("Ali res želite izbrisati izbrane zapise?")) {
       await db.orders.bulkDelete($groupOrdersStoreIds);
@@ -148,6 +155,14 @@
   >
     {txtPasteBtn}
   </div>
+  <button
+    id="calcSumSI12"
+    title="Izračuna referenco SI12 za izbrane zapise"
+    disabled={!$groupOrdersStoreIds.length}
+    on:click={calcSumSI12Handler}
+  >
+    Izračunaj SI12
+  </button>
   <button
     id="infoAboutDataFormat"
     title="Prikaže informacije o formatu podatkov za uvoz"

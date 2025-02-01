@@ -3,7 +3,8 @@ import Dexie, { liveQuery } from 'dexie';
 import { isLoadingData, isInsertingData } from './stores';
 //
 import type { Order, PngTable } from '$lib/types/Order';
-import { createPngStringForOrder } from './createPngString';
+import { createPngStringForOrder } from '$lib/createPngString';
+import { calcControlNumber11 } from '$lib/calcControlNumber11';
 
 export const db = new Dexie('upnqrDb') as Dexie & {
   orders: Dexie.Table<Order>,
@@ -54,4 +55,19 @@ export const updateOrderPngString = async (id: number, order: Order): Promise<vo
   const pngString = await createPngStringForOrder(order);
   const pngStringRecord = { id: id, pngString: pngString };
   await db.pngStrings.put(pngStringRecord);
+}
+
+
+export const updateOrderSI123 = async (ids: number[]): Promise<void> => {
+  ids.forEach(async (id) => {
+    const order = await db.orders.get(id);
+    if (order) {
+      const calcSI12 = calcControlNumber11(order.referenca);
+      order.referenca = calcSI12;
+      await db.orders.update(id, order);
+      const pngString = await createPngStringForOrder(order);
+      const pngStringRecord = { id: id, pngString: pngString };
+      await db.pngStrings.update(id, pngStringRecord);
+    }
+  });
 }
