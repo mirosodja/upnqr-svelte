@@ -97,6 +97,7 @@
     // select all data from db.orders where id is in $groupOrdersStoreIds
     const ids: number[] = get(groupOrdersStoreIds);
     await updateOrderSI123(ids);
+    alert("Referenca SI12 je bila izračunana za izbrane zapise.");
   };
 
   const deleteHandler = async () => {

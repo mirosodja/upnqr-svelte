@@ -28,6 +28,10 @@ export const ordersList = liveQuery(async () => {
 });
 
 export const addOrder = async (order: Order): Promise<number> => {
+  if (order.referenca.startsWith('SI12', 0)) {
+    const calcSI12 = calcControlNumber11(order.referenca);
+    order.referenca = calcSI12;
+  }
   const id = await db.orders.add(order);
   const pngString = await createPngStringForOrder(order);
   const pngStringRecord = { id: id, pngString: pngString };
@@ -51,6 +55,10 @@ export const readPngString = async (id: number): Promise<PngTable | undefined> =
 }
 
 export const updateOrderPngString = async (id: number, order: Order): Promise<void> => {
+  if (order.referenca.startsWith('SI12', 0)) {
+    const calcSI12 = calcControlNumber11(order.referenca);
+    order.referenca = calcSI12;
+  }
   await db.orders.update(id, order);
   const pngString = await createPngStringForOrder(order);
   const pngStringRecord = { id: id, pngString: pngString };

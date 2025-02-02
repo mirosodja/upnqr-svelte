@@ -1,30 +1,12 @@
 <script lang="ts">
   import { Dropdown, Radio, Helper } from "flowbite-svelte";
-  import { createPdf } from "$lib/createPdf";
+  import { createPdf, createPdfZip } from "$lib/funcsForSavingFile";
   import type { OrderWithPngString } from "$lib/types/Order";
 
-
-//   interface OrderWithPngString {
-//     id: number;
-//     placnik: string;
-//     skupina: string;
-//     znesek: string; // znesek je bil prej string ali number?
-//     koda_namena: string;
-//     namen_placila: string;
-//     rok_placila: string;
-//     trr: string;
-//     referenca: string;
-//     prejemnik: string;
-//     pngString: string;
-// } 
-
-  /**
-   * Represents the type of file to save.
-   */
   let saveType: "pdf" | "zipPDF" | "zipPNG" = "pdf";
   let dropdownOpen = false;
 
-//  ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
+  //  ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
   export let ordersForPdf: OrderWithPngString[] = [];
 
   /**
@@ -60,12 +42,13 @@
     a.download = "orders.zip";
     a.click();
   };
+  
 
   const saveFileHandler = () => {
     if (saveType === "pdf") {
       createPdf(ordersForPdf);
     } else if (saveType === "zipPDF") {
-      alert("Not implemented yet");
+      createPdfZip(ordersForPdf);
     } else {
       createPng();
     }

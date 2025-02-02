@@ -2,6 +2,7 @@ import { db } from "$lib/db";
 import { isInsertingData } from "$lib/stores";
 import { createPngStringForOrder } from "$lib/createPngString";
 import type { Order } from "$lib/types/Order";
+import { calcControlNumber11 } from "$lib/calcControlNumber11";
 
 /**
  * Checks if the given value is a positive integer.
@@ -19,6 +20,10 @@ async function pasteTextFromClipboard(pastedText: string): Promise<void> {
   try {
     const text = pastedText;
     const rows = text.split("\n").map((row) => row.split("\t"));
+    if (rows.length === 1) {
+      alert("Napaka: Izgleda, uvažaš samo brez vrstico z imeni polj!");
+      return;
+    }
     if (rows[0].length !== 10) {
       alert("Napaka: Nepravilno število polj v vrstici!");
       return;
@@ -96,6 +101,10 @@ async function pasteTextFromClipboard(pastedText: string): Promise<void> {
               obj[key as keyof Order] = (obj[key as keyof Order] as string).trim();
             }
           });
+          if (obj.referenca.startsWith('SI12', 0)) {
+            const calcSI12 = calcControlNumber11(obj.referenca);
+            obj.referenca = calcSI12;
+          }
           const pngString = await createPngStringForOrder(obj);
           const objWithPng = { id: obj.id, pngString: pngString };
           await db.pngStrings.put(objWithPng);

@@ -11,6 +11,11 @@
 	let orders: OrderWithPngString[] = [];
 	let numOfordersWithPng = 0;
 
+	// This code runs when the component is mounted. It performs the following actions:
+	// 1. Calls the `createOrdersWithPngString` function to fetch orders data from Db.
+	// 2. On successful fetch, assigns the result to the `orders` variable and updates the `numOfordersWithPng` with the length of the orders array.
+	// 3. If an error occurs during the fetch, it logs the error to the console.
+	// 4. Finally, it processes each order to replace commas followed by optional spaces with newline characters in the `placnik` and `prejemnik` fields.
 	onMount(() => {
 		createOrdersWithPngString()
 			.then((result) => {
@@ -21,6 +26,9 @@
 				console.error(error);
 			})
 			.finally(() => {
+				if (orders.length === 0) {
+					window.location.href = "../";
+				}
 				orders = orders.map((order) => ({
 					...order,
 					placnik: order.placnik.replace(/, ?/g, "\n"),
@@ -117,8 +125,8 @@
 		*/
 		position: absolute;
 		left: 0mm;
-		top: 6mm;
-		width: 56.5mm;
+		top: 0mm;
+		width: 60mm;
 		height: 99mm;
 		font-family: "Courier New", Courier, monospace;
 		font-size: 7pt;
@@ -127,7 +135,7 @@
 	.ime-placnik-potrdilo {
 		position: absolute;
 		left: 6mm;
-		top: 2mm;
+		top: 6mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
@@ -135,7 +143,7 @@
 	.namen-rok-placila-potrdilo {
 		position: absolute;
 		left: 6mm;
-		top: 18mm;
+		top: 23mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
@@ -143,28 +151,28 @@
 	.znesek-potrdilo {
 		position: absolute;
 		left: 18mm;
-		top: 30mm;
+		top: 34mm;
 		width: 38mm;
 	}
 
 	.prejemnik-iban-potrdilo {
 		position: absolute;
 		left: 6mm;
-		top: 39mm;
+		top: 43mm;
 		width: 50mm;
 	}
 
 	.prejemnik-referenca-potrdilo {
 		position: absolute;
 		left: 6mm;
-		top: 43mm;
+		top: 47mm;
 		width: 50mm;
 	}
 
 	.ime-prejemnik-potrdilo {
 		position: absolute;
 		left: 6mm;
-		top: 54mm;
+		top: 59mm;
 		width: 50mm;
 		white-space: pre-line;
 	}
@@ -182,57 +190,57 @@
 	.qrcode {
 		position: absolute;
 		top: 6mm;
-		left: 5mm;
+		left: 4mm;
 		width: 39.5mm;
 		height: 39.5mm;
 	}
 	.ime-placnik {
 		position: absolute;
 		left: 49mm;
-		top: 23mm;
+		top: 21mm;
 		width: 60mm;
 		white-space: pre-line;
 	}
 	.znesek {
 		position: absolute;
 		left: 56mm;
-		top: 41mm;
+		top: 40mm;
 		width: 38mm;
 	}
 	.rok-placila {
 		position: absolute;
 		left: 118mm;
-		top: 50mm;
+		top: 49mm;
 		width: 28mm;
 	}
 	.koda-namena {
 		position: absolute;
 		left: 6mm;
-		top: 50mm;
+		top: 49mm;
 		width: 12mm;
 	}
 	.namen-placila {
 		position: absolute;
 		left: 23mm;
-		top: 50mm;
+		top: 49mm;
 		width: 90mm;
 	}
 	.prejemnik-iban {
 		position: absolute;
 		left: 6mm;
-		top: 59mm;
+		top: 58mm;
 		width: 130mm;
 	}
 	.prejemnik-referenca {
 		position: absolute;
 		left: 6mm;
-		top: 67mm;
+		top: 66mm;
 		width: 97mm;
 	}
 	.ime-prejemnik {
 		position: absolute;
 		left: 6mm;
-		top: 75mm;
+		top: 73mm;
 		width: 97mm;
 		white-space: pre-line;
 	}
