@@ -9,7 +9,8 @@
   autoclose
 >
   <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-    <strong>Namig:</strong> Z gumbom "Dodaj" kreiraj primer zapisa.
+    <strong>Namig:</strong> Z gumbom "Dodaj" kreiraj primer zapisa, nato ga skopiraj
+    v program za urejanje tabel in ga uporabi kot predlogo za vnos podatkov.
   </p>
   <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
     Podatke za uvoz morajo ustrezati formatu tabele. Prva vrstica mora vsebovati
@@ -24,7 +25,7 @@
   </p>
   <ul>
     <li>
-      <strong>id</strong> - pozitivno enolično celo število, ki predstavlja identifikator
+      <strong>Id</strong> - pozitivno enolično celo število, ki predstavlja identifikator
       zapisa;
     </li>
     <li>
@@ -51,12 +52,14 @@
       Primer: "Nakup na tržnici";
     </li>
     <li>
-      <strong>Rok plačila</strong> - datum plačila. Preverja se: format datuma
-      (dd.mm.yyyy), veljaven datum ali prazno polje;
+      <strong>Rok plačila</strong> - datum plačila. Preverja se: format datuma (dd.mm.yyyy),
+      veljaven datum ali prazno polje;
     </li>
     <li>
       <strong>TRR</strong> - transakcijski račun prejemnika. Preverja se: dolžina
-      (natančno 19 znakov), prva dva znaka oznaka države, npr.: "SI56 1234 5678 9012 345";
+      (natančno 19 znakov), prva dva znaka oznaka države, npr.: "SI56 1234 5678 9012
+      345";
+    </li>
     <li>
       <strong>Referenca</strong> - referenca plačila. Niz "SI" ali "RF" in
       dvomestna številka, presledek in številka, ki ima lahko pomišljaje, v

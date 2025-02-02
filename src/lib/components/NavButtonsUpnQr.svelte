@@ -9,49 +9,15 @@
   //  ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
   export let ordersForPdf: OrderWithPngString[] = [];
 
-  /**
-   * FileEntry type definition
-   */
-  type FileEntry = {
-    name: string;
-    input: string;
-    options: {
-      base64: boolean;
-    };
-  };
-
-  // Function to create a PNG image file from the order. The image is then added to zip file for download
-  // glej tu kako base64 to save file as png  https://gist.github.com/madhums/e749dca107e26d72b64d
-  const createPng = async () => {
-    const { downloadZip } = await import("client-zip");
-
-    const files: FileEntry[] = [];
-
-    ordersForPdf.forEach((order, index) => {
-      files.push({
-        name: `upn-qr-${index}.png`,
-        input: order.pngString || "",
-        options: { base64: true },
-      });
-    });
-
-    const zipBlob = await downloadZip(files).blob();
-    const zipUrl = URL.createObjectURL(zipBlob);
-    const a = document.createElement("a");
-    a.href = zipUrl;
-    a.download = "orders.zip";
-    a.click();
-  };
-  
-
   const saveFileHandler = () => {
     if (saveType === "pdf") {
       createPdf(ordersForPdf);
     } else if (saveType === "zipPDF") {
       createPdfZip(ordersForPdf);
-    } else {
-      createPng();
     }
+    // else {
+    //   createPngZip(ordersForPdf);
+    // }
   };
 </script>
 
@@ -104,6 +70,7 @@
         >Shrani zip datoteko, kjer je vsak nalog v svoji PDF datoteki.</Helper
       >
     </li>
+    <!--
     <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
       <Radio
         name="saveType"
@@ -118,6 +85,7 @@
         >Shrani zip datoteko, kjer je vsak nalog v svoji PNG datoteki.</Helper
       >
     </li>
+    -->
   </Dropdown>
 </div>
 

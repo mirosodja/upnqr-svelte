@@ -11,23 +11,30 @@
     Pomoč za uporabo programa "Univerzalni plačilni nalogi - UPN QR program"
   </h2>
   <h3>Hiter začetek:</h3>
-  <p>TO DO</p>
+  <p>
+    Z gumbom "Dodaj" kreiraj primer zapisa, nato ga skopiraj v program za
+    urejanje tabel in ga uporabi kot predlogo za vnos podatkov. Te podatke
+    ponovno skopiraj nazaj v tabelo nalogov. Izbrane zapise označiš, klikneš
+    "UPNQR V PDF" in shraniš naloge.
+  </p>
   <h3>Program "Univerzalni plačilni nalogi - UPN QR program"</h3>
   <ul>
     <li>
       je namenjen vnosu podatkov o posameznem nalogu (gumb "Dodaj") ali prenosu
-      iz drugega programa preko odložišča(gumb "Klikni tu..."). Stuktura
-      podatkov je razvidna v poglavju <a href="#uvoz">"Uvoz podatkov"</a>,
+      iz drugega programa preko odložišča. Stuktura podatkov je opisana na
+      začetni strani programa, do nje pridemo s klikom na gumb "Info format
+      podat.".
     </li>
     <li>
-      pripravi pdf datoteke za izpis položnic na printer (gumb "Upnqr" in nato
-      "Prenos PDF") (obvezno preberi razdelek: <strong>Tiskanje - važno</strong
+      pripravi pdf datoteke za izpis položnic na printer (povezava "Upnqr v PDF"
+      in nato "Shrani") (obvezno preberi razdelek: <strong
+        >Tiskanje - važno</strong
       >),
     </li>
     <li>
       pripravo položnic za pošiljanje preko e - maila (naloge zapakira v zip
       datoteko za prenos na računalnik, v zip datoteki so pdf-ji posameznih
-      nalogov) (gumb "Upnqr" in nato "Prenos ZIP").
+      nalogov) (povezava "Upnqr v PDF" in nato "Shrani").
     </li>
   </ul>
   <p>
@@ -38,8 +45,7 @@
   <p>
     Program zna izpisati UPN naloge s QR kodo v pdf datoteko, tako, da naloge
     lahko tiskamo iz programa za branje pdf datotek. Do posameznega izpisa
-    pridemo tako, da na
-    <a href="./">začetni strani</a> kliknemo gumb "Upnqr"
+    pridemo tako, da na začetni strai kliknemo gumb "Upnqr"
     <strong>(izbrana mora biti vsaj ena vrstica)</strong>. Ko se odpre nova
     stran lahko prenesemo PDF dokument (gumb "Prenos PDF") ali ZIP datoteko
     (gumb "Prenos PDF ZIP"). PDF dokument je namenjen tiskanju na standardne
@@ -55,9 +61,9 @@
     <a
       href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
       target="_blank"
-      >IndexedDB API
-    </a>). PDF/ZIP datoteka se sicer pripravi na serverju, vendar pa se podatki
-    na serverju ne shranujejo na kakršenkoli medij.
+      >IndexedDB API i). PDF/ZIP datoteka se sicer pripravi na serverju, vendar
+      pa se podatki na serverju ne shranujejo na kakršenkoli medij.
+    </a>
   </p>
   <p>
     Ker so podatki v IndexedDB v vašem brskalniku, to pomeni, da uporabljajte
@@ -96,99 +102,22 @@
   <p>
     <strong
       >Za ostale model (npr.: SI00, SI99) program ne izračunava kontrolne vsote
-      sklica. Zato je v vsaki vrstici v tabeli na
-      <a href="./">začetni strani</a> potrebno vnesti sklic posebej, če želimo, da
-      bodo sklici različni. Ker banka tudi pri nekaterih ostalih modelih izračunava
-      kontrolno vsoto, to lahko pomeni, da uporabnik ne bo mogel vnesti naloga, če
-      mu niste navedli sklica s pravilno kontrolno vsoto.
+      sklica. Zato je v vsaki vrstici v tabeli na začetni strani potrebno vnesti
+      sklic posebej, če želimo, da bodo sklici različni. Ker banka tudi pri
+      nekaterih ostalih modelih izračunava kontrolno vsoto, to lahko pomeni, da
+      uporabnik ne bo mogel vnesti naloga, če mu niste navedli sklica s pravilno
+      kontrolno vsoto.
     </strong>
   </p>
-  <h3 id="C4">Urejanje posamezne vrstice in urejanje več vrstic</h3>
-  <p>
-    Eno vrstico urejamo tako, da pri zaporedni številki vrstice kliknemo pisalo
-  </p>
-  <p>
-    Dve ali več vrstic urejamo tako, da jih najprej izberemo, in nato kliknemo
-    pisalo pod naslovom posamezne stolpca. Pri tem se vpišejo enaki podatki pri
-    vseh izbranih vrsticah. Kot rečeno, izjema je v primeru reference SI12, kjer
-    se na koncu števila doda ena cifra kot kontrolna vsota.
-  </p>
-  <p>Spreminjamo lahko:</p>
-  <ul>
-    <li>skupino,</li>
-    <li>znesek,</li>
-    <li>kodo namena,</li>
-    <li>namen in rok plačila,</li>
-    <li>TRR prejemnika,</li>
-    <li>referenco in</li>
-    <li>prejemnika.</li>
-  </ul>
-  <p>
-    Plačnika naknadno ne moremo spreminjati, lahko ga le izbrišemo in ponovno
-    vnesemo.
-  </p>
-  <h3>Izvoz podatkov</h3>
-  <p>
-    Gumb "Izvozi" prenese izbrane vrstice v CSV datoteko (z vejicami ločene
-    vrednosti).
-  </p>
-  <h3 id="uvoz">Uvoz podatkov</h3>
-  <p>
-    Podatke lahko uvozimo preko odložišča. Predlagamo, da najprej dodate v
-    tabelo vsaj en zapis, nato pa podatke izvozite, da boste videli strukturo
-    podatkov. V program za urejanje tabel podatke nato uvozite, dopolnite in
-    kopirate preko odložišča nazaj v program "Univerzalni plačilni nalogi - UPN
-    QR program".
-  </p>
-  <p>
-    Podatki za uvoz se morajo držati pravil glede dolžine polj in oblike zapisa.
-    Če na <a href="./">začetni strani</a> kliknete gumb "Dodaj", se vam bo v pogovornem
-    oknu tudi izpisalo v kakšni obliki morajo biti ti podatki.
-  </p>
-  <p>
-    Podatki morajo biti pripravljeni tako, da so števila v obliki 0,00
-    (decimalno ločilo je vejica). Naslovna vrstica mora imeti imena stolpcev,
-    poimenovani pa morajo biti tako, kot so poimenovani v tabeli na <a href="./"
-      >začetni strani</a
-    >. Stolpci v tabeli za uvoz so (v
-    <strong>krepko</strong> so zapisana imena stolpcev):
-  </p>
-  <ul>
-    <li>
-      <strong>Plačnik</strong> - Ime Priimek, Ulica HŠ, PŠ Pošta - ločeno z vejicami,
-      največ 32 znakov/ polje, skupaj (z vejicami) 98 znakov - obvezno polje [v kolikor
-      imate v Excelu ali podobnem programu te podatke v več celicah, lahko uporabite
-      znak "&" za seštevanje teksta. Primer: ko imate podatke v celicah A2, B2 in
-      C2, potem v celico D2 vpišete '=A2&", "&B2&", "&C2' (brez enojnih narekovajev]
-    </li>
-    <li>
-      <strong>Skupina</strong> - največ 20 znakov - neobvezno polje, namenjeno grupiranju
-      podatkov s pomočjo filtra
-    </li>
-    <li>
-      <strong>Znesek</strong> - številka, decimalno mesto: vejica, oznaka tisočic:
-      pika - obvezno polje
-    </li>
-    <li>
-      <strong>Koda namen</strong> - 4 znaki, velike črke, v skladu z normativi bank
-      - obvezno polje
-    </li>
-    <li>
-      <strong>Namen plačila</strong> - največ 42 znakov - obvezno polje
-    </li>
-    <li>
-      <strong>TRR</strong> - v skadu z normativi bank za številko transakcijskega
-      računa - obvezno polje
-    </li>
-    <li>
-      <strong>Referenca</strong> - v skadu z normativi bank za referenco - obvezno
-      polje
-    </li>
-    <li>
-      <strong>Prejemnik</strong> - Ime Priimek, Ulica HŠ, PŠ Pošta - ločeno z vejicami,
-      največ 32 znakov/ polje, skupaj (z vejicami) 98 znakov - obvezno polje
-    </li>
-  </ul>
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
 </div>
+
+<style>
+  ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+</style>

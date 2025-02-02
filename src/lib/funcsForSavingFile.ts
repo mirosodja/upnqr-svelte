@@ -1,5 +1,6 @@
 import { isLoadingData } from "$lib/stores";
 import type { OrderWithPngString } from "./types/Order";
+// import * as pdfjsLib from "pdfjs-dist";
 
 
 const replaceNonAsciiChars = (str: string) => {
@@ -58,7 +59,7 @@ export const createPdf = async (ordersForPdf: OrderWithPngString[]): Promise<voi
 
         // Potrdilo section
         doc.setFontSize(7);
-        doc.addImage("/upn-test/img/upn-a4-1x-screen.jpg", 0, yOffset, 210, 99);
+        // doc.addImage("/upn-test/img/upn-a4-1x-screen.jpg", 0, yOffset, 210, 99);
         doc.text(order.placnik, 6, 9 + yOffset, { maxWidth: 50 });
         const namen_placila = order.rok_placila
             ? order.namen_placila + ", " + order.rok_placila
@@ -163,3 +164,48 @@ export const createPdfZip = async (ordersForPdf: OrderWithPngString[]): Promise<
     a.click();
     isLoadingData.set(false);
 }
+
+
+// TODO: Implement this function for saving png files in zip
+// export const createPngZip = async (ordersForPdf: OrderWithPngString[]): Promise<void> => {
+//     isLoadingData.set(true);
+//     const { downloadZip } = await import("client-zip");
+//     // from ordersForPdf create pdf file, then create canvas and put pdf on canvas, then convert canvas to png and put it in zip as blob
+//     const files = await Promise.all(
+//         ordersForPdf.map(async (order) => {
+//             const { blob, fileName } = await createPdfForZip(order);
+//             const pdfBlob = blob;
+//             const pdfUrl = URL.createObjectURL(pdfBlob);
+//             pdfjsLib.GlobalWorkerOptions.workerSrc = "$lib/workers/pdf.worker.min.mjs";
+//             const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+//             const page = await pdf.getPage(1);
+//             const viewport = page.getViewport({ scale: 1 });
+//             const canvas = document.createElement("canvas");
+//             const context = canvas.getContext("2d");
+//             if (!context) {
+//                 throw new Error("Failed to get 2D context");
+//             }
+//             canvas.height = viewport.height;
+//             canvas.width = viewport.width;
+//             await page.render({ canvasContext: context, viewport }).promise;
+//             const pngBlob = await new Promise<Blob>((resolve, reject) => {
+//                 canvas.toBlob((blob) => {
+//                     if (blob) {
+//                         resolve(blob);
+//                     } else {
+//                         reject(new Error("Failed to create PNG blob"));
+//                     }
+//                 }, "image/png");
+//             });
+//             return { name: fileName.replace(".pdf", ".png"), input: pngBlob };
+//         })
+//     );
+
+//     const zipBlob = await downloadZip(files).blob();
+//     const zipUrl = URL.createObjectURL(zipBlob);
+//     const a = document.createElement("a");
+//     a.href = zipUrl;
+//     a.download = "orders.zip";
+//     a.click();
+//     isLoadingData.set(false);
+// }
