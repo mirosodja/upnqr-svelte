@@ -6,7 +6,7 @@
   let saveType: "pdf" | "zipPDF" | "zipPNG" = "pdf";
   let dropdownOpen = false;
 
-  //  ordersForPdf is an array of orders from the UPN QR page (src/routes/upnqr/+page.svelte)
+  //  ordersForPdf is an array of orders from the UPN QR page (src/routes/upn-qr/+page.svelte)
   export let ordersForPdf: OrderWithPngString[] = [];
 
   const saveFileHandler = () => {

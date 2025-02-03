@@ -33,11 +33,11 @@
         <a href="{base}/">Tabela nalogov</a>
       </li>
       <li
-        aria-current={$page.url.pathname.startsWith(`${base}/upnqr`)
+        aria-current={$page.url.pathname.startsWith(`${base}/upn-qr`)
           ? "page"
           : undefined}
       >
-        <a href="{base}/upnqr" class:disabled>Upnqr v PDF</a>
+        <a href="{base}/upn-qr" class:disabled>Upnqr v PDF</a>
       </li>
       <li
         aria-current={$page.url.pathname.startsWith(`${base}/help`)

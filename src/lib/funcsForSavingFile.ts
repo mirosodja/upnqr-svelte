@@ -59,7 +59,7 @@ export const createPdf = async (ordersForPdf: OrderWithPngString[]): Promise<voi
 
         // Potrdilo section
         doc.setFontSize(7);
-        // doc.addImage("/upn-test/img/upn-a4-1x-screen.jpg", 0, yOffset, 210, 99);
+        // doc.addImage("/upnqr/img/upn-a4-1x-screen.jpg", 0, yOffset, 210, 99);
         doc.text(order.placnik, 6, 9 + yOffset, { maxWidth: 50 });
         const namen_placila = order.rok_placila
             ? order.namen_placila + ", " + order.rok_placila
@@ -109,7 +109,7 @@ const createPdfForZip = async (ordersForPdf: OrderWithPngString): Promise<{ blob
     // doc.addPage();
     // Potrdilo section
     doc.setFontSize(7);
-    doc.addImage("/upn-test/img/upn-a4-1x-screen.jpg", 0, 0, 210, 99);
+    doc.addImage("/upnqr/img/upn-a4-1x-screen.jpg", 0, 0, 210, 99);
     doc.text(ordersForPdf.placnik, 6, 9, { maxWidth: 50 });
     const namen_placila = ordersForPdf.rok_placila
         ? ordersForPdf.namen_placila + ", " + ordersForPdf.rok_placila

@@ -27,7 +27,7 @@
 			})
 			.finally(() => {
 				if (orders.length === 0) {
-					window.location.href = "../";
+					window.location.href = "/upnqr/";
 				}
 				orders = orders.map((order) => ({
 					...order,
@@ -113,7 +113,7 @@
 		/* build */
 		/* background-image: url("./img/upnqr.jpg"); */
 		/* dev */
-		background-image: url("/upn-test/img/upn-a4-1x-screen.jpg");
+		background-image: url("/upnqr/img/upn-a4-1x-screen.jpg");
 		background-position: 0 0;
 		background-size: 100%;
 		background-repeat: no-repeat;
