@@ -1,41 +1,54 @@
-# create-svelte
+# UPNQR
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+This is a Svelte application for generating and scanning UPNQR codes. UPNQR codes are used for payment processing in various financial systems.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Generate UPNQR codes
+- Works entirely in JavaScript and in the browser
+- Does not send any data to the server
+- Uses Svelte for building the user interface
+- Scan and decode UPNQR codes
+- User-friendly interface
+- Fast and efficient performance
 
+## Installation
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/upnqr-svelte.git
+    ```
+2. Navigate to the project directory:
+    ```bash
+    cd upnqr-svelte
+    ```
+3. Install dependencies:
+    ```bash
+    pnpm install
+    ```
+
+## Usage
+
+1. Start the development server:
+    ```bash
+    pnpm run dev
+    ```
+2. Open your browser and navigate to `http://localhost:5173/upnqr/`.
+
+## Build
+
+To create a production build, run:
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+pnpm run build
 ```
 
-## Developing
+## Contributing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Contributions are welcome! Please open an issue or submit a pull request.
 
-```bash
-npm run dev
+## License
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Remarks about Svelte store
->The Svelte Store Contract is a subset of the Ecmascript Observable specification draft which makes **the return value of liveQuery() a fully valid Svelte Store by itself. [see:](**
+This project is licensed under the MIT License.
+- Scan and decode UPNQR codes
+- User-friendly interface
+- Fast and efficient performance
