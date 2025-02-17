@@ -29,8 +29,8 @@
       "Znesek",
       "Koda namena",
       "Namen plačila",
-      "Trr",
       "Rok plačila",
+      "Trr",
       "Referenca",
       "Prejemnik",
     ];

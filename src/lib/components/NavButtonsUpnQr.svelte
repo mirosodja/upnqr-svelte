@@ -1,6 +1,10 @@
 <script lang="ts">
   import { Dropdown, Radio, Helper } from "flowbite-svelte";
-  import { createPdf, createPdfZip } from "$lib/funcsForSavingFile";
+  import {
+    createPdf,
+    createPdfZip,
+    createPngZip,
+  } from "$lib/funcsForSavingFile";
   import type { OrderWithPngString } from "$lib/types/Order";
 
   let saveType: "pdf" | "zipPDF" | "zipPNG" = "pdf";
@@ -14,10 +18,9 @@
       createPdf(ordersForPdf);
     } else if (saveType === "zipPDF") {
       createPdfZip(ordersForPdf);
+    } else {
+      createPngZip(ordersForPdf);
     }
-    // else {
-    //   createPngZip(ordersForPdf);
-    // }
   };
 </script>
 
@@ -70,7 +73,7 @@
         >Shrani zip datoteko, kjer je vsak nalog v svoji PDF datoteki.</Helper
       >
     </li>
-    <!--
+
     <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
       <Radio
         name="saveType"
@@ -82,10 +85,9 @@
         value="zipPNG">PNG v zip</Radio
       >
       <Helper class="ps-6"
-        >Shrani zip datoteko, kjer je vsak nalog v svoji PNG datoteki.</Helper
+        >Shrani zip datoteko, kjer je vsaka QR koda v svoji PNG datoteki (samo QR koda).</Helper
       >
     </li>
-    -->
   </Dropdown>
 </div>
 
