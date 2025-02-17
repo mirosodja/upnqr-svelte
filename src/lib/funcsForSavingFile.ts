@@ -1,6 +1,5 @@
 import { isLoadingData } from "$lib/stores";
 import type { OrderWithPngString } from "./types/Order";
-// import * as pdfjsLib from "pdfjs-dist";
 
 
 const replaceNonAsciiChars = (str: string) => {
@@ -154,10 +153,7 @@ const createPdfForZip = async (ordersForPdf: OrderWithPngString): Promise<{ blob
     doc.text(ordersForPdf.referenca, 66, 69, { maxWidth: 97 });
     doc.text(ordersForPdf.prejemnik, 66, 78, { maxWidth: 97 });
 
-    const now = new Date();
-    const formattedDate = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
-    let placnik = replaceNonAsciiChars(ordersForPdf.placnik);
-    placnik = placnik.replace(/[^a-zA-Z0-9]/g, '');
+    const placnik = replaceNonAsciiChars(ordersForPdf.placnik).replace(/[^a-zA-Z0-9]/g, '');
     const fileName = `${ordersForPdf.id}-${placnik}.pdf`;
     const arrayBuffer = doc.output("arraybuffer");
     const blob = new Blob([arrayBuffer], { type: "application/pdf" });
@@ -195,7 +191,9 @@ export const createPngZip = async (ordersForPng: OrderWithPngString[]): Promise<
     const { downloadZip } = await import("client-zip");
     const files = ordersForPng.map((order) => {
         const blob = base64ToBlob(order.pngString);
-        return { name: `${order.id}.png`, input: blob };
+        const placnik = replaceNonAsciiChars(order.placnik).replace(/[^a-zA-Z0-9]/g, '');
+        const fileName = `${order.id}-${placnik}.pdf`;
+        return { name: `${fileName}.png`, input: blob };
     });
 
     const zipBlob = await downloadZip(files).blob();
