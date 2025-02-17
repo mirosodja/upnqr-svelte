@@ -41,6 +41,10 @@
     Pripravljeno pdf/zip datoteko lahko izpišemo na laserskem tiskalniku na
     obrazec UPN QR formata A4 oziroma pošljemo preko elektronske pošte.
   </p>
+  <p>
+    Program teče v brskalniku (t.i. SPA - single page application) in podatki
+    ostanejo v brskalniku in se ne prenašajo na strežnik.
+  </p>
   <h3>O programu</h3>
   <p>
     Program zna izpisati UPN naloge s QR kodo v pdf datoteko, tako, da naloge
@@ -61,8 +65,7 @@
     <a
       href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
       target="_blank"
-      >IndexedDB API i). PDF/ZIP datoteka se sicer pripravi na serverju, vendar
-      pa se podatki na serverju ne shranujejo na kakršenkoli medij.
+      >IndexedDB API).
     </a>
   </p>
   <p>
