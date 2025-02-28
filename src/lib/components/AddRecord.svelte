@@ -1,7 +1,9 @@
 <script lang="ts">
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
-    import { Button, Modal, Alert } from "flowbite-svelte";
+    import Button from "flowbite-svelte/Button.svelte";
+    import Modal from "flowbite-svelte/Modal.svelte";
+    import Alert from "flowbite-svelte/Alert.svelte";
     import { addOrder, updateOrderPngString, readOrder } from "$lib/db";
     import type { Order } from "$lib/types/Order";
 

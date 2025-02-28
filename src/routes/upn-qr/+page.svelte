@@ -120,9 +120,6 @@
 	}
 
 	.potrdilo {
-		/* TODO !! ni na izhodišču 0,0 
-		!!! left je že popravljen
-		*/
 		position: absolute;
 		left: 0mm;
 		top: 0mm;

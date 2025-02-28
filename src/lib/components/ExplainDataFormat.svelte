@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Modal } from "flowbite-svelte";
+  import  Modal  from "flowbite-svelte/Modal.svelte";
   export let clickToOpenExplainDataFormat: boolean = false;
 </script>
 

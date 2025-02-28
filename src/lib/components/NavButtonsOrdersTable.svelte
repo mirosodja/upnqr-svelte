@@ -13,6 +13,19 @@
   let showInfoAboutDataFormat = false;
   let showAddRecord = false;
 
+  const arrFirstLine = [
+    "Id",
+    "Plačnik",
+    "Skupina",
+    "Znesek",
+    "Koda namena",
+    "Namen plačila",
+    "Rok plačila",
+    "Trr",
+    "Referenca",
+    "Prejemnik",
+  ];
+
   // read data from indexedDB and put into clipboard
   const readDbAndPutIntoClipboard = async () => {
     const data = await db.orders.toArray();
@@ -22,23 +35,21 @@
     // const selectedData = data.filter((obj: Order) =>
     //   $groupOrdersStoreIds.includes(obj.id),
     // );
-    let arrFirstLine = [
-      "Id",
-      "Plačnik",
-      "Skupina",
-      "Znesek",
-      "Koda namena",
-      "Namen plačila",
-      "Rok plačila",
-      "Trr",
-      "Referenca",
-      "Prejemnik",
-    ];
+    // arrFirstLine is now defined outside the function
     const headers = arrFirstLine.join("\t");
-
-    // Extract values from each object
-    const rows = selectedData.map((/** @type {any} */ obj) =>
-      Object.values(obj).join("\t"),
+    const rows = selectedData.map((obj: Order) =>
+      [
+        obj.id,
+        obj.placnik,
+        obj.skupina,
+        obj.znesek,
+        obj.koda_namena,
+        obj.namen_placila,
+        obj.rok_placila,
+        obj.trr,
+        obj.referenca,
+        obj.prejemnik,
+      ].join("\t"),
     );
 
     // Join headers and rows with newline delimiter
@@ -175,7 +186,6 @@
   />
 </div>
 
-<!-- TODO: add button: sum calculation for SI12 for selected records -->
 <style>
   .navButton {
     display: flex;

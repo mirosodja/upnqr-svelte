@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Dropdown, Radio, Helper } from "flowbite-svelte";
+  import Dropdown from "flowbite-svelte/Dropdown.svelte";
+  import Radio from "flowbite-svelte/Radio.svelte";
+  import Helper from "flowbite-svelte/Helper.svelte";
   import {
     createPdf,
     createPdfZip,

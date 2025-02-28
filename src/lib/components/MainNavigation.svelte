@@ -7,7 +7,7 @@
     titleOfPage,
   } from "$lib/stores";
   import { base } from "$app/paths";
-  import { Spinner } from "flowbite-svelte";
+  import  Spinner  from "flowbite-svelte/Spinner.svelte";
 
   $: disabled = !($groupOrdersStoreIds as number[]).length;
 </script>

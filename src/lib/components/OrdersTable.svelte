@@ -1,16 +1,14 @@
 <script lang="ts">
-  import {
-    Table,
-    TableBody,
-    TableBodyCell,
-    TableBodyRow,
-    TableHead,
-    TableHeadCell,
-    Checkbox,
-    Label,
-    Select,
-    Input,
-  } from "flowbite-svelte";
+  import Table from "flowbite-svelte/Table.svelte";
+  import TableBody from "flowbite-svelte/TableBody.svelte";
+  import TableBodyCell from "flowbite-svelte/TableBodyCell.svelte";
+  import TableBodyRow from "flowbite-svelte/TableBodyRow.svelte";
+  import TableHead from "flowbite-svelte/TableHead.svelte";
+  import TableHeadCell from "flowbite-svelte/TableHeadCell.svelte";
+  import Checkbox from "flowbite-svelte/Checkbox.svelte";
+  import Label from "flowbite-svelte/Label.svelte";
+  import Select from "flowbite-svelte/Select.svelte";
+  import Input from "flowbite-svelte/Input.svelte";
   import { ordersList, numberOfAllRecords } from "$lib/db";
   import { fieldsInTable } from "$lib/fieldsInTable";
   import NavButtonOrdersTable from "$lib/components/NavButtonsOrdersTable.svelte";
@@ -242,8 +240,6 @@
       <TableBody tableBodyClass="divide-y">
         {#if filteredOrders}
           {#each filteredOrders as item}
-            <!-- TODO id should be sorted to -->
-            <!-- TODO check if key is ok -->
             <TableBodyRow>
               <TableBodyCell>
                 <Checkbox
